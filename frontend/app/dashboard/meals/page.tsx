@@ -25,6 +25,7 @@ import {
   getMealsByDate,
   createMeal,
   deleteMeal,
+  getAllUserMeals,
   searchIngredients,
   type Meal,
   type Ingredient,
@@ -40,7 +41,11 @@ import {
   Apple,
   Utensils,
   X,
+  BookOpen,
+  History,
+  ArrowRight,
 } from "lucide-react"
+import Link from "next/link"
 import { cn } from "@/lib/utils"
 
 const mealTypes = [
@@ -53,11 +58,13 @@ const mealTypes = [
 interface SelectedIngredient {
   ingredient: Ingredient
   amount: number
+  unit: "g" | "portion"
 }
 
 export default function MealsPage() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [meals, setMeals] = useState<Meal[]>([])
+  const [recentMeals, setRecentMeals] = useState<Meal[]>([])
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
 
@@ -77,9 +84,27 @@ export default function MealsPage() {
   useEffect(() => {
     async function loadMeals() {
       setLoading(true)
-      const dayMeals = await getMealsByDate(dateString)
-      setMeals(dayMeals)
-      setLoading(false)
+      try {
+        const [dayMeals, allMeals] = await Promise.all([
+          getMealsByDate(dateString),
+          getAllUserMeals(),
+        ])
+        setMeals(dayMeals)
+
+        const sortedHistory = [...allMeals]
+          .sort((a, b) => b.id - a.id)
+          .slice(0, 3)
+
+        setRecentMeals(sortedHistory)
+      } catch (error) {
+        console.error("Failed to load meals", error)
+        try {
+          const dayMeals = await getMealsByDate(dateString)
+          setMeals(dayMeals)
+        } catch (e) { console.error(e) }
+      } finally {
+        setLoading(false)
+      }
     }
     loadMeals()
   }, [dateString])
@@ -96,7 +121,7 @@ export default function MealsPage() {
     if (!selectedIngredients.find((si) => si.ingredient.id === ingredient.id)) {
       setSelectedIngredients((prev) => [
         ...prev,
-        { ingredient, amount: ingredient.portionSize },
+        { ingredient, amount: ingredient.portionSize, unit: "g" },
       ])
     }
     setSearchQuery("")
@@ -113,14 +138,21 @@ export default function MealsPage() {
     )
   }
 
+  const updateUnit = (id: number, unit: "g" | "portion") => {
+    setSelectedIngredients((prev) =>
+      prev.map((si) => (si.ingredient.id === id ? { ...si, unit } : si))
+    )
+  }
+
   const calculateMealNutrition = () => {
     let calories = 0
     let protein = 0
     let carbs = 0
     let fat = 0
 
-    for (const { ingredient, amount } of selectedIngredients) {
-      const multiplier = amount / ingredient.portionSize
+    for (const { ingredient, amount, unit } of selectedIngredients) {
+      const multiplier =
+        unit === "portion" ? amount : amount / ingredient.portionSize
       calories += ingredient.calories * multiplier
       protein += ingredient.protein * multiplier
       carbs += ingredient.carbs * multiplier
@@ -141,7 +173,8 @@ export default function MealsPage() {
       mealDate: dateString,
       contents: selectedIngredients.map((si) => ({
         ingredientId: si.ingredient.id,
-        ingredientAmount: si.amount,
+        ingredientAmount:
+          si.unit === "portion" ? si.amount * si.ingredient.portionSize : si.amount,
       })),
     })
 
@@ -205,162 +238,195 @@ export default function MealsPage() {
                 Add Meal
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+            <DialogContent className="max-h-[90vh] w-full overflow-y-auto sm:max-w-4xl">
               <DialogHeader>
                 <DialogTitle>Log a Meal</DialogTitle>
               </DialogHeader>
 
-              <div className="mt-4 space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="mealName">Meal Name</Label>
-                    <Input
-                      id="mealName"
-                      placeholder="e.g., Morning Oatmeal"
-                      value={mealName}
-                      onChange={(e) => setMealName(e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="mealType">Meal Type</Label>
-                    <Select
-                      value={mealTypeId.toString()}
-                      onValueChange={(v) => setMealTypeId(Number.parseInt(v))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {mealTypes.map((type) => (
-                          <SelectItem key={type.id} value={type.id.toString()}>
-                            {type.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description (optional)</Label>
-                  <Input
-                    id="description"
-                    placeholder="Add a note..."
-                    value={mealDescription}
-                    onChange={(e) => setMealDescription(e.target.value)}
-                  />
-                </div>
-
-                {/* Ingredient Search */}
-                <div className="space-y-2">
-                  <Label>Add Ingredients</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Search ingredients..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                    />
-                    <Button variant="outline" size="icon" onClick={handleSearch} disabled={searching}>
-                      <Search className="h-4 w-4" />
-                    </Button>
-                  </div>
-
-                  {/* Search Results */}
-                  {searchResults.length > 0 && (
-                    <div className="max-h-40 overflow-y-auto rounded-lg border border-border">
-                      {searchResults.map((ingredient) => (
-                        <button
-                          key={ingredient.id}
-                          type="button"
-                          onClick={() => addIngredient(ingredient)}
-                          className="flex w-full items-center justify-between p-3 text-left hover:bg-muted"
-                        >
-                          <div>
-                            <p className="font-medium text-foreground">{ingredient.name}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {ingredient.brand} - {ingredient.portionSize}g
-                            </p>
-                          </div>
-                          <span className="text-sm text-muted-foreground">
-                            {ingredient.calories} kcal
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Selected Ingredients */}
-                {selectedIngredients.length > 0 && (
-                  <div className="space-y-2">
-                    <Label>Selected Ingredients</Label>
+              <div className="mt-4 grid gap-6 md:grid-cols-2">
+                <div className="space-y-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
-                      {selectedIngredients.map(({ ingredient, amount }) => (
-                        <div
-                          key={ingredient.id}
-                          className="flex items-center gap-3 rounded-lg border border-border bg-muted/50 p-3"
-                        >
-                          <div className="flex-1">
-                            <p className="font-medium text-foreground">{ingredient.name}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {Math.round((ingredient.calories * amount) / ingredient.portionSize)} kcal
-                            </p>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Input
-                              type="number"
-                              value={amount}
-                              onChange={(e) => updateAmount(ingredient.id, Number(e.target.value))}
-                              className="h-8 w-20"
-                              min={1}
-                            />
-                            <span className="text-sm text-muted-foreground">g</span>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8"
-                              onClick={() => removeIngredient(ingredient.id)}
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
+                      <Label htmlFor="mealName">Meal Name</Label>
+                      <Input
+                        id="mealName"
+                        placeholder="e.g., Morning Oatmeal"
+                        value={mealName}
+                        onChange={(e) => setMealName(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="mealType">Meal Type</Label>
+                      <Select
+                        value={mealTypeId.toString()}
+                        onValueChange={(v) => setMealTypeId(Number.parseInt(v))}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {mealTypes.map((type) => (
+                            <SelectItem key={type.id} value={type.id.toString()}>
+                              {type.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="description">Description (optional)</Label>
+                    <Input
+                      id="description"
+                      placeholder="Add a note..."
+                      value={mealDescription}
+                      onChange={(e) => setMealDescription(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Ingredient Search */}
+                  <div className="space-y-2">
+                    <Label>Add Ingredients</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Search ingredients..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                      />
+                      <Button variant="outline" size="icon" onClick={handleSearch} disabled={searching}>
+                        <Search className="h-4 w-4" />
+                      </Button>
                     </div>
 
-                    {/* Meal Totals */}
-                    <div className="rounded-lg bg-secondary/20 p-3">
-                      <p className="text-sm font-medium text-foreground">Meal Totals</p>
-                      <div className="mt-2 grid grid-cols-4 gap-2 text-center text-xs">
-                        <div>
-                          <p className="font-bold text-foreground">{Math.round(nutrition.calories)}</p>
-                          <p className="text-muted-foreground">kcal</p>
-                        </div>
-                        <div>
-                          <p className="font-bold text-secondary">{Math.round(nutrition.protein)}g</p>
-                          <p className="text-muted-foreground">protein</p>
-                        </div>
-                        <div>
-                          <p className="font-bold text-accent">{Math.round(nutrition.carbs)}g</p>
-                          <p className="text-muted-foreground">carbs</p>
-                        </div>
-                        <div>
-                          <p className="font-bold text-primary">{Math.round(nutrition.fat)}g</p>
-                          <p className="text-muted-foreground">fat</p>
+                    {/* Search Results */}
+                    {searchResults.length > 0 && (
+                      <div className="max-h-40 overflow-y-auto rounded-lg border border-border">
+                        {searchResults.map((ingredient) => (
+                          <button
+                            key={ingredient.id}
+                            type="button"
+                            onClick={() => addIngredient(ingredient)}
+                            className="flex w-full items-center justify-between p-3 text-left hover:bg-muted"
+                          >
+                            <div>
+                              <p className="font-medium text-foreground">{ingredient.name}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {ingredient.brand} - {ingredient.portionSize}g
+                              </p>
+                            </div>
+                            <span className="text-sm text-muted-foreground">
+                              {ingredient.calories} kcal
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Save Button for Mobile */}
+                  <Button
+                    className="w-full md:hidden"
+                    onClick={handleCreateMeal}
+                    disabled={!mealName.trim() || selectedIngredients.length === 0 || creating}
+                  >
+                    {creating ? "Saving..." : "Save Meal"}
+                  </Button>
+                </div>
+
+                <div className="flex flex-col space-y-4">
+                  {/* Selected Ingredients */}
+                  <div className="flex-1 space-y-2">
+                    <Label>Selected Ingredients</Label>
+                    {selectedIngredients.length > 0 ? (
+                      <div className="space-y-2">
+                        {selectedIngredients.map(({ ingredient, amount, unit }) => (
+                          <div
+                            key={ingredient.id}
+                            className="flex items-center gap-3 rounded-lg border border-border bg-muted/50 p-3"
+                          >
+                            <div className="flex-1">
+                              <p className="font-medium text-foreground">{ingredient.name}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {Math.round((ingredient.calories * amount) / ingredient.portionSize)} kcal
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Input
+                                type="number"
+                                value={amount}
+                                onChange={(e) => updateAmount(ingredient.id, Number(e.target.value))}
+                                className="h-8 w-20"
+                                min={0.1}
+                                step={unit === "portion" ? 0.1 : 1}
+                              />
+                              <Select
+                                value={unit}
+                                onValueChange={(v) => updateUnit(ingredient.id, v as "g" | "portion")}
+                              >
+                                <SelectTrigger className="h-8 w-[100px]">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="g">g</SelectItem>
+                                  <SelectItem value="portion">portion(s)</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={() => removeIngredient(ingredient.id)}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+
+                        {/* Meal Totals */}
+                        <div className="rounded-lg bg-secondary/20 p-3">
+                          <p className="text-sm font-medium text-foreground">Meal Totals</p>
+                          <div className="mt-2 grid grid-cols-4 gap-2 text-center text-xs">
+                            <div>
+                              <p className="font-bold text-foreground">{Math.round(nutrition.calories)}</p>
+                              <p className="text-muted-foreground">kcal</p>
+                            </div>
+                            <div>
+                              <p className="font-bold text-secondary">{Math.round(nutrition.protein)}g</p>
+                              <p className="text-muted-foreground">protein</p>
+                            </div>
+                            <div>
+                              <p className="font-bold text-accent">{Math.round(nutrition.carbs)}g</p>
+                              <p className="text-muted-foreground">carbs</p>
+                            </div>
+                            <div>
+                              <p className="font-bold text-primary">{Math.round(nutrition.fat)}g</p>
+                              <p className="text-muted-foreground">fat</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="flex h-40 flex-col items-center justify-center rounded-lg border border-dashed border-muted-foreground/25 p-4 text-center">
+                        <Utensils className="mb-2 h-8 w-8 text-muted-foreground/50" />
+                        <p className="text-sm text-muted-foreground">
+                          Add ingredients from the search to build your meal
+                        </p>
+                      </div>
+                    )}
                   </div>
-                )}
 
-                <Button
-                  className="w-full"
-                  onClick={handleCreateMeal}
-                  disabled={!mealName.trim() || selectedIngredients.length === 0 || creating}
-                >
-                  {creating ? "Saving..." : "Save Meal"}
-                </Button>
+                  {/* Save Button for Desktop */}
+                  <Button
+                    className="hidden w-full md:flex"
+                    onClick={handleCreateMeal}
+                    disabled={!mealName.trim() || selectedIngredients.length === 0 || creating}
+                  >
+                    {creating ? "Saving..." : "Save Meal"}
+                  </Button>
+                </div>
               </div>
             </DialogContent>
           </Dialog>
@@ -374,23 +440,80 @@ export default function MealsPage() {
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
           </div>
         ) : meals.length === 0 ? (
-          <div className="rounded-2xl border border-border bg-card p-12 text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-              <Utensils className="h-8 w-8 text-muted-foreground" />
+            <div className="space-y-8">
+              <div className="rounded-2xl border border-border bg-card p-12 text-center">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                  <Utensils className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <h3 className="mt-4 text-lg font-semibold text-foreground">No meals logged for this day</h3>
+                <p className="mt-1 text-muted-foreground">
+                  Start tracking your nutrition by adding your first meal
+                </p>
+                <Button className="mt-6" onClick={() => setDialogOpen(true)}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Your First Meal
+                </Button>
+              </div>
+
+              {/* Empty State Tips / Recent Meals */}
+              <div className="grid gap-6 md:grid-cols-2">
+                {/* Recent Meals Section */}
+                <div className="rounded-xl border border-border bg-card p-6">
+                  <div className="mb-4 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <History className="h-5 w-5 text-primary" />
+                      <h3 className="font-semibold text-foreground">Recent Meals</h3>
+                    </div>
+                  </div>
+                  {recentMeals.length > 0 ? (
+                    <div className="space-y-3">
+                      {recentMeals.map((meal) => (
+                        <div key={meal.id} className="flex items-center justify-between rounded-lg bg-muted/30 p-3">
+                          <div>
+                            <p className="font-medium text-foreground max-w-[150px] truncate sm:max-w-[200px]">
+                              {meal.name}
+                            </p>
+                            <p className="text-xs text-muted-foreground">{meal.mealTypeName}</p>
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {format(new Date(meal.mealDate), "MMM d")}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No meal history yet.</p>
+                  )}
+                </div>
+
+                {/* Recipe Inspiration Section */}
+                <div className="flex flex-col justify-between rounded-xl border border-border bg-gradient-to-br from-primary/10 to-transparent p-6">
+                  <div>
+                    <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-primary/20">
+                      <BookOpen className="h-5 w-5 text-primary" />
+                    </div>
+                    <h3 className="mb-2 font-semibold text-foreground">Need Inspiration?</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Discover healthy and delicious recipes to add to your daily plan.
+                    </p>
+                  </div>
+                  <Button asChild variant="outline" className="mt-6 w-full justify-between bg-background">
+                    <Link href="/dashboard/recipes">
+                      Browse Recipes
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
             </div>
-            <h3 className="mt-4 text-lg font-semibold text-foreground">No meals logged</h3>
-            <p className="mt-1 text-muted-foreground">
-              Start tracking your nutrition by adding your first meal
-            </p>
-            <Button className="mt-6" onClick={() => setDialogOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Your First Meal
-            </Button>
-          </div>
         ) : (
           <div className="space-y-3">
             {mealTypes.map((type) => {
-              const typeMeals = meals.filter((m) => m.mealTypeName === type.name)
+              // Filter by mealTypeId if available, fallback to name
+              const typeMeals = meals.filter(
+                (m) =>
+                  m.mealTypeId === type.id || m.mealTypeName === type.name
+              )
               if (typeMeals.length === 0) return null
 
               const Icon = type.icon

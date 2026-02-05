@@ -64,6 +64,7 @@ export interface Meal {
   description: string
   mealDate: string
   mealTypeName: string
+  mealTypeId: number
   contents: MealContent[]
 }
 
