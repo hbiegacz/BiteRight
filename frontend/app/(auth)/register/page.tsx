@@ -101,7 +101,7 @@ export default function RegisterPage() {
             type="text"
             placeholder="johndoe"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
             required
             className="h-12"
           />
@@ -114,7 +114,7 @@ export default function RegisterPage() {
             type="email"
             placeholder="you@example.com"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
             required
             className="h-12"
           />
@@ -128,7 +128,7 @@ export default function RegisterPage() {
               type={showPassword ? "text" : "password"}
               placeholder="Create a strong password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
               required
               className="h-12 pr-12"
             />
@@ -151,7 +151,7 @@ export default function RegisterPage() {
               type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm your password"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
               required
               className="h-12 pr-12"
             />
@@ -189,7 +189,7 @@ export default function RegisterPage() {
           <Checkbox
             id="terms"
             checked={acceptTerms}
-            onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
+            onCheckedChange={(checked: boolean) => setAcceptTerms(checked)}
             className="mt-0.5"
           />
           <Label htmlFor="terms" className="text-sm font-normal text-muted-foreground">
