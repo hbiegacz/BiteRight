@@ -15,7 +15,7 @@ public class MealTypeService {
         this.mealTypeRepository = mealTypeRepository;
     }
 
-    public MealType findMealTypeById(Integer mealId) {
+    public MealType findMealTypeById(Long mealId) {
         MealType mealType = mealTypeRepository.findById(mealId)
                 .orElseThrow(() -> new IllegalArgumentException("Meal type not found"));
         return mealType;

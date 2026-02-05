@@ -9,7 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,6 +18,8 @@ import java.util.List;
 @RequestMapping("/dailySummary")
 @RequiredArgsConstructor
 public class DailySummaryController {
+    private static final Logger logger = LoggerFactory.getLogger(DailySummaryController.class);
+
     private final DailySummaryService dailySummaryService;
     private final UserRepository userRepository;
 
@@ -31,22 +34,23 @@ public class DailySummaryController {
 
         try {
             if (date != null) {
-                // Pojedyncza data
+                // Single date
                 LocalDate summaryDate = LocalDate.parse(date);
                 DailySummary dailySummary = dailySummaryService.findDailySummaryByUsernameAndDate(username, summaryDate);
                 return ResponseEntity.ok(dailySummary);
             } else if (startDate != null && endDate != null) {
-                // Zakres dat
+                // Date range
                 LocalDate start = LocalDate.parse(startDate);
                 LocalDate end = LocalDate.parse(endDate);
                 List<DailySummary> summaries = dailySummaryService.findDailySummariesByUsernameBetweenDates(username, start, end);
                 return ResponseEntity.ok(summaries);
             } else {
-                // Domyślnie dzisiejsza data
+                // Default to today's date
                 DailySummary dailySummary = dailySummaryService.findDailySummaryByUsernameAndDate(username, LocalDate.now());
                 return ResponseEntity.ok(dailySummary);
             }
         } catch (IllegalArgumentException e) {
+            logger.error("Error finding daily summary.\n" + e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }

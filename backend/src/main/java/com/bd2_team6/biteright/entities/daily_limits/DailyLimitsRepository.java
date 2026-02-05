@@ -4,6 +4,6 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface DailyLimitsRepository extends JpaRepository<DailyLimits, Integer> {
+public interface DailyLimitsRepository extends JpaRepository<DailyLimits, Long> {
     
 }

@@ -37,7 +37,7 @@ public class RecipeService {
         return new RecipeDTO(recipe);
     }
 
-    public RecipeDTO findRecipeById(Integer recipeId) {
+    public RecipeDTO findRecipeById(Long recipeId) {
         Recipe recipe = recipeRepository.findById(recipeId)
                         .orElseThrow(() -> new IllegalArgumentException("Recipe not found"));
         return new RecipeDTO(recipe);
@@ -63,7 +63,7 @@ public class RecipeService {
         return recipeRepository.save(recipe);
     }
 
-    public Recipe updateRecipe(RecipeUpdateRequest request, Integer recipeId) {
+    public Recipe updateRecipe(RecipeUpdateRequest request, Long recipeId) {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new IllegalArgumentException("Recipe not found"));
 
@@ -87,7 +87,7 @@ public class RecipeService {
         return recipeRepository.save(recipe);
     }
 
-    public void deleteRecipe(Integer recipeId) {
+    public void deleteRecipe(Long recipeId) {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new IllegalArgumentException("Recipe not found"));
         recipeRepository.delete(recipe);

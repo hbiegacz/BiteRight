@@ -4,6 +4,6 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface LimitHistoryRepository extends JpaRepository<LimitHistory, Integer> {
+public interface LimitHistoryRepository extends JpaRepository<LimitHistory, Long> {
 
 }

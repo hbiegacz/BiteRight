@@ -6,9 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "user_exercise")
@@ -20,7 +18,7 @@ public class UserExercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_exercise_id")
-    private Integer userExerciseId;
+    private Long userExerciseId;
 
     @Column(name = "activity_date")
     private LocalDateTime activityDate;

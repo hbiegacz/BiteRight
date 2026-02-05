@@ -4,6 +4,8 @@ import com.bd2_team6.biteright.authentication.custom_user_details.CustomUserDeta
 import com.bd2_team6.biteright.authentication.custom_user_details.CustomUserDetailsService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.security.core.Authentication;
@@ -17,32 +19,41 @@ import java.io.IOException;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
+    private final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
     @Autowired
     private JwtService jwtService;
 
     @Autowired
     ApplicationContext context;
-    
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-                String authHeader = request.getHeader("Authorization");
-                String token = null;
-                String email = null;
+        String authHeader = request.getHeader("Authorization");
+        String token = null;
+        String email = null;
 
-                if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                    token = authHeader.substring(7);
-                    email = jwtService.extractEmail(token);
-                }
-
-                if (email != null && SecurityContextHolder.getContext().getAuthentication()==null) {
-                    CustomUserDetails userDetails = (CustomUserDetails) context.getBean(CustomUserDetailsService.class).loadUserByEmail(email);
-                    if (jwtService.isTokenValid(token, userDetails)) {
-                        Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, userDetails.getAuthorities());
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
-                }
-                filterChain.doFilter(request, response);
+        try {
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
+                email = jwtService.extractEmail(token);
             }
+
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                CustomUserDetails userDetails = (CustomUserDetails) context.getBean(CustomUserDetailsService.class)
+                        .loadUserByEmail(email);
+                if (jwtService.isTokenValid(token, userDetails)) {
+                    Authentication authentication = new UsernamePasswordAuthenticationToken(email, null,
+                            userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } else {
+                    logger.error("Token validation failed for email: " + email);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Error processing JWT token: " + e.getMessage());
+        }
+        filterChain.doFilter(request, response);
+    }
 
 }

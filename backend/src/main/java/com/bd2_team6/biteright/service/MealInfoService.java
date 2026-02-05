@@ -21,7 +21,7 @@ public class MealInfoService {
         this.userRepository = userRepository;
     }
 
-    public MealInfo findMealInfoById(Integer mealId) {
+    public MealInfo findMealInfoById(Long mealId) {
         MealInfo mealInfo = mealInfoRepository.findById(mealId)
                 .orElseThrow(() -> new IllegalArgumentException("Meal info not found"));
         return mealInfo;
@@ -47,7 +47,7 @@ public class MealInfoService {
         return mealInfoRepository.save(newMealInfo);
     }
 
-    public MealInfo updateMealInfo(Integer mealId, MealInfoUpdateRequest request) {        
+    public MealInfo updateMealInfo(Long mealId, MealInfoUpdateRequest request) {
         MealInfo newMealInfo = mealInfoRepository.findById(mealId)
                 .orElseThrow(() -> new IllegalArgumentException("Meal info not found"));
 
@@ -60,7 +60,7 @@ public class MealInfoService {
         return mealInfoRepository.save(newMealInfo);
     }
 
-    public void deleteMealInfo(Integer mealId) {        
+    public void deleteMealInfo(Long mealId) {
         MealInfo mealInfo = mealInfoRepository.findById(mealId)
                 .orElseThrow(() -> new IllegalArgumentException("Meal info not found"));
 

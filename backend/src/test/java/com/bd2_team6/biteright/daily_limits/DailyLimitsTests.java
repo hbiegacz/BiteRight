@@ -104,8 +104,8 @@ public class DailyLimitsTests {
         user.setDailyLimits(dailyLimits);
         userRepository.save(user);
 
-        Integer userId = user.getId();
-        Integer dailyLimitsId = dailyLimits.getDailyLimitId();
+        Long userId = user.getId();
+        Long dailyLimitsId = dailyLimits.getDailyLimitId();
 
         userRepository.deleteById(userId);
 

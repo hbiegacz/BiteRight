@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LimitHistoryDTO {
-    private Integer historyId;
+    private Long historyId;
     private LocalDate dateChanged;
     private Integer calorieLimit;
     private Integer proteinLimit;

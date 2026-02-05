@@ -24,7 +24,7 @@ public class MealContentService {
     private final MealRepository mealRepository;
     private final IngredientRepository ingredientRepository;
 
-    public Set<MealContentDTO> findMealContentById(Integer mealId) {
+    public Set<MealContentDTO> findMealContentById(Long mealId) {
         Meal meal = mealRepository.findById(mealId)
                 .orElseThrow(() -> new IllegalArgumentException("Meal not found"));
 
@@ -53,7 +53,7 @@ public class MealContentService {
         return new MealContentDTO(mealContentRepository.save(content));
     }
 
-    public MealContentDTO updateContent(Integer id, MealContentUpdateRequest request) {
+    public MealContentDTO updateContent(Long id, MealContentUpdateRequest request) {
         MealContent content = mealContentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Meal content not found"));
 
@@ -65,7 +65,7 @@ public class MealContentService {
         return new MealContentDTO(mealContentRepository.save(content));
     }
 
-    public void deleteMealContent(Integer id) {
+    public void deleteMealContent(Long id) {
         MealContent content = mealContentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Meal content not found"));
 

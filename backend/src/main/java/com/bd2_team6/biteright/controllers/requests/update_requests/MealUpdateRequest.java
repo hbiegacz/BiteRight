@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 public class MealUpdateRequest {
-    private Integer mealTypeId;
+    private Long mealTypeId;
     private String name;
     private String description;
     private List<MealContentDTO> contents;

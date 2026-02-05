@@ -9,10 +9,8 @@ import com.bd2_team6.biteright.entities.water_intake.WaterIntakeRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 
 @Service
 public class WaterIntakeService {
@@ -52,11 +50,11 @@ public class WaterIntakeService {
     }
 
 
-    public WaterIntake findWaterIntakeById(String username, int waterIntakeId) {
+    public WaterIntake findWaterIntakeById(String username, Long waterIntakeId) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Integer userId = user.getId();
+        Long userId = user.getId();
         WaterIntake waterIntake = waterIntakeRepository.findById(waterIntakeId)
                 .orElseThrow(() -> new IllegalArgumentException("Water intake with provided id not found"));
 
@@ -68,12 +66,12 @@ public class WaterIntakeService {
         }
     }
 
-    public WaterIntake updateWaterIntakeById(String username, int waterIntakeId,
+    public WaterIntake updateWaterIntakeById(String username, Long waterIntakeId,
                                              WaterIntakeUpdateRequest request) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Integer userId = user.getId();
+        Long userId = user.getId();
         WaterIntake waterIntake = waterIntakeRepository.findById(waterIntakeId)
                 .orElseThrow(() -> new IllegalArgumentException("Water intake with provided id not found"));
 
@@ -87,11 +85,11 @@ public class WaterIntakeService {
         }
     }
 
-    public void deleteWaterIntakeById(String username, int waterIntakeId) {
+    public void deleteWaterIntakeById(String username, Long waterIntakeId) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Integer userId = user.getId();
+        Long userId = user.getId();
         WaterIntake waterIntake = waterIntakeRepository.findById(waterIntakeId)
                 .orElseThrow(() -> new IllegalArgumentException("Water intake with provided id not found"));
 

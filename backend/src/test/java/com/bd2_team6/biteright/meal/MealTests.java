@@ -1,10 +1,8 @@
 package com.bd2_team6.biteright.meal;
 
-import com.bd2_team6.biteright.entities.address.Address;
 import com.bd2_team6.biteright.entities.meal.Meal;
 import com.bd2_team6.biteright.entities.user.User;
 import com.bd2_team6.biteright.entities.meal_type.MealType;
-import com.bd2_team6.biteright.entities.meal_content.MealContent;
 import com.bd2_team6.biteright.entities.meal.MealRepository;
 import com.bd2_team6.biteright.entities.user.UserRepository;
 import com.bd2_team6.biteright.entities.meal_type.MealTypeRepository;
@@ -12,9 +10,6 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.sql.Date;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -158,9 +153,9 @@ public class MealTests {
 
         userRepository.save(user);
 
-        Integer userId = user.getId();
-        Integer meal1Id = meal1.getMealId();
-        Integer meal2Id = meal1.getMealId();
+        Long userId = user.getId();
+        Long meal1Id = meal1.getMealId();
+        Long meal2Id = meal1.getMealId();
 
         userRepository.deleteById(userId);
 
@@ -184,9 +179,9 @@ public class MealTests {
 
         mealTypeRepository.save(mealType);
 
-        Integer mealTypeId = mealType.getTypeId();
-        Integer meal1Id = meal1.getMealId();
-        Integer meal2Id = meal1.getMealId();
+        Long mealTypeId = mealType.getTypeId();
+        Long meal1Id = meal1.getMealId();
+        Long meal2Id = meal1.getMealId();
 
         mealTypeRepository.deleteById(mealTypeId);
 

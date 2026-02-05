@@ -14,7 +14,7 @@ import jakarta.persistence.*;
 public class RecipeInfo {
     @Id
     @Column(name = "recipe_id")
-    private Integer recipeId;
+    private Long recipeId;
     
     @Column(name = "recipe_name")
     private String recipeName;

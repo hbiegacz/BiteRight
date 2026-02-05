@@ -9,7 +9,7 @@ import java.util.Optional;
 
 
 @Repository
-public interface WaterIntakeRepository extends JpaRepository<WaterIntake, Integer> {
+public interface WaterIntakeRepository extends JpaRepository<WaterIntake, Long> {
     Page<WaterIntake> findByUserUsername(String username, Pageable pageable);
     Page<WaterIntake> findByUserUsernameAndIntakeDateBetween(
             String username, LocalDateTime start, LocalDateTime end, Pageable pageable);

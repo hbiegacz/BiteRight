@@ -15,7 +15,7 @@ public class UserPreferences {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_preferences_id")
-    private Integer userPreferencesId;
+    private Long userPreferencesId;
 
     @Column(name = "language")
     private String language;  

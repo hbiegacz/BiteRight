@@ -66,11 +66,11 @@ public class UserExerciseService {
     }
 
 
-    public UserExercise findExerciseById(String username, int userExerciseId) {
+    public UserExercise findExerciseById(String username, Long userExerciseId) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Integer userId = user.getId();
+        Long userId = user.getId();
         UserExercise userExercise = userExerciseRepository.findById(userExerciseId)
                 .orElseThrow(() -> new IllegalArgumentException("User's exercise with provided id not found"));
 
@@ -82,12 +82,12 @@ public class UserExerciseService {
         }
     }
 
-    public UserExercise updateUserExerciseById(String username, int userExerciseId,
+    public UserExercise updateUserExerciseById(String username, Long userExerciseId,
                                                     UserExerciseUpdateRequest request) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Integer userId = user.getId();
+        Long userId = user.getId();
         UserExercise userExercise = userExerciseRepository.findById(userExerciseId)
                 .orElseThrow(() -> new IllegalArgumentException("User's exercise with provided id not found"));
 
@@ -102,11 +102,11 @@ public class UserExerciseService {
         }
     }
 
-    public void deleteUserExerciseById(String username, int userExerciseId) {
+    public void deleteUserExerciseById(String username, Long userExerciseId) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Integer userId = user.getId();
+        Long userId = user.getId();
         UserExercise userExercise = userExerciseRepository.findById(userExerciseId)
                 .orElseThrow(() -> new IllegalArgumentException("User's exercise with provided id not found"));
 

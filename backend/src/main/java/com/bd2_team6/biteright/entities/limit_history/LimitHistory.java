@@ -19,7 +19,7 @@ public class LimitHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "history_id")
-    private Integer historyId;
+    private Long historyId;
     
     @Column(name = "date_changed")
     private LocalDate dateChanged;

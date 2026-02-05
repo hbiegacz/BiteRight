@@ -67,7 +67,7 @@ public class MealService {
         return new MealDTO(meal);
     }
 
-    public MealDTO findMealById(String username, Integer mealId) {
+    public MealDTO findMealById(String username, Long mealId) {
         Meal meal = mealRepository.findByUsernameAndMealId(username, mealId)
                 .orElseThrow(() -> new IllegalArgumentException("Meal not found"));
         return new MealDTO(meal);
@@ -109,7 +109,7 @@ public class MealService {
         return mealRepository.save(newMeal);
     }
 
-    public Meal updateMeal(String username, MealUpdateRequest request, Integer mealId) {
+    public Meal updateMeal(String username, MealUpdateRequest request, Long mealId) {
         MealType mealType = mealTypeRepository.findById(request.getMealTypeId())
                 .orElseThrow(() -> new IllegalArgumentException("Meal type not found"));
 
@@ -138,7 +138,7 @@ public class MealService {
         return mealRepository.save(newMeal);
     }
 
-    public void deleteMeal(String username, Integer mealId) {
+    public void deleteMeal(String username, Long mealId) {
         Meal meal = mealRepository.findByUsernameAndMealId(username, mealId)
                 .orElseThrow(() -> new IllegalArgumentException("Meal not found"));
         mealRepository.delete(meal);

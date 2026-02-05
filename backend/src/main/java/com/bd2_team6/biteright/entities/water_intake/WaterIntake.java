@@ -1,13 +1,12 @@
 package com.bd2_team6.biteright.entities.water_intake;
+
 import com.bd2_team6.biteright.entities.user.User;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "water_intake")
@@ -19,7 +18,7 @@ public class WaterIntake {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "water_intake_id")
-    private Integer waterIntakeId;
+    private Long waterIntakeId;
 
     @Column(name = "intake_date")
     private LocalDateTime intakeDate;

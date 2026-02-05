@@ -10,10 +10,7 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.sql.Date;
 import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -137,8 +134,8 @@ public class UserInfoTests {
         user.setUserInfo(info);
         userInfoRepository.save(info);
 
-        Integer infoId = info.getUserInfoId();
-        Integer userId = user.getId();
+        Long infoId = info.getUserInfoId();
+        Long userId = user.getId();
         userRepository.delete(user);
 
         assertFalse(userRepository.findById(userId).isPresent());
@@ -158,8 +155,8 @@ public class UserInfoTests {
         goal.setUserInfo(info);
         userInfoRepository.save(info);
 
-        Integer infoId = info.getUserInfoId();
-        Integer userGoalId = goal.getUserGoalId();
+        Long infoId = info.getUserInfoId();
+        Long userGoalId = goal.getUserGoalId();
         userGoalRepository.delete(goal);
 
 

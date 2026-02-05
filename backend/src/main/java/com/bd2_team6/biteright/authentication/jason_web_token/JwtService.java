@@ -6,26 +6,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.io.Decoders;
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import io.jsonwebtoken.Jwts;
-import java.util.Base64;
 import java.util.Date;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
     @Value("${jwt.token-valid-time}")
     private long JwtTokenValidTime;
-    public final String secretKey;
 
-    public JwtService() {
-        try {
-            KeyGenerator generator = KeyGenerator.getInstance("HmacSHA256");
-            this.secretKey = Base64.getEncoder().encodeToString(generator.generateKey().getEncoded());
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to generate secret key", e);
-        }
-    }
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     public boolean isTokenValid(String token, CustomUserDetails userDetails) {
         final String extractedEmail = extractEmail(token);

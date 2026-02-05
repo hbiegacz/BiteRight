@@ -14,16 +14,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MealDTO {
-    private Integer mealId;
+    private Long id;
     private String name;
     private String description;
     private LocalDateTime mealDate;
     private String mealTypeName;
-    private Integer mealTypeId;
+    private Long mealTypeId;
     private Set<MealContentDTO> contents;
 
     public MealDTO(Meal meal) {
-        this.mealId = meal.getMealId();
+        this.id = meal.getMealId();
         this.name = meal.getName();
         this.description = meal.getDescription();
         this.mealDate = meal.getMealDate();

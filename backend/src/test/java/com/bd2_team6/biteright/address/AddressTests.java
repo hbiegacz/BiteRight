@@ -122,9 +122,9 @@ public class AddressTests {
 
         userRepository.save(user);
 
-        Integer userId = user.getId();
-        Integer address1Id = address1.getAddressId();
-        Integer address2Id = address2.getAddressId();
+        Long userId = user.getId();
+        Long address1Id = address1.getAddressId();
+        Long address2Id = address2.getAddressId();
 
         userRepository.deleteById(userId);
 

@@ -18,7 +18,7 @@ public class ExerciseInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "exercise_id")
-    private Integer exerciseId;
+    private Long exerciseId;
 
     @Column(name = "metabolic_equivalent")
     private Float metabolicEquivalent;

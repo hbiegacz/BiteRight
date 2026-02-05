@@ -1,7 +1,7 @@
 package com.bd2_team6.biteright.entities.user;
+
 import com.bd2_team6.biteright.entities.address.Address;
 import com.bd2_team6.biteright.entities.daily_limits.DailyLimits;
-import com.bd2_team6.biteright.entities.daily_summary.DailySummary;
 import com.bd2_team6.biteright.entities.limit_history.LimitHistory;
 import com.bd2_team6.biteright.entities.meal.Meal;
 import com.bd2_team6.biteright.entities.user_exercise.UserExercise;
@@ -33,7 +33,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "username")
     private String username;

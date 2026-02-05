@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DailySummaryRepository extends JpaRepository<DailySummary, DailySummaryId> {
-    Optional<DailySummary> findByUserIdAndSummaryDate(Integer userId, LocalDate summaryDate);
+    Optional<DailySummary> findByUserIdAndSummaryDate(Long userId, LocalDate summaryDate);
     
-    List<DailySummary> findByUserIdAndSummaryDateBetween(Integer userId, LocalDate startDate, LocalDate endDate);
+    List<DailySummary> findByUserIdAndSummaryDateBetween(Long userId, LocalDate startDate, LocalDate endDate);
 }

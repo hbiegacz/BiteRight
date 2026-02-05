@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExerciseInfoDTO {
-    private Integer exerciseId;
+    private Long exerciseId;
     private Float metabolicEquivalent;
     private String name;
 

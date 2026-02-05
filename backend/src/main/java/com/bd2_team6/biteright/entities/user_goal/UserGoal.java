@@ -1,15 +1,11 @@
 package com.bd2_team6.biteright.entities.user_goal;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
+import java.time.LocalDate;
 import com.bd2_team6.biteright.entities.user_info.UserInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.cglib.core.Local;
 
 @Entity
 @Table(name = "user_goal")
@@ -20,7 +16,7 @@ public class UserGoal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_goal_id")
-    private Integer userGoalId;
+    private Long userGoalId;
 
     @Column(name = "goal_type")
     private String goalType;

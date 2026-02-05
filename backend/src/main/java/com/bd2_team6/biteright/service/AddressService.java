@@ -45,11 +45,11 @@ public class AddressService {
         return addressRepository.save(newAddress);
     }
 
-    public Address updateAddress(String username, AddressUpdateRequest request, Integer addressId) {
+    public Address updateAddress(String username, AddressUpdateRequest request, Long addressId) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Integer userId = user.getId();
+        Long userId = user.getId();
         Address address = addressRepository.findById(addressId)
                 .orElseThrow(() -> new IllegalArgumentException("Address with provided id not found"));
 
@@ -66,11 +66,12 @@ public class AddressService {
         
         return address;
     }
-    public void deleteAddressById(String username, Integer addressId) {
+
+    public void deleteAddressById(String username, Long addressId) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Integer userId = user.getId();
+        Long userId = user.getId();
         Address address = addressRepository.findById(addressId)
                 .orElseThrow(() -> new IllegalArgumentException("Address with provided id not found"));
 

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class IngredientDTO {
-    private Integer ingredientId;
+    private Long id;
     private String name;
     private String brand;
     private Integer portionSize;
@@ -20,7 +20,7 @@ public class IngredientDTO {
     private Integer carbs;
 
     public IngredientDTO(Ingredient ingredient) {
-        this.ingredientId = ingredient.getIngredientId();
+        this.id = ingredient.getIngredientId();
         this.name = ingredient.getName();
         this.brand = ingredient.getBrand();
         this.portionSize = ingredient.getPortionSize();

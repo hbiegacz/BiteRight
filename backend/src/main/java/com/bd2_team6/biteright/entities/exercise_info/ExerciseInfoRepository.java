@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ExerciseInfoRepository  extends JpaRepository<ExerciseInfo, Integer> {
+public interface ExerciseInfoRepository extends JpaRepository<ExerciseInfo, Long> {
     Set<ExerciseInfo> findByNameContainingIgnoreCase(String name);
     Optional<ExerciseInfo> findByName(String name);
 }

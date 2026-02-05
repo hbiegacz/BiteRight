@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ExerciseInfoController {
     private final ExerciseInfoService exerciseInfoService;
+    private static final Logger logger = LoggerFactory.getLogger(ExerciseInfoController.class);
 
     @GetMapping("/find/{name}")
     public ResponseEntity<?> findExerciseInfo(@PathVariable("name") String exerciseName) {
@@ -24,6 +27,7 @@ public class ExerciseInfoController {
             Set<ExerciseInfoDTO> info = exerciseInfoService.findExerciseInfoByName(exerciseName);
             return ResponseEntity.ok(info);
         } catch (IllegalArgumentException e) {
+            logger.error("Error finding exercise info.\n" + e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }
@@ -34,6 +38,7 @@ public class ExerciseInfoController {
             ExerciseInfo newInfo = exerciseInfoService.createExerciseInfo(request);
             return ResponseEntity.ok(newInfo);
         } catch (IllegalArgumentException e) {
+            logger.error("Error creating exercise info.\n" + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -44,6 +49,7 @@ public class ExerciseInfoController {
             ExerciseInfo updatedInfo = exerciseInfoService.updateExerciseInfo(exerciseName, request);
             return ResponseEntity.ok(updatedInfo);
         } catch (IllegalArgumentException e) {
+            logger.error("Error updating exercise info.\n" + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -54,6 +60,7 @@ public class ExerciseInfoController {
             exerciseInfoService.deleteExerciseInfo(exerciseName);
             return ResponseEntity.ok("Exercise info delete successfully");
         } catch (IllegalArgumentException e) {
+            logger.error("Error deleting exercise info.\n" + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

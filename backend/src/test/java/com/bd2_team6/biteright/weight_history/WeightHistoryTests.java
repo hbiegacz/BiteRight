@@ -8,10 +8,7 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -100,8 +97,8 @@ public class WeightHistoryTests {
         user.getWeightHistories().add(weightHistory);
         userRepository.save(user);
 
-        Integer userId = user.getId();
-        Integer weightId = weightHistory.getWeightId();
+        Long userId = user.getId();
+        Long weightId = weightHistory.getWeightId();
 
         userRepository.deleteById(userId);
 

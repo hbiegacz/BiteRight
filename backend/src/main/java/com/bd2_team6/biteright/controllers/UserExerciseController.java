@@ -18,7 +18,8 @@ import com.bd2_team6.biteright.service.UserExerciseService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 
 @RestController
@@ -27,6 +28,7 @@ import java.time.LocalDate;
 public class UserExerciseController {
     private final UserExerciseService userExerciseService;
     private final UserRepository userRepository;
+    private static final Logger logger = LoggerFactory.getLogger(UserExerciseController.class);
 
     @PostMapping("/create")
     public ResponseEntity<?> createUserExercise(Authentication authentication,
@@ -37,6 +39,10 @@ public class UserExerciseController {
             return ResponseEntity.ok(mapToDTO(userExercise));
         }
         catch (IllegalArgumentException e){
+            logger.error("Error creating user exercise." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error creating user exercise." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -57,6 +63,10 @@ public class UserExerciseController {
             return ResponseEntity.ok(mapToDTOPage(userExercises));
         }
         catch (IllegalArgumentException e){
+            logger.error("Error finding user exercises for user." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error finding user exercises for user." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -78,6 +88,10 @@ public class UserExerciseController {
             Page<UserExercise> userExercises = userExerciseService.findUserExercisesByDate(username, date, pageable);
             return ResponseEntity.ok(mapToDTOPage(userExercises));
         } catch (IllegalArgumentException e) {
+            logger.error("Error finding user exercises by date." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error finding user exercises by date." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -91,25 +105,33 @@ public class UserExerciseController {
             return ResponseEntity.ok(mapToDTO(userExercise));
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error finding last user exercise by date." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error finding last user exercise by date." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/findExerciseById/{id}")
-    public ResponseEntity<?> findExerciseById(Authentication authentication, @PathVariable("id") int userExerciseId) {
+    public ResponseEntity<?> findExerciseById(Authentication authentication, @PathVariable("id") Long userExerciseId) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             UserExercise userExercise = userExerciseService.findExerciseById(username, userExerciseId);
             return ResponseEntity.ok(mapToDTO(userExercise));
         }
         catch (IllegalArgumentException e){
+            logger.error("Error finding user exercise by id." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error finding user exercise by id." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateExerciseById(Authentication authentication,
-                                                   @PathVariable("id") int userExerciseId,
+            @PathVariable("id") Long userExerciseId,
                                                    @RequestBody UserExerciseUpdateRequest request) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
@@ -118,18 +140,26 @@ public class UserExerciseController {
             return ResponseEntity.ok(mapToDTO(updatedUserExercise));
         }
         catch (IllegalArgumentException e){
+            logger.error("Error updating user exercise by id." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error updating user exercise by id." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteExercise(Authentication authentication, @PathVariable("id") int userExerciseId) {
+    public ResponseEntity<?> deleteExercise(Authentication authentication, @PathVariable("id") Long userExerciseId) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             userExerciseService.deleteUserExerciseById(username, userExerciseId);
             return ResponseEntity.ok("User exercise deleted successfully");
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error deleting user exercise by id." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error deleting user exercise by id." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

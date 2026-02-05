@@ -6,6 +6,9 @@ import com.bd2_team6.biteright.entities.user.UserRepository;
 import com.bd2_team6.biteright.entities.user_goal.UserGoal;
 import com.bd2_team6.biteright.service.UserGoalService;
 import lombok.RequiredArgsConstructor;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/userGoal")
 @RequiredArgsConstructor
 public class UserGoalController {
+    private static final Logger logger = LoggerFactory.getLogger(UserGoalController.class);
 
     private final UserGoalService userGoalService;
     private final UserRepository userRepository;
@@ -29,6 +33,10 @@ public class UserGoalController {
             return ResponseEntity.ok(userGoalDTO);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error finding user goal." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error finding user goal." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -43,6 +51,10 @@ public class UserGoalController {
             return ResponseEntity.ok(userGoalDTO);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error updating user goal." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error updating user goal." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

@@ -7,6 +7,9 @@ import com.bd2_team6.biteright.entities.user.UserRepository;
 import com.bd2_team6.biteright.entities.weight_history.WeightHistory;
 import com.bd2_team6.biteright.service.WeightHistoryService;
 import lombok.RequiredArgsConstructor;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +25,7 @@ import java.time.LocalDate;
 @RequestMapping("/weightHistory")
 @RequiredArgsConstructor
 public class WeightHistoryController {
-
+    private static final Logger logger = LoggerFactory.getLogger(WeightHistoryController.class);
     private final WeightHistoryService weightHistoryService;
     private final UserRepository userRepository;
 
@@ -35,6 +38,10 @@ public class WeightHistoryController {
             return ResponseEntity.ok(mapToDTO(weightHistory));
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error creating weight history." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error creating weight history." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -55,6 +62,10 @@ public class WeightHistoryController {
             return ResponseEntity.ok(mapToDTOPage(weightHistories));
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error finding weight histories for user." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error finding weight histories for user." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -76,6 +87,10 @@ public class WeightHistoryController {
             Page<WeightHistory> weightHistories = weightHistoryService.findWeightHistoriesByDate(username, date, pageable);
             return ResponseEntity.ok(mapToDTOPage(weightHistories));
         } catch (IllegalArgumentException e) {
+            logger.error("Error finding weight histories by date." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error finding weight histories by date." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -88,25 +103,34 @@ public class WeightHistoryController {
             return ResponseEntity.ok(mapToDTO(weightHistory));
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error finding last weight history." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error finding last weight history." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/findWeightHistoryById/{id}")
-    public ResponseEntity<?> findWeightHistoryById(Authentication authentication, @PathVariable("id") int weightHistoryId) {
+    public ResponseEntity<?> findWeightHistoryById(Authentication authentication,
+            @PathVariable("id") Long weightHistoryId) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             WeightHistory weightHistory = weightHistoryService.findWeightHistoryById(username, weightHistoryId);
             return ResponseEntity.ok(mapToDTO(weightHistory));
         }
         catch (IllegalArgumentException e){
+            logger.error("Error finding weight history by id." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error finding weight history by id." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateWeightHistoryById(Authentication authentication,
-                                                   @PathVariable("id") int weightHistoryId,
+            @PathVariable("id") Long weightHistoryId,
                                                    @RequestBody WeightHistoryUpdateRequest request) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
@@ -115,19 +139,28 @@ public class WeightHistoryController {
             return ResponseEntity.ok(mapToDTO(weightHistory));
         }
         catch (IllegalArgumentException e){
+            logger.error("Error updating weight history by id." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error updating weight history by id." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteWeightHistory(Authentication authentication, @PathVariable("id") int weightHistoryId) {
+    public ResponseEntity<?> deleteWeightHistory(Authentication authentication,
+            @PathVariable("id") Long weightHistoryId) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             weightHistoryService.deleteWeightHistoryById(username, weightHistoryId);
             return ResponseEntity.ok("Weight history deleted successfully");
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error deleting weight history by id." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error deleting weight history by id." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

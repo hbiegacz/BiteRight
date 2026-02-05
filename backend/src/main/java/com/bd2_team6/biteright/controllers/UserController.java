@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/user")
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/find")
     public ResponseEntity<?> findUser(Authentication authentication) {
@@ -30,6 +33,10 @@ public class UserController {
             return ResponseEntity.ok(mapToDTO(user));
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error finding user." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error finding user." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

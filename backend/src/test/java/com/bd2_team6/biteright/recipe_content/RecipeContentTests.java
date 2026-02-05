@@ -6,7 +6,6 @@ import com.bd2_team6.biteright.entities.ingredient.IngredientRepository;
 import com.bd2_team6.biteright.entities.recipe.RecipeRepository;
 import com.bd2_team6.biteright.entities.recipe_content.RecipeContent;
 import com.bd2_team6.biteright.entities.recipe_content.RecipeContentRepository;
-import com.bd2_team6.biteright.entities.user.User;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,9 +182,9 @@ public class RecipeContentTests {
         recipe.getRecipeContents().add(recipeContent2);
         recipeRepository.save(recipe);
 
-        Integer recipeId = recipe.getRecipeId();
-        Integer recipeContent1Id = recipeContent1.getRecipeContentId();
-        Integer recipeContent2Id = recipeContent2.getRecipeContentId();
+        Long recipeId = recipe.getRecipeId();
+        Long recipeContent1Id = recipeContent1.getRecipeContentId();
+        Long recipeContent2Id = recipeContent2.getRecipeContentId();
 
         recipeRepository.deleteById(recipeId);
 
@@ -208,9 +207,9 @@ public class RecipeContentTests {
         ingredient.getRecipeContents().add(recipeContent2);
         ingredientRepository.save(ingredient);
 
-        Integer ingredientId = ingredient.getIngredientId();
-        Integer recipeContent1Id = recipeContent1.getRecipeContentId();
-        Integer recipeContent2Id = recipeContent2.getRecipeContentId();
+        Long ingredientId = ingredient.getIngredientId();
+        Long recipeContent1Id = recipeContent1.getRecipeContentId();
+        Long recipeContent2Id = recipeContent2.getRecipeContentId();
 
         ingredientRepository.deleteById(ingredientId);
 

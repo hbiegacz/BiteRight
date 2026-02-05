@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface RecipeRepository extends JpaRepository<Recipe, Integer> {
+public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     Set<Recipe> findByNameContainingIgnoreCase(String name);
     Optional<Recipe> findByName(String name);
 }

@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Repository
-public interface IngredientRepository extends JpaRepository<Ingredient, Integer> {
+public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
     Set<Ingredient> findByNameContainingIgnoreCase(String name);
     Optional<Ingredient> findByName(String name);
 }

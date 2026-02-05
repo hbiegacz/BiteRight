@@ -7,7 +7,8 @@ import com.bd2_team6.biteright.entities.daily_limits.DailyLimits;
 import com.bd2_team6.biteright.entities.user.UserRepository;
 import com.bd2_team6.biteright.service.DailyLimitsService;
 import lombok.RequiredArgsConstructor;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/dailyLimits")
 @RequiredArgsConstructor
 public class DailyLimitsController {
+    private static final Logger logger = LoggerFactory.getLogger(DailyLimitsController.class);
     private final DailyLimitsService dailyLimitsService;
     private final UserRepository userRepository;
 
@@ -31,6 +33,7 @@ public class DailyLimitsController {
             return ResponseEntity.ok(dailyLimitsDTO);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error finding daily limits.\n" + e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }
@@ -46,6 +49,7 @@ public class DailyLimitsController {
             return ResponseEntity.ok(newDailyLimitsDTO);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error creating daily limits.\n" + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -61,6 +65,7 @@ public class DailyLimitsController {
             return ResponseEntity.ok(updatedDailyLimitsDTO);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error updating daily limits.\n" + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

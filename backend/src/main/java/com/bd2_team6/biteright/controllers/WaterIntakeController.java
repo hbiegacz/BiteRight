@@ -1,15 +1,15 @@
 package com.bd2_team6.biteright.controllers;
 
-import com.bd2_team6.biteright.controllers.DTO.UserPreferencesDTO;
 import com.bd2_team6.biteright.controllers.DTO.WaterIntakeDTO;
 import com.bd2_team6.biteright.controllers.requests.create_requests.WaterIntakeCreateRequest;
-import com.bd2_team6.biteright.controllers.requests.update_requests.UserPreferencesUpdateRequest;
 import com.bd2_team6.biteright.controllers.requests.update_requests.WaterIntakeUpdateRequest;
 import com.bd2_team6.biteright.entities.user.UserRepository;
-import com.bd2_team6.biteright.entities.user_preferences.UserPreferences;
 import com.bd2_team6.biteright.entities.water_intake.WaterIntake;
 import com.bd2_team6.biteright.service.WaterIntakeService;
 import lombok.RequiredArgsConstructor;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +24,7 @@ import java.time.LocalDate;
 @RequestMapping("/waterIntake")
 @RequiredArgsConstructor
 public class WaterIntakeController {
-
+    private static final Logger logger = LoggerFactory.getLogger(WaterIntakeController.class);
     private final WaterIntakeService waterIntakeService;
     private final UserRepository userRepository;
 
@@ -37,6 +37,10 @@ public class WaterIntakeController {
             return ResponseEntity.ok(mapToDTO(waterIntake));
         }
         catch (IllegalArgumentException e){
+            logger.error("Error creating water intake." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error creating water intake." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -57,6 +61,10 @@ public class WaterIntakeController {
             return ResponseEntity.ok(mapToDTOPage(waterIntakes));
         }
         catch (IllegalArgumentException e){
+            logger.error("Error finding water intakes for user." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error finding water intakes for user." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -78,6 +86,10 @@ public class WaterIntakeController {
             Page<WaterIntake> waterIntakes = waterIntakeService.findWaterIntakesByDate(username, date, pageable);
             return ResponseEntity.ok(mapToDTOPage(waterIntakes));
         } catch (IllegalArgumentException e) {
+            logger.error("Error finding water intakes by date." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error finding water intakes by date." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -91,25 +103,34 @@ public class WaterIntakeController {
             return ResponseEntity.ok(mapToDTO(waterIntake));
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error finding last water intake." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error finding last water intake." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/findWaterIntakeById/{id}")
-    public ResponseEntity<?> findWaterIntakeById(Authentication authentication, @PathVariable("id") int waterIntakeId) {
+    public ResponseEntity<?> findWaterIntakeById(Authentication authentication,
+            @PathVariable("id") Long waterIntakeId) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             WaterIntake waterIntake = waterIntakeService.findWaterIntakeById(username, waterIntakeId);
             return ResponseEntity.ok(mapToDTO(waterIntake));
         }
         catch (IllegalArgumentException e){
+            logger.error("Error finding water intake by id." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error finding water intake by id." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateWaterIntakeById(Authentication authentication,
-                                                   @PathVariable("id") int waterIntakeId,
+            @PathVariable("id") Long waterIntakeId,
                                                    @RequestBody WaterIntakeUpdateRequest request) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
@@ -117,18 +138,26 @@ public class WaterIntakeController {
             return ResponseEntity.ok(mapToDTO(updatedWaterIntake));
         }
         catch (IllegalArgumentException e){
+            logger.error("Error updating water intake by id." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error updating water intake by id." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteWaterIntake(Authentication authentication, @PathVariable("id") int waterIntakeId) {
+    public ResponseEntity<?> deleteWaterIntake(Authentication authentication, @PathVariable("id") Long waterIntakeId) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             waterIntakeService.deleteWaterIntakeById(username, waterIntakeId);
             return ResponseEntity.ok("Water intake deleted successfully");
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error deleting water intake by id." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error deleting water intake by id." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

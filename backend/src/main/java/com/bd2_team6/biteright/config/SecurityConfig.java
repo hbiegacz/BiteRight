@@ -78,7 +78,8 @@ public class SecurityConfig {
                         "/api/auth/verifyuser",
                         "/api/auth/forgottenpassword/**",
                         "/api/auth/forgottenpassword/{email}",
-                        "/api/auth/resetforgottenpassword")
+                                "/api/auth/resetforgottenpassword",
+                                "/api/auth/check-availability")
                         .permitAll()
                     .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())

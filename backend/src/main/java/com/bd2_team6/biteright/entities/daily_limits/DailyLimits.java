@@ -2,7 +2,6 @@ package com.bd2_team6.biteright.entities.daily_limits;
 
 import com.bd2_team6.biteright.entities.user.User;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +16,7 @@ public class DailyLimits {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "daily_limit_id")
-    private Integer dailyLimitId;
+    private Long dailyLimitId;
 
     @Column(name = "calorie_limit")
     private Integer calorieLimit;
