@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { isAuthenticated, removeToken } from "@/lib/auth"
 import { NoiseOverlay } from "@/components/noise-overlay"
 import { BotanicalPattern } from "@/components/botanical-pattern"
@@ -63,7 +64,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
             <Leaf className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="text-xl font-bold text-foreground">BiteRight</span>
+          <span className="sr-only">BiteRight</span>
+          <Image
+            src="/biteright-logo-black.png"
+            alt="BiteRight Logo"
+            width={120}
+            height={50}
+            className="h-8 w-auto object-contain"
+          />
         </Link>
         <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(!sidebarOpen)}>
           {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -90,7 +98,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
             <Leaf className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="text-xl font-bold text-foreground">BiteRight</span>
+          <span className="sr-only">BiteRight</span>
+          <Image
+            src="/biteright-logo-black.png"
+            alt="BiteRight Logo"
+            width={120}
+            height={50}
+            className="h-8 w-auto object-contain"
+          />
         </div>
 
         {/* Navigation */}

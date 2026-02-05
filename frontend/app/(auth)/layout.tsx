@@ -17,8 +17,8 @@ export default function AuthLayout({
         <div className="relative hidden w-1/2 lg:block">
           {/* Full-bleed food image */}
           <Image
-            src="/images/food-collage.jpg"
-            alt="Healthy food collage"
+            src="/images/login-photo.jpg"
+            alt="Healthy breakfast"
             fill
             className="object-cover"
             priority
@@ -32,7 +32,14 @@ export default function AuthLayout({
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-foreground/20 backdrop-blur-sm">
                 <Leaf className="h-6 w-6 text-primary-foreground" />
               </div>
-              <span className="text-2xl font-bold text-primary-foreground drop-shadow-md">BiteRight</span>
+              <span className="sr-only">BiteRight</span>
+              <Image
+                src="/biteright-logo-black.png"
+                alt="BiteRight Logo"
+                width={160}
+                height={50}
+                className="h-11 w-auto object-contain brightness-0 invert"
+              />
             </Link>
           </div>
 
@@ -52,7 +59,14 @@ export default function AuthLayout({
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
                   <Leaf className="h-5 w-5 text-primary-foreground" />
                 </div>
-                <span className="text-xl font-bold text-foreground">BiteRight</span>
+                <span className="sr-only">BiteRight</span>
+                <Image
+                  src="/biteright-logo-black.png"
+                  alt="BiteRight Logo"
+                  width={140}
+                  height={50}
+                  className="h-8 w-auto object-contain"
+                />
               </Link>
             </div>
             {children}
