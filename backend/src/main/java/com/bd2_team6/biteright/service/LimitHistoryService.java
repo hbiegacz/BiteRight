@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class LimitHistoryService {
     private final UserRepository userRepository;
-    private final LimitHistoryRepository limitHistoryRepository;
+    private final LimitHistoryRepository limitHistoryRepository; // TODO: remove this
 
     @Autowired
     public LimitHistoryService(UserRepository userRepository, LimitHistoryRepository limitHistoryRepository) {

@@ -2,7 +2,6 @@ package com.bd2_team6.biteright.recipe;
 
 import com.bd2_team6.biteright.entities.recipe.Recipe;
 import com.bd2_team6.biteright.entities.recipe.RecipeRepository;
-import com.bd2_team6.biteright.entities.recipe_content.RecipeContent;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

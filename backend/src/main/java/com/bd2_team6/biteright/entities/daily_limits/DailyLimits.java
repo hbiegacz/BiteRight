@@ -2,7 +2,6 @@ package com.bd2_team6.biteright.entities.daily_limits;
 
 import com.bd2_team6.biteright.entities.user.User;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

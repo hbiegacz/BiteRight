@@ -9,10 +9,8 @@ import com.bd2_team6.biteright.entities.water_intake.WaterIntakeRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 
 @Service
 public class WaterIntakeService {

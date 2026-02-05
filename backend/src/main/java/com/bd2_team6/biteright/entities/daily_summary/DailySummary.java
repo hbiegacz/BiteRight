@@ -1,14 +1,11 @@
 package com.bd2_team6.biteright.entities.daily_summary;
-import com.bd2_team6.biteright.entities.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.Immutable;
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Immutable

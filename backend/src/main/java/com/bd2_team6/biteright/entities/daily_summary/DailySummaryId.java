@@ -1,7 +1,6 @@
 package com.bd2_team6.biteright.entities.daily_summary;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;

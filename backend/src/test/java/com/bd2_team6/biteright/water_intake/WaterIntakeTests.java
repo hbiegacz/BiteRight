@@ -1,7 +1,5 @@
 package com.bd2_team6.biteright.water_intake;
 
-import com.bd2_team6.biteright.entities.meal.Meal;
-import com.bd2_team6.biteright.entities.meal_type.MealType;
 import com.bd2_team6.biteright.entities.user.User;
 import com.bd2_team6.biteright.entities.user.UserRepository;
 import com.bd2_team6.biteright.entities.water_intake.WaterIntake;
@@ -10,9 +8,7 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;

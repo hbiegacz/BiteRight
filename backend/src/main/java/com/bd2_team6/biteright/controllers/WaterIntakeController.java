@@ -1,12 +1,9 @@
 package com.bd2_team6.biteright.controllers;
 
-import com.bd2_team6.biteright.controllers.DTO.UserPreferencesDTO;
 import com.bd2_team6.biteright.controllers.DTO.WaterIntakeDTO;
 import com.bd2_team6.biteright.controllers.requests.create_requests.WaterIntakeCreateRequest;
-import com.bd2_team6.biteright.controllers.requests.update_requests.UserPreferencesUpdateRequest;
 import com.bd2_team6.biteright.controllers.requests.update_requests.WaterIntakeUpdateRequest;
 import com.bd2_team6.biteright.entities.user.UserRepository;
-import com.bd2_team6.biteright.entities.user_preferences.UserPreferences;
 import com.bd2_team6.biteright.entities.water_intake.WaterIntake;
 import com.bd2_team6.biteright.service.WaterIntakeService;
 import lombok.RequiredArgsConstructor;

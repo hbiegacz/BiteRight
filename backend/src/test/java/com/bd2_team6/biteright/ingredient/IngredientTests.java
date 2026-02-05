@@ -1,8 +1,6 @@
 package com.bd2_team6.biteright.ingredient;
 
 import com.bd2_team6.biteright.entities.ingredient.Ingredient;
-import com.bd2_team6.biteright.entities.meal_content.MealContent;
-import com.bd2_team6.biteright.entities.recipe_content.RecipeContent;
 import com.bd2_team6.biteright.entities.ingredient.IngredientRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;

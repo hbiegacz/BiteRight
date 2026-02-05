@@ -6,7 +6,6 @@ import com.bd2_team6.biteright.entities.ingredient.IngredientRepository;
 import com.bd2_team6.biteright.entities.recipe.RecipeRepository;
 import com.bd2_team6.biteright.entities.recipe_content.RecipeContent;
 import com.bd2_team6.biteright.entities.recipe_content.RecipeContentRepository;
-import com.bd2_team6.biteright.entities.user.User;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,6 @@ package com.bd2_team6.biteright.exercise_info;
 
 import com.bd2_team6.biteright.entities.exercise_info.ExerciseInfo;
 import com.bd2_team6.biteright.entities.exercise_info.ExerciseInfoRepository;
-import com.bd2_team6.biteright.entities.user_exercise.UserExercise;
 import com.bd2_team6.biteright.entities.user_exercise.UserExerciseRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
