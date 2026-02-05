@@ -303,7 +303,9 @@ export async function getLastWaterIntake(): Promise<WaterIntake | null> {
 
 export async function addWaterIntake(waterAmount: number, intakeDate: string): Promise<WaterIntake | null> {
   try {
-    const response = await authFetch("/waterIntake/create", {
+    const dateToSend = intakeDate.length === 10 ? `${intakeDate}T00:00:00` : intakeDate
+
+      body: JSON.stringify({ waterAmount, intakeDate: dateToSend }),
       method: "POST",
       body: JSON.stringify({ waterAmount, intakeDate }),
     })
@@ -311,7 +313,8 @@ export async function addWaterIntake(waterAmount: number, intakeDate: string): P
       return await response.json()
     }
     return null
-  } catch {
+  } catch (error) {
+    console.error("Error adding water intake:", error)
     return null
   }
 }
@@ -344,7 +347,9 @@ export async function getLastWeight(): Promise<WeightHistory | null> {
 
 export async function addWeight(weight: number, measurementDate: string): Promise<WeightHistory | null> {
   try {
-    const response = await authFetch("/weightHistory/create", {
+    const dateToSend = measurementDate.length === 10 ? `${measurementDate}T00:00:00` : measurementDate
+
+      body: JSON.stringify({ weight, measurementDate: dateToSend }),
       method: "POST",
       body: JSON.stringify({ weight, measurementDate }),
     })
