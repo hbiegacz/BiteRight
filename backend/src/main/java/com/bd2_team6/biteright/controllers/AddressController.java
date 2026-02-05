@@ -6,9 +6,9 @@ import com.bd2_team6.biteright.entities.address.Address;
 import com.bd2_team6.biteright.entities.user.UserRepository;
 import com.bd2_team6.biteright.service.AddressService;
 import lombok.RequiredArgsConstructor;
-
 import java.util.Set;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/address")
 @RequiredArgsConstructor
 public class AddressController {
+    private static final Logger logger = LoggerFactory.getLogger(AddressController.class);
     private final AddressService addressService;
     private final UserRepository userRepository;
 
@@ -29,6 +30,7 @@ public class AddressController {
             return ResponseEntity.ok(addresses);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error finding addresses for user {}: {}", username, e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }
@@ -42,6 +44,7 @@ public class AddressController {
             return ResponseEntity.ok(newAddress);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error creating address for user {}: {}", username, e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -56,6 +59,7 @@ public class AddressController {
             return ResponseEntity.ok(updatedAddress);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error updating address for user {}: {}", username, e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -69,6 +73,7 @@ public class AddressController {
             return ResponseEntity.ok("Address deleted successfully");
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error deleting address for user {}: {}", username, e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

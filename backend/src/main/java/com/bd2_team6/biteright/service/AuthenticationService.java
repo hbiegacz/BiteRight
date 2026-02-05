@@ -22,11 +22,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
+    private final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
     private final UserRepository userRepository;
     private final UserGoalRepository userGoalRepository;
     private final UserInfoRepository userInfoRepository;
@@ -198,18 +201,22 @@ public class AuthenticationService {
 
     private void validateUsername(String username) throws Exception {
         if (username == null || username.trim().isEmpty()) {
+            logger.error("Username cannot be empty.");
             throw new Exception("Username cannot be empty.");
         }
         if (username.length() < 3 || username.length() > 50) {
+            logger.error("Username must be between 3 and 50 characters.");
             throw new Exception("Username must be between 3 and 50 characters.");
         }
     }
 
     private void validatePassword(String password) throws Exception {
         if (password == null || password.isEmpty()) {
+            logger.error("Password cannot be empty.");
             throw new Exception("Password cannot be empty.");
         }
         if (password.length() < 6) {
+            logger.error("Password must be at least 6 characters long.");
             throw new Exception("Password must be at least 6 characters long.");
         }
     }
@@ -224,6 +231,7 @@ public class AuthenticationService {
             if (userByUsername.isPresent()) {
                 usernameAvailable = false;
                 message = "Username already taken.";
+                logger.error("Username already taken.");
             }
         }
 
@@ -236,6 +244,7 @@ public class AuthenticationService {
                 } else {
                     message = "Email already registered.";
                 }
+                logger.error("Email already registered.");
             }
         }
 
@@ -248,20 +257,28 @@ public class AuthenticationService {
     
     public void loginUser(String email, String password) throws Exception {
         Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty())
+        if (user.isEmpty()) {
+            logger.error("User with email " + email + " not found.");
             throw new Exception("User with email "+ email + " not found.");
+        }
 
-        if (!user.get().getIsVerified()) 
+        if (!user.get().getIsVerified()) {
+            logger.error("User with email " + email
+                    + " is not verified. Please check your email for the verification link.");
             throw new Exception("User with email " + email + " is not verified. Please check your email for the verification link.");
+            // TODO: RESEND VERIFICATION EMAIL
+        }
 
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password)); 
         if (auth == null || !auth.isAuthenticated()) throw new Exception("Invalid password.");
-        else System.out.println("User authenticated successfully.");
+        else
+            logger.info("User authenticated successfully.");
     }
 
     public void validateEmail(String email) throws Exception {
         String correctRegex = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
         if (email == null || !email.matches(correctRegex)) {
+            logger.error("Invalid email");
             throw new Exception("Invalid email");
         }
     }
@@ -304,7 +321,7 @@ public class AuthenticationService {
         
         user.setIsVerified(true);
         userRepository.save(user);
-        System.out.println("User with email " + email + " verified successfully.");
+        logger.info("User with email " + email + " verified successfully.");
     }
 
     public void changeUsername(String email, String newUsername) throws Exception {
@@ -314,7 +331,6 @@ public class AuthenticationService {
         User user = userOpt.get();
         user.setUsername(newUsername);
         userRepository.save(user);
-        System.out.println("Email for user with email " + email + " changed to " + newUsername + ".");
     }
     
     public void changeEmail(String email, String newEmail) throws Exception {
@@ -325,7 +341,7 @@ public class AuthenticationService {
         validateEmail(newEmail);
         user.setEmail(newEmail);
         userRepository.save(user);
-        System.out.println("Email for user with email " + email + " changed to " + newEmail + ".");
+        logger.info("Email for user with email " + email + " changed to " + newEmail + ".");
     }
 
     public void changePassword(String email, String oldPassword,  String newPassword) throws Exception {
@@ -342,7 +358,7 @@ public class AuthenticationService {
         String newHashedPassword = passwordEncoder.encode(newPassword);
         user.setPasswordHash(newHashedPassword);
         userRepository.save(user);
-        System.out.println("Password for user with email " + email + " changed successfully.");
+        logger.info("Password for user with email " + email + " changed successfully.");
     }
 
     public void manageForgottenPassword(String email) throws RuntimeException {
@@ -359,8 +375,10 @@ public class AuthenticationService {
             throw new RuntimeException("User with email " + email +" was not found.");
         User user = userOpt.get();
 
-        if (!ForgottenPasswordCode.equals(user.getForgottenPasswordCode()))
-            throw new RuntimeException("Incorrect reset code provided.\n");
+        if (!ForgottenPasswordCode.equals(user.getForgottenPasswordCode())) {
+            logger.error("Incorrect reset code provided for user with email " + email + ".");
+            throw new RuntimeException("Incorrect reset code provided.");
+        }
     }
 
     public void resetForgottenPassword(String email, String newPassword) {
@@ -371,6 +389,6 @@ public class AuthenticationService {
         user.setPasswordHash(passwordEncoder.encode(newPassword));
         user.regeneratePasswordCode();
         userRepository.save(user);
-        System.out.println("Succesfully changed user's password.\n");
+        logger.info("Successfully changed user's password.");
     }
 }

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/recipeContent")
 @RequiredArgsConstructor
 public class RecipeContentController {
+    private static final Logger logger = LoggerFactory.getLogger(RecipeContentController.class);
     private final RecipeContentService recipeContentService;
 
     @GetMapping("/findByName/{name}")
@@ -33,7 +36,11 @@ public class RecipeContentController {
             return ResponseEntity.ok(recipeContent);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error finding recipe content by name." + e.getMessage());
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            logger.error("Error finding recipe content by name." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -44,7 +51,11 @@ public class RecipeContentController {
             return ResponseEntity.ok(recipeContent);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error finding recipe content by id." + e.getMessage());
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            logger.error("Error finding recipe content by id." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -55,6 +66,10 @@ public class RecipeContentController {
             return ResponseEntity.ok(recipeContent);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error adding recipe content." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error adding recipe content." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -67,6 +82,10 @@ public class RecipeContentController {
             return ResponseEntity.ok(recipeContent);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error updating recipe content." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error updating recipe content." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -76,8 +95,11 @@ public class RecipeContentController {
         try {
             recipeContentService.deleteRecipeContent(id);
             return ResponseEntity.ok("Recipe content successfully deleted");
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
+            logger.error("Error deleting recipe content." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error deleting recipe content." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

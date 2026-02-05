@@ -6,6 +6,9 @@ import com.bd2_team6.biteright.entities.user.UserRepository;
 import com.bd2_team6.biteright.entities.user_info.UserInfo;
 import com.bd2_team6.biteright.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/userInfo")
 @RequiredArgsConstructor
 public class UserInfoController {
-
+    private static final Logger logger = LoggerFactory.getLogger(UserInfoController.class);
     private final UserInfoService userInfoService;
     private final UserRepository userRepository;
 
@@ -28,7 +31,11 @@ public class UserInfoController {
                     userInfo.getAge(), userInfo.getWeight(), userInfo.getHeight(), userInfo.getLifestyle(), userInfo.getBmi());
             return ResponseEntity.ok(userInfoDTO);
         }
-        catch (IllegalArgumentException e) {
+        catch (IllegalArgumentException e) { // TODO: DO WE NEED THIS EXCEPTION?
+            logger.error("Error finding user info." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error finding user info." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -43,6 +50,10 @@ public class UserInfoController {
             return ResponseEntity.ok(userInfoDTO);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error updating user info." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error updating user info." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

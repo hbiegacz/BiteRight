@@ -3,6 +3,8 @@ package com.bd2_team6.biteright.controllers;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.Authentication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,7 @@ import com.bd2_team6.biteright.service.MealInfoService;
 @RequestMapping("/mealInfo")
 @RequiredArgsConstructor
 public class MealInfoController {
+    private static final Logger logger = LoggerFactory.getLogger(MealInfoController.class);
     private final MealInfoService mealInfoService;
     private final UserRepository userRepository;
 
@@ -26,7 +29,12 @@ public class MealInfoController {
             return ResponseEntity.ok(mealInfo);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error finding meal info by id." + e.getMessage());
             return ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            logger.error("Error finding meal info by id." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -37,7 +45,12 @@ public class MealInfoController {
             return ResponseEntity.ok(mealInfo);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error finding meal info by name." + e.getMessage());
             return ResponseEntity.notFound().build();
+        }
+        catch (Exception e) {
+            logger.error("Error finding meal info by name." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -49,6 +62,10 @@ public class MealInfoController {
             return ResponseEntity.ok(mealInfo);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error creating meal info." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error creating meal info." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -61,6 +78,10 @@ public class MealInfoController {
             return ResponseEntity.ok(mealInfo);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error updating meal info." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error updating meal info." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -72,6 +93,10 @@ public class MealInfoController {
             return ResponseEntity.ok("Meal info deleted successfully");
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error deleting meal info." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error deleting meal info." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

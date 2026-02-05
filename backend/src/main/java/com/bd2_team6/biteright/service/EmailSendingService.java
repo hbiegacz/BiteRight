@@ -44,7 +44,7 @@ public class EmailSendingService {
 
     private void sendEmail (String email, String verificationCode, String subject, String path, String body) {
         try {
-            Resource resource = resourceLoader.getResource("classpath:templates/verification-email-template.html");
+            Resource resource = resourceLoader.getResource("classpath:templates/email-template.html");
             String htmlTemplate = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
 
             String formattedBody = htmlTemplate

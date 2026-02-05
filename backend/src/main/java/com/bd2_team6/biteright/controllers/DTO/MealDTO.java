@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MealDTO {
-    private Long mealId;
+    private Long id;
     private String name;
     private String description;
     private LocalDateTime mealDate;
@@ -23,7 +23,7 @@ public class MealDTO {
     private Set<MealContentDTO> contents;
 
     public MealDTO(Meal meal) {
-        this.mealId = meal.getMealId();
+        this.id = meal.getMealId();
         this.name = meal.getName();
         this.description = meal.getDescription();
         this.mealDate = meal.getMealDate();

@@ -9,7 +9,8 @@ import com.bd2_team6.biteright.entities.recipe_info.RecipeInfo;
 import com.bd2_team6.biteright.service.RecipeInfoService;
 
 import lombok.RequiredArgsConstructor;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequiredArgsConstructor
 public class RecipeInfoController {
     private final RecipeInfoService recipeInfoService;
+    private static final Logger logger = LoggerFactory.getLogger(RecipeInfoService.class);
 
     @GetMapping("/findByName/{name}")
     public ResponseEntity<?> findRecipeInfoByName(@PathVariable("name") String recipeName) {
@@ -32,7 +34,11 @@ public class RecipeInfoController {
             return ResponseEntity.ok(recipeInfo);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error finding recipe info by name." + e.getMessage());
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            logger.error("Error finding recipe info by name." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     
@@ -43,7 +49,11 @@ public class RecipeInfoController {
             return ResponseEntity.ok(recipeInfo);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error finding recipe info by id." + e.getMessage());
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            logger.error("Error finding recipe info by id." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -54,6 +64,10 @@ public class RecipeInfoController {
             return ResponseEntity.ok(recipeInfo);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error creating recipe info." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error creating recipe info." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -66,6 +80,10 @@ public class RecipeInfoController {
             return ResponseEntity.ok(recipeInfo);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error updating recipe info." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error updating recipe info." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -77,6 +95,10 @@ public class RecipeInfoController {
             return ResponseEntity.ok("Recipe info deleted successfully");
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error deleting recipe info." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error deleting recipe info." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

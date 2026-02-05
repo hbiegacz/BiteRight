@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("/ingredient")
 @RequiredArgsConstructor
 public class IngredientController {
+    private static final Logger logger = LoggerFactory.getLogger(IngredientController.class);
     private final IngredientService ingredientService;
 
     @GetMapping("/find/{name}")
@@ -35,6 +38,7 @@ public class IngredientController {
             return ResponseEntity.ok(ingredients);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error finding ingredient.\n" + e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }
@@ -46,6 +50,7 @@ public class IngredientController {
             return ResponseEntity.ok(newIngredient);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error creating ingredient.\n" + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -59,6 +64,7 @@ public class IngredientController {
             return ResponseEntity.ok(updatedIngredientDTO);
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error updating ingredient.\n" + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -70,6 +76,7 @@ public class IngredientController {
             return ResponseEntity.ok("Ingredient deleted successfully");
         }
         catch (IllegalArgumentException e) {
+            logger.error("Error deleting ingredient.\n" + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/recipe")
 @RequiredArgsConstructor
 public class RecipeController {
+    private static final Logger logger = LoggerFactory.getLogger(RecipeController.class);
     private final RecipeService recipeService;
 
     // Returns recipes that contain provided string (i.e. if you write 'ch' it will return recipes containing 
@@ -27,7 +30,11 @@ public class RecipeController {
             Set<RecipeDTO> recipesDTO = recipeService.findRecipes(name);
             return ResponseEntity.ok(recipesDTO);
         } catch (IllegalArgumentException e) {
+            logger.error("Error finding recipes by name." + e.getMessage());
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            logger.error("Error finding recipes by name." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -37,7 +44,11 @@ public class RecipeController {
             RecipeDTO recipeDTO = recipeService.findRecipeByName(recipeName);
             return ResponseEntity.ok(recipeDTO);
         } catch (IllegalArgumentException e) {
+            logger.error("Error finding recipe by name." + e.getMessage());
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            logger.error("Error finding recipe by name." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -47,7 +58,11 @@ public class RecipeController {
             RecipeDTO recipeDTO = recipeService.findRecipeById(recipeId);
             return ResponseEntity.ok(recipeDTO);
         } catch (IllegalArgumentException e) {
+            logger.error("Error finding recipe by id." + e.getMessage());
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            logger.error("Error finding recipe by id." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -58,6 +73,10 @@ public class RecipeController {
             RecipeDTO recipeDTO = new RecipeDTO(recipe);
             return ResponseEntity.ok(recipeDTO);
         } catch (IllegalArgumentException e) {
+            logger.error("Error creating recipe." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error creating recipe." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -70,6 +89,10 @@ public class RecipeController {
             RecipeDTO recipeDTO = new RecipeDTO(updated);
             return ResponseEntity.ok(recipeDTO);
         } catch (IllegalArgumentException e) {
+            logger.error("Error updating recipe." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error updating recipe." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -80,6 +103,10 @@ public class RecipeController {
             recipeService.deleteRecipe(recipeId);
             return ResponseEntity.ok("Recipe successfully deleted");
         } catch (IllegalArgumentException e) {
+            logger.error("Error deleting recipe." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error deleting recipe." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
