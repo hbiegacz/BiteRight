@@ -3,7 +3,7 @@
 ![Avocado](/readme_images/image.png)
 BiteRight is a comprehensive nutrition and fitness application designed to help users achieve their personal health goals through an intuitive and enjoyable experience. Whether you're looking to lose weight, build muscle, increase strength, or improve your mental well-being, BiteRight provides the tools and support needed to make your health journey both effective and sustainable. 
 
-## 🥑Why BiteRight?
+## 🥑 Why BiteRight?
 This project serves as a comprehensive tool for managing nutrition and meal planning. 
 - 🍽️ Comprehensive Meal Tracking: Easily log meals and ingredients to monitor dietary intake.
 - 📊 Nutritional Calculations: Automatically calculate calories and nutritional values for informed choices.
@@ -86,16 +86,17 @@ docker compose down -v
 
 ## 🛠️ Technologies
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![CSS](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white) ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white) ![Next.js](https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) ![Nginx](https://img.shields.io/badge/Nginx-009639?logo=nginx&logoColor=white&style=for-the-badge) ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
 
 ##### 🖥️ **Backend**
-- *Java* with *Spring Boot* - API endpoints, application logic, database integration, and authentication services
-- *MySQL* - relational database management system with Oracle Data Modeler for schema design
+- *Java* with *Spring Boot*, core of the backend application, API endpoints, application logic, database integration, and authentication services
+- *MySQL*, relational database with Oracle Data Modeler used for schema design
 
 ##### 🎨 **Frontend**  
-- *React.js* -JavaScript library for building dynamic and responsive user interfaces
-- *HTML5 & CSS3* - structure and styling for an aesthetically pleasing user experience
+- *Next.js*, core of the frontend application
+- *HTML5 & CSS3* for additional styling
 
 ##### 🔧 **DevOps & Version Control**
 - *Docker* -  application containerization for consistent development
-- *Git* - version control system for collaborative development and code management
+- *Ngix* 
+- *Git* - version control   
