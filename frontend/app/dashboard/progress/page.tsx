@@ -32,33 +32,7 @@ interface WeightHistory {
   weight: number
 }
 
-interface Meal {
-  mealId: number
-  name: string
-  mealDate: string
-  contents: {
-    ingredientId: number
-    ingredientAmount: number
-    // We might need to fetch ingredient details if calories/protein aren't directly in meal content
-    // But based on current API, we might need to rely on what we have or fetch ingredients.
-    // Wait, the getAllUserMeals endpoint returns MealDTO which has contents.
-    // The MealContentDTO has ingredientName but NOT calories/protein.
-    // This is a potential issue. We need to check if we can calculate calories.
-    // Checking `MealController.java` -> `MealService` -> `MealDTO`.
-    // If MealDTO doesn't have totals, we have a problem.
-    // Let's assume for now we might need to look up ingredients or the backend provides it?
-    // Looking at api.ts interfaces: Ingredient has calories. MealContent has ingredientAmount.
-    // We actually need to fetch ingredients for every meal content to get calories? That's too many requests.
-    // Hopefully the calculated values are available or we can get them.
-    // Actually, let's look at `frontend/app/dashboard/meals/page.tsx` if it exists (it's in the list) or similar to see how they do it.
-    // BUT, for this task, I will try to fetch ingredients if needed, or better, finding a way to get summary.
-    // However, `getDailySummary` exists in api.ts! `getSummaryRange`!
-    // `getSummaryRange` takes startDate and endDate and returns `DailySummary[]`.
-    // THIS IS MUCH BETTER than fetching all meals!
-    // `export async function getSummaryRange(startDate: string, endDate: string): Promise<DailySummary[] | null>`
-    // I will use THAT instead of fetching all meals.
-  }[]
-}
+
 
 // Redefining types based on what we'll use from `getSummaryRange`
 interface DailySummary {

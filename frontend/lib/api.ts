@@ -1,6 +1,6 @@
 import { getToken, removeToken } from "./auth"
 
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080").replace(/\/$/, "")
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080").replace(/\/$/, "") // TODO: move to .env
 
 // Helper function for authenticated requests
 async function authFetch(endpoint: string, options: RequestInit = {}) {
@@ -27,6 +27,13 @@ async function authFetch(endpoint: string, options: RequestInit = {}) {
   return response
 }
 
+function formatDateForBackend(date: string): string {
+  if (date.length === 10) {
+    return `${date}T00:00:00`
+  }
+  return date
+}
+
 // Types
 export interface DailyLimits {
   calorieLimit: number
@@ -45,14 +52,14 @@ export interface DailySummary {
 }
 
 export interface MealContent {
-  mealContentId: number
+  id: number
   ingredientId: number
   ingredientName: string
   ingredientAmount: number
 }
 
 export interface Meal {
-  mealId: number
+  id: number
   name: string
   description: string
   mealDate: string
@@ -203,7 +210,7 @@ export async function createMeal(meal: {
   try {
     const response = await authFetch("/meal/create", {
       method: "POST",
-      body: JSON.stringify(meal),
+      body: JSON.stringify({ ...meal, mealDate: formatDateForBackend(meal.mealDate) }),
     })
     if (response.ok) {
       return await response.json()
@@ -227,7 +234,7 @@ export async function updateMeal(
   try {
     const response = await authFetch(`/meal/update/${id}`, {
       method: "PUT",
-      body: JSON.stringify(meal),
+      body: JSON.stringify({ ...meal, mealDate: formatDateForBackend(meal.mealDate) }),
     })
     if (response.ok) {
       return await response.json()
@@ -303,11 +310,9 @@ export async function getLastWaterIntake(): Promise<WaterIntake | null> {
 
 export async function addWaterIntake(waterAmount: number, intakeDate: string): Promise<WaterIntake | null> {
   try {
-    const dateToSend = intakeDate.length === 10 ? `${intakeDate}T00:00:00` : intakeDate
-
-      body: JSON.stringify({ waterAmount, intakeDate: dateToSend }),
+    const response = await authFetch("/waterIntake/create", {
       method: "POST",
-      body: JSON.stringify({ waterAmount, intakeDate }),
+      body: JSON.stringify({ waterAmount, intakeDate: formatDateForBackend(intakeDate) }),
     })
     if (response.ok) {
       return await response.json()
@@ -347,11 +352,9 @@ export async function getLastWeight(): Promise<WeightHistory | null> {
 
 export async function addWeight(weight: number, measurementDate: string): Promise<WeightHistory | null> {
   try {
-    const dateToSend = measurementDate.length === 10 ? `${measurementDate}T00:00:00` : measurementDate
-
-      body: JSON.stringify({ weight, measurementDate: dateToSend }),
+    const response = await authFetch("/weightHistory/create", {
       method: "POST",
-      body: JSON.stringify({ weight, measurementDate }),
+      body: JSON.stringify({ weight, measurementDate: formatDateForBackend(measurementDate) }),
     })
     if (response.ok) {
       return await response.json()
@@ -503,7 +506,7 @@ export async function createUserExercise(exercise: {
   try {
     const response = await authFetch("/userExercise/create", {
       method: "POST",
-      body: JSON.stringify(exercise),
+      body: JSON.stringify({ ...exercise, activityDate: formatDateForBackend(exercise.activityDate) }),
     })
     if (response.ok) {
       return await response.json()
@@ -525,7 +528,7 @@ export async function updateUserExercise(
   try {
     const response = await authFetch(`/userExercise/update/${id}`, {
       method: "PUT",
-      body: JSON.stringify(exercise),
+      body: JSON.stringify({ ...exercise, activityDate: formatDateForBackend(exercise.activityDate) }),
     })
     if (response.ok) {
       return await response.json()

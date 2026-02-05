@@ -128,26 +128,38 @@ export default function DashboardPage() {
   }, [dateString])
 
   const handleAddWater = async (amount: number) => {
-    const result = await addWaterIntake(amount, dateString)
-    if (result) {
-      setWaterIntakes((prev) => [...prev, result])
+    try {
+      const result = await addWaterIntake(amount, dateString)
+      if (result) {
+        setWaterIntakes((prev) => [...prev, result])
+      }
+    } catch (error) {
+      console.error("Error adding water intake:", error)
     }
   }
 
   const goToPreviousDay = () => {
-    setSelectedDate((prev) => {
-      const newDate = new Date(prev)
-      newDate.setDate(newDate.getDate() - 1)
-      return newDate
-    })
+    try {
+      setSelectedDate((prev) => {
+        const newDate = new Date(prev)
+        newDate.setDate(newDate.getDate() - 1)
+        return newDate
+      })
+    } catch (error) {
+      console.error("Error going to previous day:", error)
+    }
   }
 
   const goToNextDay = () => {
-    setSelectedDate((prev) => {
-      const newDate = new Date(prev)
-      newDate.setDate(newDate.getDate() + 1)
-      return newDate
-    })
+    try {
+      setSelectedDate((prev) => {
+        const newDate = new Date(prev)
+        newDate.setDate(newDate.getDate() + 1)
+        return newDate
+      })
+    } catch (error) {
+      console.error("Error going to next day:", error)
+    }
   }
 
   const isToday = format(selectedDate, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd")

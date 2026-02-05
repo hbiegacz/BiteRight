@@ -156,7 +156,7 @@ export default function MealsPage() {
   const handleDeleteMeal = async (id: number) => {
     const success = await deleteMeal(id)
     if (success) {
-      setMeals((prev) => prev.filter((m) => m.mealId !== id))
+      setMeals((prev) => prev.filter((m) => m.id !== id))
     }
   }
 
@@ -405,7 +405,7 @@ export default function MealsPage() {
                   </div>
                   <div className="divide-y divide-border">
                     {typeMeals.map((meal) => (
-                      <div key={meal.mealId} className="flex items-center justify-between p-4">
+                      <div key={meal.id} className="flex items-center justify-between p-4">
                         <div>
                           <p className="font-medium text-foreground">{meal.name}</p>
                           <p className="text-sm text-muted-foreground">
@@ -418,7 +418,7 @@ export default function MealsPage() {
                             variant="ghost"
                             size="icon"
                             className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                            onClick={() => handleDeleteMeal(meal.mealId)}
+                            onClick={() => handleDeleteMeal(meal.id)}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
