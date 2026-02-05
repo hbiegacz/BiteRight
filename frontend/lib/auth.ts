@@ -199,8 +199,12 @@ export function saveToken(token: string) {
 }
 
 export function getToken(): string | null {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("biteright_token")
+  try {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("biteright_token")
+    }
+  } catch (error) {
+    console.error("Error getting token:", error)
   }
   return null
 }
@@ -265,10 +269,9 @@ export async function changeEmail(newEmail: string): Promise<AuthResponse> {
       body: JSON.stringify({ newEmail }),
     })
     if (response.ok) {
-      const newToken = await response.text()
-      // Save the new token
-      saveToken(newToken)
-      return { success: true, token: newToken }
+      const text = await response.text()
+      saveToken(text)
+      return { success: true, token: text }
     } else {
       const error = await response.text()
       return { success: false, message: error || "Failed to change email" }
