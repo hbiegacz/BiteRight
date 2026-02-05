@@ -70,7 +70,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             alt="BiteRight Logo"
             width={120}
             height={50}
-            className="h-8 w-auto object-contain"
+            className="h-14 w-auto object-contain"
           />
         </Link>
         <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(!sidebarOpen)}>
@@ -104,7 +104,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             alt="BiteRight Logo"
             width={120}
             height={50}
-            className="h-8 w-auto object-contain"
+            className="h-14 w-auto object-contain"
           />
         </div>
 

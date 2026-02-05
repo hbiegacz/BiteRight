@@ -35,8 +35,8 @@ export function Footer() {
                 src="/biteright-logo-black.png"
                 alt="BiteRight Logo"
                 width={120}
-                height={50}
-                className="h-8 w-auto object-contain"
+                height={60}
+                className="h-14 w-auto object-contain"
               />
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">

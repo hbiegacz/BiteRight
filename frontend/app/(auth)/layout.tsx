@@ -38,7 +38,7 @@ export default function AuthLayout({
                 alt="BiteRight Logo"
                 width={160}
                 height={50}
-                className="h-11 w-auto object-contain brightness-0 invert"
+                className="h-14 w-auto object-contain brightness-0 invert"
               />
             </Link>
           </div>
@@ -65,7 +65,7 @@ export default function AuthLayout({
                   alt="BiteRight Logo"
                   width={140}
                   height={50}
-                  className="h-8 w-auto object-contain"
+                  className="h-14 w-auto object-contain"
                 />
               </Link>
             </div>

@@ -22,7 +22,7 @@ export function Header() {
             alt="BiteRight Logo"
             width={120}
             height={50}
-            className="h-8 w-auto object-contain"
+            className="h-14 w-auto object-contain"
           />
         </Link>
 
@@ -60,22 +60,22 @@ export function Header() {
       {mobileMenuOpen && (
         <div className="border-t border-border/40 bg-background md:hidden">
           <nav className="flex flex-col gap-2 p-4">
-            <Link 
-              href="#features" 
+            <Link
+              href="#features"
               className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
               onClick={() => setMobileMenuOpen(false)}
             >
               Features
             </Link>
-            <Link 
-              href="#how-it-works" 
+            <Link
+              href="#how-it-works"
               className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
               onClick={() => setMobileMenuOpen(false)}
             >
               How It Works
             </Link>
-            <Link 
-              href="#pricing" 
+            <Link
+              href="#pricing"
               className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
               onClick={() => setMobileMenuOpen(false)}
             >
