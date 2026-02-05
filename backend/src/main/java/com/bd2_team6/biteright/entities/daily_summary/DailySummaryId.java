@@ -1,6 +1,6 @@
 package com.bd2_team6.biteright.entities.daily_summary;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -14,5 +14,5 @@ public class DailySummaryId implements Serializable {
     private Long userId;
     
     @Column(name = "summary_date")
-    private Date summaryDate;
+    private LocalDate summaryDate;
 }
