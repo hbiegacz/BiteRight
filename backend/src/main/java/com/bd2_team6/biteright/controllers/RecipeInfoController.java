@@ -37,7 +37,7 @@ public class RecipeInfoController {
     }
     
     @GetMapping("/findById/{id}")
-    public ResponseEntity<?> findRecipeInfoById(@PathVariable("id") Integer recipeId) {
+    public ResponseEntity<?> findRecipeInfoById(@PathVariable("id") Long recipeId) {
         try {
             RecipeInfo recipeInfo = recipeInfoService.findRecipeInfoById(recipeId);
             return ResponseEntity.ok(recipeInfo);
@@ -59,7 +59,8 @@ public class RecipeInfoController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateRecipeInfo(@PathVariable("id") Integer recipeId, @RequestBody RecipeInfoUpdateRequest request) {
+    public ResponseEntity<?> updateRecipeInfo(@PathVariable("id") Long recipeId,
+            @RequestBody RecipeInfoUpdateRequest request) {
         try {
             RecipeInfo recipeInfo = recipeInfoService.updateRecipeInfo(recipeId, request);
             return ResponseEntity.ok(recipeInfo);
@@ -70,7 +71,7 @@ public class RecipeInfoController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteRecipeInfo(@PathVariable("id") Integer recipeId) {
+    public ResponseEntity<?> deleteRecipeInfo(@PathVariable("id") Long recipeId) {
         try {
             recipeInfoService.deleteRecipeInfo(recipeId);
             return ResponseEntity.ok("Recipe info deleted successfully");

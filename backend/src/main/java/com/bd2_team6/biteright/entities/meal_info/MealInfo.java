@@ -14,10 +14,10 @@ import jakarta.persistence.*;
 public class MealInfo {
     @Id
     @Column(name = "meal_id")
-    private Integer mealId;
+    private Long mealId;
 
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
 
     @Column(name = "meal_name")
     private String mealName;
@@ -34,7 +34,7 @@ public class MealInfo {
     @Column(name = "carbs")
     private Float carbs;
 
-    public MealInfo(Integer userId, String mealName, Float calories, Float protein, Float fat, Float carbs) {
+    public MealInfo(Long userId, String mealName, Float calories, Float protein, Float fat, Float carbs) {
         this.userId = userId;
         this.mealName = mealName;
         this.calories = calories;

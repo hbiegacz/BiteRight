@@ -51,11 +51,11 @@ public class WeightHistoryService {
                 .orElseThrow(() -> new IllegalArgumentException("No weight history records found for user: " + username));
     }
 
-    public WeightHistory findWeightHistoryById(String username, int weightHistoryId) {
+    public WeightHistory findWeightHistoryById(String username, Long weightHistoryId) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Integer userId = user.getId();
+        Long userId = user.getId();
         WeightHistory weightHistory = weightHistoryRepository.findById(weightHistoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Weight history with provided id not found"));
 
@@ -67,11 +67,12 @@ public class WeightHistoryService {
         }
     }
 
-    public WeightHistory updateWeightHistoryById(String username, int weightHistoryId, WeightHistoryUpdateRequest request) {
+    public WeightHistory updateWeightHistoryById(String username, Long weightHistoryId,
+            WeightHistoryUpdateRequest request) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Integer userId = user.getId();
+        Long userId = user.getId();
         WeightHistory weightHistory = weightHistoryRepository.findById(weightHistoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Weight history with provided id not found"));
 
@@ -86,11 +87,11 @@ public class WeightHistoryService {
         }
     }
 
-    public void deleteWeightHistoryById(String username, int weightHistoryId) {
+    public void deleteWeightHistoryById(String username, Long weightHistoryId) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Integer userId = user.getId();
+        Long userId = user.getId();
         WeightHistory weightHistory = weightHistoryRepository.findById(weightHistoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Weight history with provided id not found"));
 

@@ -96,7 +96,7 @@ public class UserExerciseController {
     }
 
     @GetMapping("/findExerciseById/{id}")
-    public ResponseEntity<?> findExerciseById(Authentication authentication, @PathVariable("id") int userExerciseId) {
+    public ResponseEntity<?> findExerciseById(Authentication authentication, @PathVariable("id") Long userExerciseId) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             UserExercise userExercise = userExerciseService.findExerciseById(username, userExerciseId);
@@ -109,7 +109,7 @@ public class UserExerciseController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateExerciseById(Authentication authentication,
-                                                   @PathVariable("id") int userExerciseId,
+            @PathVariable("id") Long userExerciseId,
                                                    @RequestBody UserExerciseUpdateRequest request) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
@@ -123,7 +123,7 @@ public class UserExerciseController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteExercise(Authentication authentication, @PathVariable("id") int userExerciseId) {
+    public ResponseEntity<?> deleteExercise(Authentication authentication, @PathVariable("id") Long userExerciseId) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             userExerciseService.deleteUserExerciseById(username, userExerciseId);

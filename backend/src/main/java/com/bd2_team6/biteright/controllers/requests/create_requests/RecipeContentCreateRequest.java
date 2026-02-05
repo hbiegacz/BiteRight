@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 public class RecipeContentCreateRequest {
-    private Integer recipeId;
-    private Integer ingredientId;
+    private Long recipeId;
+    private Long ingredientId;
     private Integer ingredientAmount;
 }

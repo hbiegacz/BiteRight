@@ -38,7 +38,7 @@ public class RecipeContentController {
     }
 
     @GetMapping("/findById/{id}")
-    public ResponseEntity<?> findRecipeContentById(@PathVariable("id") Integer recipeId) {
+    public ResponseEntity<?> findRecipeContentById(@PathVariable("id") Long recipeId) {
         try {
             Set<RecipeContentDTO> recipeContent = recipeContentService.findRecipeContentById(recipeId);
             return ResponseEntity.ok(recipeContent);
@@ -60,7 +60,8 @@ public class RecipeContentController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateRecipeContent(@PathVariable("id") Integer contentId, @RequestBody RecipeContentUpdateRequest request) {
+    public ResponseEntity<?> updateRecipeContent(@PathVariable("id") Long contentId,
+            @RequestBody RecipeContentUpdateRequest request) {
         try {
             RecipeContentDTO recipeContent = recipeContentService.updateContent(contentId, request);
             return ResponseEntity.ok(recipeContent);
@@ -71,7 +72,7 @@ public class RecipeContentController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteRecipeContent(@PathVariable("id") Integer id) {
+    public ResponseEntity<?> deleteRecipeContent(@PathVariable("id") Long id) {
         try {
             recipeContentService.deleteRecipeContent(id);
             return ResponseEntity.ok("Recipe content successfully deleted");

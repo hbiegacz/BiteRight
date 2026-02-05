@@ -47,7 +47,8 @@ public class AddressController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateAddress(Authentication authentication, @RequestBody AddressUpdateRequest request, @PathVariable("id") Integer addressId) {
+    public ResponseEntity<?> updateAddress(Authentication authentication, @RequestBody AddressUpdateRequest request,
+            @PathVariable("id") Long addressId) {
         String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
 
         try {
@@ -60,7 +61,7 @@ public class AddressController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteAddress(Authentication authentication, @PathVariable("id") Integer addressId) {
+    public ResponseEntity<?> deleteAddress(Authentication authentication, @PathVariable("id") Long addressId) {
         String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
 
         try {

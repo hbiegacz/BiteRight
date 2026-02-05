@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MealTypeDTO {
-    private Integer typeId;
+    private Long typeId;
     private String name;
 }

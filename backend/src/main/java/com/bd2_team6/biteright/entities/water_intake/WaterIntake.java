@@ -18,7 +18,7 @@ public class WaterIntake {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "water_intake_id")
-    private Integer waterIntakeId;
+    private Long waterIntakeId;
 
     @Column(name = "intake_date")
     private LocalDateTime intakeDate;

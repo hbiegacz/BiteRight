@@ -50,11 +50,11 @@ public class WaterIntakeService {
     }
 
 
-    public WaterIntake findWaterIntakeById(String username, int waterIntakeId) {
+    public WaterIntake findWaterIntakeById(String username, Long waterIntakeId) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Integer userId = user.getId();
+        Long userId = user.getId();
         WaterIntake waterIntake = waterIntakeRepository.findById(waterIntakeId)
                 .orElseThrow(() -> new IllegalArgumentException("Water intake with provided id not found"));
 
@@ -66,12 +66,12 @@ public class WaterIntakeService {
         }
     }
 
-    public WaterIntake updateWaterIntakeById(String username, int waterIntakeId,
+    public WaterIntake updateWaterIntakeById(String username, Long waterIntakeId,
                                              WaterIntakeUpdateRequest request) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Integer userId = user.getId();
+        Long userId = user.getId();
         WaterIntake waterIntake = waterIntakeRepository.findById(waterIntakeId)
                 .orElseThrow(() -> new IllegalArgumentException("Water intake with provided id not found"));
 
@@ -85,11 +85,11 @@ public class WaterIntakeService {
         }
     }
 
-    public void deleteWaterIntakeById(String username, int waterIntakeId) {
+    public void deleteWaterIntakeById(String username, Long waterIntakeId) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Integer userId = user.getId();
+        Long userId = user.getId();
         WaterIntake waterIntake = waterIntakeRepository.findById(waterIntakeId)
                 .orElseThrow(() -> new IllegalArgumentException("Water intake with provided id not found"));
 

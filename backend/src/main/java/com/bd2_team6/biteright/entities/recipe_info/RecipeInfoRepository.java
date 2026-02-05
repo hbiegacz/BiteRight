@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface RecipeInfoRepository extends JpaRepository<RecipeInfo, Integer> {
+public interface RecipeInfoRepository extends JpaRepository<RecipeInfo, Long> {
     Optional<RecipeInfo> findByRecipeName(String recipeName);
 }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 /// Class representing the double primary key of the DailySummary entity
 public class DailySummaryId implements Serializable {
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
     
     @Column(name = "summary_date")
     private Date summaryDate;

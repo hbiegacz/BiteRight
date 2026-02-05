@@ -4,6 +4,6 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface UserPreferencesRepository extends JpaRepository<UserPreferences, Integer> {
+public interface UserPreferencesRepository extends JpaRepository<UserPreferences, Long> {
     
 }

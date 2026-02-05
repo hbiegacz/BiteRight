@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 public class MealCreateRequest {
-    private Integer mealTypeId;
+    private Long mealTypeId;
     private String name;
     private String description;
     private LocalDateTime mealDate;

@@ -16,7 +16,7 @@ public class UserGoal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_goal_id")
-    private Integer userGoalId;
+    private Long userGoalId;
 
     @Column(name = "goal_type")
     private String goalType;

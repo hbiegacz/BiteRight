@@ -11,9 +11,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserExerciseDTO {
-    private int id;
-    private int userId;
-    private int exerciseInfoId;
+    private Long id;
+    private Long userId;
+    private Long exerciseInfoId;
     private LocalDateTime activityDate;
     private int duration;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 public class RecipeDTO {
-    private Integer recipeId;
+    private Long recipeId;
     private String name;
     private String description;
     private Set<RecipeContentDTO> contents;

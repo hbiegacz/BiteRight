@@ -51,7 +51,8 @@ public class IngredientController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateIngredient(@PathVariable("id") Integer id, @RequestBody IngredientUpdateRequest request) {
+    public ResponseEntity<?> updateIngredient(@PathVariable("id") Long id,
+            @RequestBody IngredientUpdateRequest request) {
         try {
             Ingredient updatedIngredient = ingredientService.updateIngredient(id, request);
             IngredientDTO updatedIngredientDTO = new IngredientDTO(updatedIngredient);
@@ -63,7 +64,7 @@ public class IngredientController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteIngredient(@PathVariable("id") Integer id) {
+    public ResponseEntity<?> deleteIngredient(@PathVariable("id") Long id) {
         try {
             ingredientService.deleteIngredient(id);
             return ResponseEntity.ok("Ingredient deleted successfully");

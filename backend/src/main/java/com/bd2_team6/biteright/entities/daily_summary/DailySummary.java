@@ -18,7 +18,7 @@ import java.time.LocalDate;
 public class DailySummary {
     @Id
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
 
     @Id
     @Column(name = "summary_date")

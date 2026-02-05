@@ -2,11 +2,15 @@ package com.bd2_team6.biteright.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 
 @Service
@@ -14,6 +18,9 @@ import java.security.SecureRandom;
 public class EmailSendingService {
     @Autowired
     private final JavaMailSender javaMailSender;
+
+    @Autowired
+    private final ResourceLoader resourceLoader;
 
     @Value("${spring.mail.username}")
     private String emailSender;
@@ -37,16 +44,14 @@ public class EmailSendingService {
 
     private void sendEmail (String email, String verificationCode, String subject, String path, String body) {
         try {
-            String formattedBody = """
-                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border-radius: 8px; background-color: #f9f9f9; text-align: center;">
-                        <h2 style="color: #333;">%s</h2>
-                        <p style="font-size: 16px; color: #555;">%s</p>
-                        <a href="%s" style="display: inline-block; margin: 20px 0; padding: 10px 20px; font-size: 16px; color: #fff; background-color:rgb(98, 115, 224); text-decoration: none; border-radius: 5px;">Proceed</a>
-                        <p style="font-size: 14px; color: #777;">Or copy and paste this link into your browser:</p>
-                        <p style="font-size: 14px; color:rgb(98, 115, 224);">%s</p>
-                        <p style="font-size: 12px; color: #aaa;">This is an automated message. Please do not reply.</p>
-                    </div>
-                    """.formatted(subject, body, path, path);
+            Resource resource = resourceLoader.getResource("classpath:templates/verification-email-template.html");
+            String htmlTemplate = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+
+            String formattedBody = htmlTemplate
+                    .replace("{{SUBJECT}}", subject)
+                    .replace("{{BODY}}", body)
+                    .replace("{{CODE}}", verificationCode)
+                    .replace("{{LINK}}", path);
 
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -56,8 +61,10 @@ public class EmailSendingService {
             helper.setText(formattedBody, true); 
             javaMailSender.send(message);
 
+        } catch (IOException e) {
+            throw new RuntimeException("Error loading email template: " + e.getMessage());
         } catch (Exception e) {
-            throw new RuntimeException("Error building verification URL: " + e.getMessage());
+            throw new RuntimeException("Error sending email: " + e.getMessage());
         }
     }
 

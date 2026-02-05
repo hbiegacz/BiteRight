@@ -18,7 +18,7 @@ public class UserExercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_exercise_id")
-    private Integer userExerciseId;
+    private Long userExerciseId;
 
     @Column(name = "activity_date")
     private LocalDateTime activityDate;

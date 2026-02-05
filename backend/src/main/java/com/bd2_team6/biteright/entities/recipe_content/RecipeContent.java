@@ -18,7 +18,7 @@ public class RecipeContent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "recipe_content_id")
-    private Integer recipeContentId;
+    private Long recipeContentId;
 
     @Column(name = "ingredient_amount")
     private Integer ingredientAmount;

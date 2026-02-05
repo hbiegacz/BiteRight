@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserPreferencesDTO {
-    private int id;
+    private Long id;
     private String language;
     private Boolean darkmode;
     private String font;

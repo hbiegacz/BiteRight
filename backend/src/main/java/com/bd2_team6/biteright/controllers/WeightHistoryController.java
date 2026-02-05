@@ -93,7 +93,8 @@ public class WeightHistoryController {
     }
 
     @GetMapping("/findWeightHistoryById/{id}")
-    public ResponseEntity<?> findWeightHistoryById(Authentication authentication, @PathVariable("id") int weightHistoryId) {
+    public ResponseEntity<?> findWeightHistoryById(Authentication authentication,
+            @PathVariable("id") Long weightHistoryId) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             WeightHistory weightHistory = weightHistoryService.findWeightHistoryById(username, weightHistoryId);
@@ -106,7 +107,7 @@ public class WeightHistoryController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateWeightHistoryById(Authentication authentication,
-                                                   @PathVariable("id") int weightHistoryId,
+            @PathVariable("id") Long weightHistoryId,
                                                    @RequestBody WeightHistoryUpdateRequest request) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
@@ -121,7 +122,8 @@ public class WeightHistoryController {
 
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteWeightHistory(Authentication authentication, @PathVariable("id") int weightHistoryId) {
+    public ResponseEntity<?> deleteWeightHistory(Authentication authentication,
+            @PathVariable("id") Long weightHistoryId) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             weightHistoryService.deleteWeightHistoryById(username, weightHistoryId);

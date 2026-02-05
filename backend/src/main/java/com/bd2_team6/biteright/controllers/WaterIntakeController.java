@@ -93,7 +93,8 @@ public class WaterIntakeController {
     }
 
     @GetMapping("/findWaterIntakeById/{id}")
-    public ResponseEntity<?> findWaterIntakeById(Authentication authentication, @PathVariable("id") int waterIntakeId) {
+    public ResponseEntity<?> findWaterIntakeById(Authentication authentication,
+            @PathVariable("id") Long waterIntakeId) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             WaterIntake waterIntake = waterIntakeService.findWaterIntakeById(username, waterIntakeId);
@@ -106,7 +107,7 @@ public class WaterIntakeController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateWaterIntakeById(Authentication authentication,
-                                                   @PathVariable("id") int waterIntakeId,
+            @PathVariable("id") Long waterIntakeId,
                                                    @RequestBody WaterIntakeUpdateRequest request) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
@@ -119,7 +120,7 @@ public class WaterIntakeController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteWaterIntake(Authentication authentication, @PathVariable("id") int waterIntakeId) {
+    public ResponseEntity<?> deleteWaterIntake(Authentication authentication, @PathVariable("id") Long waterIntakeId) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             waterIntakeService.deleteWaterIntakeById(username, waterIntakeId);

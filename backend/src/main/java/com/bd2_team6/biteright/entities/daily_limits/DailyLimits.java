@@ -16,7 +16,7 @@ public class DailyLimits {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "daily_limit_id")
-    private Integer dailyLimitId;
+    private Long dailyLimitId;
 
     @Column(name = "calorie_limit")
     private Integer calorieLimit;

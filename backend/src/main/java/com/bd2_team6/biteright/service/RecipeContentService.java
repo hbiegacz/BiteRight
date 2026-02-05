@@ -24,7 +24,7 @@ public class RecipeContentService {
     private final RecipeRepository recipeRepository;
     private final IngredientRepository ingredientRepository;
 
-    public Set<RecipeContentDTO> findRecipeContentById(Integer recipeId) {
+    public Set<RecipeContentDTO> findRecipeContentById(Long recipeId) {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new IllegalArgumentException("Recipe not found"));
 
@@ -53,7 +53,7 @@ public class RecipeContentService {
         return new RecipeContentDTO(recipeContentRepository.save(content));
     }
 
-    public RecipeContentDTO updateContent(Integer id, RecipeContentUpdateRequest request) {
+    public RecipeContentDTO updateContent(Long id, RecipeContentUpdateRequest request) {
         RecipeContent content = recipeContentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Recipe content not found"));
 
@@ -65,7 +65,7 @@ public class RecipeContentService {
         return new RecipeContentDTO(recipeContentRepository.save(content));
     }
 
-    public void deleteRecipeContent(Integer id) {
+    public void deleteRecipeContent(Long id) {
         RecipeContent content = recipeContentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Recipe content not found"));
         recipeContentRepository.delete(content);

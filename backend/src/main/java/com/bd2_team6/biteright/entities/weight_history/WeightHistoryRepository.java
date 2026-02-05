@@ -10,7 +10,7 @@ import java.util.Optional;
 
 
 @Repository
-public interface WeightHistoryRepository extends JpaRepository<WeightHistory, Integer> {
+public interface WeightHistoryRepository extends JpaRepository<WeightHistory, Long> {
     Page<WeightHistory> findByUserUsername(String username, Pageable pageable);
     Page<WeightHistory> findByUserUsernameAndMeasurementDateBetween(
             String username, LocalDateTime start, LocalDateTime end, Pageable pageable);

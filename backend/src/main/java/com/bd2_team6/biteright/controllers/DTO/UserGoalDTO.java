@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserGoalDTO {
-    private Integer id;
+    private Long id;
     private String goalType;
     private Float goalWeight;
     private LocalDate deadline;

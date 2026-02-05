@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface UserGoalRepository extends JpaRepository<UserGoal, Integer> {
+public interface UserGoalRepository extends JpaRepository<UserGoal, Long> {
     
 }

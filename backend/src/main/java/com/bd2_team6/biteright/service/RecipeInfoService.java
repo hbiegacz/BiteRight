@@ -21,7 +21,7 @@ public class RecipeInfoService {
         return recipeInfo;
     }
 
-    public RecipeInfo findRecipeInfoById(Integer recipeId) {
+    public RecipeInfo findRecipeInfoById(Long recipeId) {
         RecipeInfo recipeInfo = recipeInfoRepository.findById(recipeId)
                 .orElseThrow(() -> new IllegalArgumentException("Recipe info not found"));
         return recipeInfo;
@@ -38,7 +38,7 @@ public class RecipeInfoService {
         return recipeInfoRepository.save(newRecipeInfo);
     }
 
-    public RecipeInfo updateRecipeInfo(Integer recipeId, RecipeInfoUpdateRequest request) {        
+    public RecipeInfo updateRecipeInfo(Long recipeId, RecipeInfoUpdateRequest request) {
         RecipeInfo newRecipeInfo = recipeInfoRepository.findById(recipeId)
                 .orElseThrow(() -> new IllegalArgumentException("Recipe info not found"));
 
@@ -51,7 +51,7 @@ public class RecipeInfoService {
         return recipeInfoRepository.save(newRecipeInfo);
     }
 
-    public void deleteRecipeInfo(Integer recipeId) {        
+    public void deleteRecipeInfo(Long recipeId) {
         RecipeInfo recipeInfo = recipeInfoRepository.findById(recipeId)
                 .orElseThrow(() -> new IllegalArgumentException("Meal info not found"));
 

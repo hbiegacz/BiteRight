@@ -16,7 +16,7 @@ public class MealTypeController {
     private final MealTypeService mealTypeService;
 
     @GetMapping("/findById/{id}")
-    public ResponseEntity<?> findMealTypeById(@PathVariable("id") Integer mealId) {
+    public ResponseEntity<?> findMealTypeById(@PathVariable("id") Long mealId) {
         try {
             MealType mealType = mealTypeService.findMealTypeById(mealId);
             MealTypeDTO mealTypeDTO = new MealTypeDTO(mealType.getTypeId(), mealType.getName());

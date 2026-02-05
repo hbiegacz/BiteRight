@@ -9,7 +9,7 @@ import java.util.Optional;
 
 
 @Repository
-public interface UserExerciseRepository extends JpaRepository<UserExercise, Integer> {
+public interface UserExerciseRepository extends JpaRepository<UserExercise, Long> {
     Page<UserExercise> findByUserUsername(String username, Pageable pageable);
     Page<UserExercise> findByUserUsernameAndActivityDateBetween(String username, LocalDateTime start, LocalDateTime end, Pageable pageable);
     Optional<UserExercise> findTopByUserUsernameOrderByActivityDateDesc(String username);

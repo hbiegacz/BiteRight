@@ -20,7 +20,7 @@ public class MealInfoController {
     private final UserRepository userRepository;
 
     @GetMapping("/find/{id}")
-    public ResponseEntity<?> findMealInfoById(@PathVariable("id") Integer mealId) {
+    public ResponseEntity<?> findMealInfoById(@PathVariable("id") Long mealId) {
         try {
             MealInfo mealInfo = mealInfoService.findMealInfoById(mealId);
             return ResponseEntity.ok(mealInfo);
@@ -54,7 +54,8 @@ public class MealInfoController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateMealInfo(@PathVariable("id") Integer mealId, @RequestBody MealInfoUpdateRequest request) {
+    public ResponseEntity<?> updateMealInfo(@PathVariable("id") Long mealId,
+            @RequestBody MealInfoUpdateRequest request) {
         try {
             MealInfo mealInfo = mealInfoService.updateMealInfo(mealId, request);
             return ResponseEntity.ok(mealInfo);
@@ -65,7 +66,7 @@ public class MealInfoController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteMealInfo(@PathVariable("id") Integer mealId) {
+    public ResponseEntity<?> deleteMealInfo(@PathVariable("id") Long mealId) {
         try {
             mealInfoService.deleteMealInfo(mealId);
             return ResponseEntity.ok("Meal info deleted successfully");

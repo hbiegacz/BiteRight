@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MealContentDTO {
-    private Integer mealContentId;
-    private Integer ingredientId;
+    private Long mealContentId;
+    private Long ingredientId;
     private String ingredientName;
     private Integer ingredientAmount;
 

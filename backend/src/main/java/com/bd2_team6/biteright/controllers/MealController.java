@@ -65,7 +65,7 @@ public class MealController {
     }
 
     @GetMapping("/findByID/{id}")
-    public ResponseEntity<?> findMealById(Authentication authentication, @PathVariable("id") Integer mealId) {
+    public ResponseEntity<?> findMealById(Authentication authentication, @PathVariable("id") Long mealId) {
         String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
 
         try {
@@ -93,7 +93,7 @@ public class MealController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateMeal(Authentication authentication, @RequestBody MealUpdateRequest request, 
-                                        @PathVariable("id") Integer mealId) {
+            @PathVariable("id") Long mealId) {
         String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
 
         try {
@@ -107,7 +107,7 @@ public class MealController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteMeal(Authentication authentication, @PathVariable("id") Integer mealId) {
+    public ResponseEntity<?> deleteMeal(Authentication authentication, @PathVariable("id") Long mealId) {
         String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
 
         try {

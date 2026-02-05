@@ -18,7 +18,7 @@ public class WeightHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "weight_id")
-    private Integer weightId;
+    private Long weightId;
     
     @Column(name = "measurement_date")
     private LocalDateTime measurementDate;
