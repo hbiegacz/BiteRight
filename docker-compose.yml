@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   frontend-service:
-    build: ./frontend3
+    build: ./frontend
     depends_on:
       backend-service:
         condition: service_healthy
