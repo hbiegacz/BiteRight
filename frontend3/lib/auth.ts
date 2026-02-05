@@ -33,6 +33,77 @@ export async function registerUser(username: string, email: string, password: st
   }
 }
 
+export interface OnboardingData {
+  username: string
+  email: string
+  password: string
+  name: string
+  surname: string
+  age: number
+  weight: number
+  height: number
+  bmi: number
+  lifestyle: string
+  goalType: string
+  goalWeight: number
+  goalDate: string
+  calorieLimit: number
+  proteinLimit: number
+  carbLimit: number
+  fatLimit: number
+  waterGoal: number
+}
+
+export async function registerWithOnboarding(data: OnboardingData): Promise<AuthResponse> {
+  try {
+    const response = await baseFetch("/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+
+    if (response.ok) {
+      const message = await response.text()
+      return { success: true, message }
+    } else {
+      const error = await response.text()
+      return { success: false, message: error || "Registration failed" }
+    }
+  } catch (error) {
+    return { success: false, message: "Network error. Please try again." }
+  }
+}
+
+export interface AvailabilityCheckResponse {
+  usernameAvailable: boolean
+  emailAvailable: boolean
+  message: string
+}
+
+export async function checkCredentialAvailability(
+  username: string,
+  email: string
+): Promise<AvailabilityCheckResponse | null> {
+  try {
+    const response = await baseFetch("/api/auth/check-availability", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, email }),
+    })
+
+    if (response.ok) {
+      return await response.json()
+    }
+    return null
+  } catch (error) {
+    return null
+  }
+}
+
 export async function loginUser(email: string, password: string): Promise<AuthResponse> {
   try {
     const response = await baseFetch("/api/auth/login", {

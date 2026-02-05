@@ -50,34 +50,32 @@ export default function RegisterPage() {
 
     setIsLoading(true)
 
-    const result = await registerUser(username, email, password)
+    // Check if username and email are available
+    const { checkCredentialAvailability } = await import("@/lib/auth")
+    const availability = await checkCredentialAvailability(username, email)
 
-    if (result.success) {
-      setSuccess(true)
-    } else {
-      setError(result.message || "Registration failed. Please try again.")
+    if (!availability) {
+      setError("Failed to verify credentials. Please try again.")
+      setIsLoading(false)
+      return
     }
 
-    setIsLoading(false)
-  }
+    if (!availability.usernameAvailable || !availability.emailAvailable) {
+      setError(availability.message)
+      setIsLoading(false)
+      return
+    }
 
-  if (success) {
-    return (
-      <div className="w-full max-w-md space-y-8 text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-secondary/20">
-          <Check className="h-8 w-8 text-secondary" />
-        </div>
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Check your email</h1>
-        <p className="text-muted-foreground">
-          {"We've sent a verification link to "}
-          <span className="font-medium text-foreground">{email}</span>
-          {". Please verify your email to complete registration."}
-        </p>
-        <Button asChild className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-          <Link href="/login">Continue to Login</Link>
-        </Button>
-      </div>
-    )
+    // Store credentials for onboarding
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("registration_username", username)
+      sessionStorage.setItem("registration_email", email)
+      sessionStorage.setItem("registration_password", password)
+    }
+
+    // Redirect to onboarding
+    router.push("/onboarding")
+    setIsLoading(false)
   }
 
   return (

@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { updateUserInfo, updateUserGoal, createDailyLimits } from "@/lib/api"
 import { 
   ArrowRight, 
   ArrowLeft, 
@@ -125,35 +124,59 @@ export default function OnboardingPage() {
     setIsLoading(true)
 
     try {
-      // Save user info
-      await updateUserInfo({
+      // Get registration credentials from sessionStorage
+      const username = typeof window !== "undefined" ? sessionStorage.getItem("registration_username") : null
+      const email = typeof window !== "undefined" ? sessionStorage.getItem("registration_email") : null
+      const password = typeof window !== "undefined" ? sessionStorage.getItem("registration_password") : null
+
+      if (!username || !email || !password) {
+        setError("Registration session expired. Please start again.")
+        setIsLoading(false)
+        return
+      }
+
+      // Calculate recommended values
+      const recommendedCalories = calculateRecommendedCalories()
+      const calculatedProtein = Math.round(Number(weight) * 1.6)
+      const calculatedCarbs = Math.round((recommendedCalories * 0.45) / 4)
+      const calculatedFat = Math.round((recommendedCalories * 0.3) / 9)
+
+      // Call combined registration with onboarding data
+      const { registerWithOnboarding } = await import("@/lib/auth")
+      const result = await registerWithOnboarding({
+        username,
+        email,
+        password,
         name,
         surname,
         age: Number(age),
         weight: Number(weight),
         height: Number(height),
-        lifestyle,
         bmi: calculateBMI(),
-      })
-
-      // Save user goal
-      await updateUserGoal({
+        lifestyle,
         goalType,
         goalWeight: Number(goalWeight),
         goalDate,
-      })
-
-      // Create default daily limits based on calculations
-      const recommendedCalories = calculateRecommendedCalories()
-      await createDailyLimits({
         calorieLimit: recommendedCalories,
-        proteinLimit: Math.round(Number(weight) * 1.6), // 1.6g per kg bodyweight
-        carbLimit: Math.round((recommendedCalories * 0.45) / 4), // 45% of calories from carbs
-        fatLimit: Math.round((recommendedCalories * 0.3) / 9), // 30% of calories from fat
+        proteinLimit: calculatedProtein,
+        carbLimit: calculatedCarbs,
+        fatLimit: calculatedFat,
         waterGoal: 2500,
       })
 
-      router.push("/dashboard")
+      if (result.success) {
+        // Clear session storage
+        if (typeof window !== "undefined") {
+          sessionStorage.removeItem("registration_username")
+          sessionStorage.removeItem("registration_email")
+          sessionStorage.removeItem("registration_password")
+        }
+
+        // Redirect to verification page with email
+        router.push(`/verify?email=${encodeURIComponent(email)}`)
+      } else {
+        setError(result.message || "Failed to complete registration. Please try again.")
+      }
     } catch {
       setError("Failed to save your information. Please try again.")
     }
@@ -453,18 +476,6 @@ export default function OnboardingPage() {
           </Button>
         )}
       </div>
-
-      {/* Skip Option */}
-      <p className="text-center text-sm text-muted-foreground">
-        <button
-          type="button"
-          onClick={() => router.push("/dashboard")}
-          className="font-medium text-secondary hover:text-secondary/80"
-        >
-          Skip for now
-        </button>
-        {" - You can set this up later in settings"}
-      </p>
     </div>
   )
 }
