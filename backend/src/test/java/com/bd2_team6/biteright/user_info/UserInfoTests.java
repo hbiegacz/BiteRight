@@ -134,8 +134,8 @@ public class UserInfoTests {
         user.setUserInfo(info);
         userInfoRepository.save(info);
 
-        Integer infoId = info.getUserInfoId();
-        Integer userId = user.getId();
+        Long infoId = info.getUserInfoId();
+        Long userId = user.getId();
         userRepository.delete(user);
 
         assertFalse(userRepository.findById(userId).isPresent());
@@ -155,8 +155,8 @@ public class UserInfoTests {
         goal.setUserInfo(info);
         userInfoRepository.save(info);
 
-        Integer infoId = info.getUserInfoId();
-        Integer userGoalId = goal.getUserGoalId();
+        Long infoId = info.getUserInfoId();
+        Long userGoalId = goal.getUserGoalId();
         userGoalRepository.delete(goal);
 
 

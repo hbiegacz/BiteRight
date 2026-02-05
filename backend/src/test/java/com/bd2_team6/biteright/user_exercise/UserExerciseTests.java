@@ -142,9 +142,9 @@ public class UserExerciseTests {
         user.getUserExercises().addAll(Set.of(userExercise1, userExercise2));
         userRepository.save(user);
 
-        Integer userId = user.getId();
-        Integer ex1Id = userExercise1.getUserExerciseId();
-        Integer ex2Id = userExercise2.getUserExerciseId();
+        Long userId = user.getId();
+        Long ex1Id = userExercise1.getUserExerciseId();
+        Long ex2Id = userExercise2.getUserExerciseId();
 
         userRepository.deleteById(userId);
 
@@ -166,9 +166,9 @@ public class UserExerciseTests {
         exerciseInfo.getUserExercises().addAll(Set.of(userExercise1, userExercise2));
         exerciseInfoRepository.save(exerciseInfo);
 
-        Integer exerciseId = exerciseInfo.getExerciseId();
-        Integer userExercise1Id = userExercise1.getUserExerciseId();
-        Integer userExercise2Id = userExercise2.getUserExerciseId();
+        Long exerciseId = exerciseInfo.getExerciseId();
+        Long userExercise1Id = userExercise1.getUserExerciseId();
+        Long userExercise2Id = userExercise2.getUserExerciseId();
 
         exerciseInfoRepository.deleteById(exerciseId);
 

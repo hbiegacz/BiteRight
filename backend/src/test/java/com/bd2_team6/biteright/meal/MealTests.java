@@ -153,9 +153,9 @@ public class MealTests {
 
         userRepository.save(user);
 
-        Integer userId = user.getId();
-        Integer meal1Id = meal1.getMealId();
-        Integer meal2Id = meal1.getMealId();
+        Long userId = user.getId();
+        Long meal1Id = meal1.getMealId();
+        Long meal2Id = meal1.getMealId();
 
         userRepository.deleteById(userId);
 
@@ -179,9 +179,9 @@ public class MealTests {
 
         mealTypeRepository.save(mealType);
 
-        Integer mealTypeId = mealType.getTypeId();
-        Integer meal1Id = meal1.getMealId();
-        Integer meal2Id = meal1.getMealId();
+        Long mealTypeId = mealType.getTypeId();
+        Long meal1Id = meal1.getMealId();
+        Long meal2Id = meal1.getMealId();
 
         mealTypeRepository.deleteById(mealTypeId);
 

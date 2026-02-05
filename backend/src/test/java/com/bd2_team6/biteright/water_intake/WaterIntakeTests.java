@@ -98,8 +98,8 @@ public class WaterIntakeTests {
         user.getWaterIntakes().add(waterIntake);
         userRepository.save(user);
 
-        Integer userId = user.getId();
-        Integer waterIntakeId = waterIntake.getWaterIntakeId();
+        Long userId = user.getId();
+        Long waterIntakeId = waterIntake.getWaterIntakeId();
 
         userRepository.deleteById(userId);
 

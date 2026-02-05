@@ -97,8 +97,8 @@ public class WeightHistoryTests {
         user.getWeightHistories().add(weightHistory);
         userRepository.save(user);
 
-        Integer userId = user.getId();
-        Integer weightId = weightHistory.getWeightId();
+        Long userId = user.getId();
+        Long weightId = weightHistory.getWeightId();
 
         userRepository.deleteById(userId);
 

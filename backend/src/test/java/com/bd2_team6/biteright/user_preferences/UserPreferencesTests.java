@@ -99,8 +99,8 @@ public class UserPreferencesTests {
         user.setUserPreferences(preferences);
         userRepository.save(user);
 
-        Integer userId = user.getId();
-        Integer preferencesId = preferences.getUserPreferencesId();
+        Long userId = user.getId();
+        Long preferencesId = preferences.getUserPreferencesId();
 
         userRepository.deleteById(userId);
 

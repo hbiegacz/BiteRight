@@ -182,9 +182,9 @@ public class RecipeContentTests {
         recipe.getRecipeContents().add(recipeContent2);
         recipeRepository.save(recipe);
 
-        Integer recipeId = recipe.getRecipeId();
-        Integer recipeContent1Id = recipeContent1.getRecipeContentId();
-        Integer recipeContent2Id = recipeContent2.getRecipeContentId();
+        Long recipeId = recipe.getRecipeId();
+        Long recipeContent1Id = recipeContent1.getRecipeContentId();
+        Long recipeContent2Id = recipeContent2.getRecipeContentId();
 
         recipeRepository.deleteById(recipeId);
 
@@ -207,9 +207,9 @@ public class RecipeContentTests {
         ingredient.getRecipeContents().add(recipeContent2);
         ingredientRepository.save(ingredient);
 
-        Integer ingredientId = ingredient.getIngredientId();
-        Integer recipeContent1Id = recipeContent1.getRecipeContentId();
-        Integer recipeContent2Id = recipeContent2.getRecipeContentId();
+        Long ingredientId = ingredient.getIngredientId();
+        Long recipeContent1Id = recipeContent1.getRecipeContentId();
+        Long recipeContent2Id = recipeContent2.getRecipeContentId();
 
         ingredientRepository.deleteById(ingredientId);
 

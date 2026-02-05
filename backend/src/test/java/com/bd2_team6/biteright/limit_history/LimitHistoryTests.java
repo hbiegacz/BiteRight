@@ -104,9 +104,9 @@ public class LimitHistoryTests {
 
         userRepository.save(user);
 
-        Integer userId = user.getId();
-        Integer history1Id = limitHistory1.getHistoryId();
-        Integer history2Id = limitHistory2.getHistoryId();
+        Long userId = user.getId();
+        Long history1Id = limitHistory1.getHistoryId();
+        Long history2Id = limitHistory2.getHistoryId();
 
         userRepository.deleteById(userId);
 
