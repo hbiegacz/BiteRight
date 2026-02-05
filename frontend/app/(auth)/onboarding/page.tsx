@@ -15,8 +15,12 @@ import {
   Scale,
   Activity,
   Sparkles,
-  Check
+  CalendarIcon
 } from "lucide-react"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
+
 
 const STEPS = [
   { id: 1, title: "Personal Info", icon: User },
@@ -60,7 +64,7 @@ export default function OnboardingPage() {
   // Goals
   const [goalType, setGoalType] = useState("maintain")
   const [goalWeight, setGoalWeight] = useState("")
-  const [goalDate, setGoalDate] = useState("")
+  const [goalDate, setGoalDate] = useState<Date | undefined>(undefined)
 
   const calculateBMI = () => {
     if (weight && height) {
@@ -403,16 +407,31 @@ export default function OnboardingPage() {
                 <span className="text-muted-foreground">kg</span>
               </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="goalDate">Target Date</Label>
-              <Input
-                id="goalDate"
-                type="date"
-                value={goalDate}
-                onChange={(e) => setGoalDate(e.target.value)}
-                min={new Date().toISOString().split("T")[0]}
-                className="h-12"
-              />
+            <div className="space-y-2 flex flex-col">
+              <Label htmlFor="goalDate" className="mb-2">Target Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "h-12 w-full justify-start text-left font-normal",
+                      !goalDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {goalDate ? format(goalDate, "EEE, MMM d, yyyy") : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="end">
+                  <Calendar
+                    mode="single"
+                    selected={goalDate}
+                    onSelect={setGoalDate}
+                    disabled={(date) => date < new Date()}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
 

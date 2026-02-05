@@ -5,6 +5,10 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { format, parseISO } from "date-fns"
+import { cn } from "@/lib/utils"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
@@ -60,6 +64,7 @@ import {
   Eye,
   EyeOff,
   LogOut,
+  CalendarIcon,
 } from "lucide-react"
 
 export default function SettingsPage() {
@@ -92,7 +97,7 @@ export default function SettingsPage() {
   // Goals state
   const [goalType, setGoalType] = useState("maintain")
   const [goalWeight, setGoalWeight] = useState("")
-  const [goalDate, setGoalDate] = useState("")
+  const [goalDate, setGoalDate] = useState<Date | undefined>(undefined)
 
   // Preferences state
   const [language, setLanguage] = useState("en")
@@ -160,7 +165,9 @@ export default function SettingsPage() {
         setUserGoal(goalData)
         setGoalType(goalData.goalType || "maintain")
         setGoalWeight(goalData.goalWeight?.toString() || "")
-        setGoalDate(goalData.deadline || "")
+        if (goalData.deadline) {
+          setGoalDate(parseISO(goalData.deadline))
+        }
       }
 
       if (prefsData) {
@@ -234,7 +241,7 @@ export default function SettingsPage() {
     const result = await updateUserGoal({
       goalType,
       goalWeight: Number(goalWeight),
-      goalDate,
+      goalDate: goalDate ? format(goalDate, "yyyy-MM-dd") : "",
     })
 
     if (result) {
@@ -800,15 +807,31 @@ export default function SettingsPage() {
                 max={500}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="goalDate">Target Date</Label>
-              <Input
-                id="goalDate"
-                type="date"
-                value={goalDate}
-                onChange={(e) => setGoalDate(e.target.value)}
-                min={new Date().toISOString().split("T")[0]}
-              />
+            <div className="space-y-2 flex flex-col">
+              <Label htmlFor="goalDate" className="mb-2">Target Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !goalDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {goalDate ? format(goalDate, "EEE, MMM d, yyyy") : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="end">
+                  <Calendar
+                    mode="single"
+                    selected={goalDate}
+                    onSelect={setGoalDate}
+                    disabled={(date) => date < new Date()}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
 
