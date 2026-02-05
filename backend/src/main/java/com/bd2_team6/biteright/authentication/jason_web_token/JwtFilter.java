@@ -26,23 +26,29 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-                String authHeader = request.getHeader("Authorization");
-                String token = null;
-                String email = null;
+        String authHeader = request.getHeader("Authorization");
+        String token = null;
+        String email = null;
 
-                if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                    token = authHeader.substring(7);
-                    email = jwtService.extractEmail(token);
-                }
+        try {
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
+                email = jwtService.extractEmail(token);
+            }
 
                 if (email != null && SecurityContextHolder.getContext().getAuthentication()==null) {
                     CustomUserDetails userDetails = (CustomUserDetails) context.getBean(CustomUserDetailsService.class).loadUserByEmail(email);
                     if (jwtService.isTokenValid(token, userDetails)) {
                         Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, userDetails.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
+                } else {
+                    System.out.println("Token validation failed for email: " + email);
                 }
-                filterChain.doFilter(request, response);
             }
+        } catch (Exception e) {
+            System.out.println("Error processing JWT token: " + e.getMessage());
+        }
+        filterChain.doFilter(request, response);
+    }
 
 }
