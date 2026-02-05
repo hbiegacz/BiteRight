@@ -66,12 +66,12 @@ Getting started with BiteRight is simple and straightforward. Follow these steps
 First, download the project source code to your local machine:
 
 ```bash
-git clone https://gitlab-stud.elka.pw.edu.pl/miwanow/bd2-25l-z06.git
+git clone https://github.com/hbiegacz/BiteRight.git
 ```
 
 Move into the project folder:
 ```bash
-cd bd2-25l-z06
+cd BiteRight
 ```
 
 Start the entire application stack with a single command:
