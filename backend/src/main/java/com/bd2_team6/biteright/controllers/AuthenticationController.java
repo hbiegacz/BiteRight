@@ -1,10 +1,12 @@
 package com.bd2_team6.biteright.controllers;
 
 import com.bd2_team6.biteright.controllers.requests.RegistrationRequest;
+import com.bd2_team6.biteright.controllers.requests.CheckAvailabilityRequest;
 import com.bd2_team6.biteright.controllers.requests.VerificationRequest;
 import com.bd2_team6.biteright.controllers.requests.update_requests.EmailUpdateRequest;
 import com.bd2_team6.biteright.controllers.requests.update_requests.PasswordUpdateRequest;
 import com.bd2_team6.biteright.controllers.requests.update_requests.UsernameUpdateRequest;
+import com.bd2_team6.biteright.controllers.responses.AvailabilityResponse;
 import com.bd2_team6.biteright.authentication.jason_web_token.JwtService;
 import com.bd2_team6.biteright.controllers.requests.LoginRequest;
 import com.bd2_team6.biteright.controllers.requests.PasswordResetRequest;
@@ -32,10 +34,21 @@ public class AuthenticationController {
         return ResponseEntity.status(HttpStatus.OK).body("The token provided is valid :>>");
     }
 
+    @PostMapping("/check-availability")
+    public ResponseEntity<?> checkAvailability(@RequestBody CheckAvailabilityRequest request) {
+        try {
+            AvailabilityResponse response = authService.checkAvailability(request.getUsername(), request.getEmail());
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error checking availability.\n" + e.getMessage());
+        }
+    }
+
     @PostMapping("/register")
     public ResponseEntity<String> registerNewUser(@RequestBody RegistrationRequest registrationRequestBody) {
         try {
-            authService.registerNewUser(registrationRequestBody.getUsername(),registrationRequestBody.getEmail(), registrationRequestBody.getPassword());
+            authService.registerNewUser(registrationRequestBody);
             return ResponseEntity.status(HttpStatus.OK).body("User registered successfully");
         }
         catch (Exception e) {

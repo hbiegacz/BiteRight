@@ -55,4 +55,13 @@ public class DailyLimitsService {
 
         return dailyLimits;
     }
+
+    /**
+     * Creates daily limits for a user object directly (used during registration)
+     */
+    public DailyLimits createDailyLimitsForUser(User user, Integer calorieLimit, Integer proteinLimit,
+            Integer carbLimit, Integer fatLimit, Integer waterGoal) {
+        DailyLimits newDailyLimits = new DailyLimits(user, calorieLimit, proteinLimit, fatLimit, carbLimit, waterGoal);
+        return dailyLimitsRepository.save(newDailyLimits);
+    }
 }
