@@ -15,12 +15,17 @@ import {
   Scale,
   Activity,
   Sparkles,
+  Check,
   CalendarIcon
 } from "lucide-react"
+
+import { format, differenceInCalendarDays, parseISO, startOfToday } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
+const CALORIES_PER_KG_FAT = 7700
+const MIN_CALORIES_SAFE_FLOOR = 1200 
 
 const STEPS = [
   { id: 1, title: "Personal Info", icon: User },
@@ -77,7 +82,6 @@ export default function OnboardingPage() {
   const calculateRecommendedCalories = () => {
     if (!weight || !height || !age) return 2000
 
-    // Mifflin-St Jeor Equation (average of male/female)
     const bmr = 10 * Number(weight) + 6.25 * Number(height) - 5 * Number(age) + 5
 
     const activityMultipliers: Record<string, number> = {
@@ -87,14 +91,43 @@ export default function OnboardingPage() {
       active: 1.725,
       athlete: 1.9,
     }
+    const tdee = bmr * (activityMultipliers[lifestyle] || 1.55)
 
-    let tdee = bmr * (activityMultipliers[lifestyle] || 1.55)
+    let dailyAdjustment = 0
 
-    // Adjust for goal
-    if (goalType === "lose") tdee -= 500
-    if (goalType === "gain") tdee += 300
+    if (goalType === "maintain") {
+      return Math.round(tdee)
+    }
 
-    return Math.round(tdee)
+    if (goalWeight && goalDate) {
+      const targetWeight = Number(goalWeight)
+      const currentWeight = Number(weight)
+      const weightDiff = targetWeight - currentWeight
+
+      const totalCalorieChange = weightDiff * CALORIES_PER_KG_FAT
+
+      const today = startOfToday()
+      const daysRemaining = differenceInCalendarDays(goalDate, today)
+
+      const safeDays = Math.max(daysRemaining, 1)
+
+      dailyAdjustment = totalCalorieChange / safeDays
+    } else {
+      if (goalType === "lose") dailyAdjustment = -500
+      if (goalType === "gain") dailyAdjustment = 300
+      return Math.round(tdee + dailyAdjustment)
+    }
+
+    let targetCalories = tdee + dailyAdjustment
+
+    if (targetCalories < MIN_CALORIES_SAFE_FLOOR) {
+      targetCalories = MIN_CALORIES_SAFE_FLOOR
+    }
+
+    const MAX_SURPLUS = 2000
+    if (dailyAdjustment > MAX_SURPLUS) targetCalories = tdee + MAX_SURPLUS
+
+    return Math.round(targetCalories)
   }
 
   const handleNext = () => {
@@ -145,7 +178,8 @@ export default function OnboardingPage() {
       const calculatedCarbs = Math.round((recommendedCalories * 0.45) / 4)
       const calculatedFat = Math.round((recommendedCalories * 0.3) / 9)
 
-      // Call combined registration with onboarding data
+      const formattedDate = format(goalDate, "yyyy-MM-dd")
+
       const { registerWithOnboarding } = await import("@/lib/auth")
       const result = await registerWithOnboarding({
         username,
@@ -160,7 +194,7 @@ export default function OnboardingPage() {
         lifestyle,
         goalType,
         goalWeight: Number(goalWeight),
-        goalDate,
+        goalDate: formattedDate,
         calorieLimit: recommendedCalories,
         proteinLimit: calculatedProtein,
         carbLimit: calculatedCarbs,
@@ -169,14 +203,12 @@ export default function OnboardingPage() {
       })
 
       if (result.success) {
-        // Clear session storage
         if (typeof window !== "undefined") {
           sessionStorage.removeItem("registration_username")
           sessionStorage.removeItem("registration_email")
           sessionStorage.removeItem("registration_password")
         }
 
-        // Redirect to verification page with email
         router.push(`/verify?email=${encodeURIComponent(email)}`)
       } else {
         setError(result.message || "Failed to complete registration. Please try again.")

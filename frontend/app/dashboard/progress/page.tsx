@@ -62,28 +62,7 @@ interface Meal {
 
 // Redefining types based on what we'll use from `getSummaryRange`
 interface DailySummary {
-  date: string // Assuming the API returns date in the summary or we map it?
-  // checking api.ts: `getSummaryRange` returns `DailySummary[]`. The interface `DailySummary` in api.ts (step 47) DOES NOT have a date field!
-  // It has totalCalories, totalProtein, etc.
-  // If `getSummaryRange` returns an array, how do we know which day is which?
-  // Usually it returns a map or an ordered list.
-  // If I can't be sure, I might have to stick to `getAllUserMeals` and hope for the best, OR fetch `getDailySummary` for each of the last 7 days parallelly.
-  // Fetching 7 days separately is safer than guessing the array order if it's not explicit.
-  // ALSO, `getAllUserMeals` is available.
-  // Let's check `MealController` again. calculateCalories is likely method on backend.
-  // The plan said: "Fetch Meals (/meal/findUserMeals)".
-  // Let's stick to the plan but maybe improve if `getAllUserMeals` is heavy.
-  // Wait, if `Meal` doesn't have calories, I can't calculate.
-  // `MealDTO` in backend:
-  // public class MealDTO { ... private List<MealContentDTO> contents; ... }
-  // `MealContentDTO` { ... private String ingredientName; private Double ingredientAmount; ... }
-  // It usually DOESNT have calories!
-  // I must check if `Meal` entity or DTO has totals.
-  // If not, I am stuck fetching ingredients for every meal content (N+1 problem on frontend).
-  // BUT `DailySummary` endpoint exists.
-  // `getDailySummary(date)`: /dailySummary/find?date=X
-  // I will fetch `getDailySummary` for the last 7 days. That is 7 requests. Totally fine.
-
+  date: string
   totalCalories: number
   totalProtein: number
   totalFat: number
@@ -113,7 +92,7 @@ async function myAuthFetch(endpoint: string) {
 }
 
 export default function ProgressPage() {
-  const [timeRange, setTimeRange] = useState("week") // Currently implementing "week" logic primarily
+  const [timeRange, setTimeRange] = useState("week") 
   const [data, setData] = useState<DayData[]>([])
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   const [loading, setLoading] = useState(true)
@@ -124,58 +103,38 @@ export default function ProgressPage() {
       try {
         setLoading(true)
 
-        // 1. Fetch User Info
         const userInfoData = await myAuthFetch("/userInfo/findUserInfo")
         setUserInfo(userInfoData)
 
-        // 2. Fetch Weight History
-        // We fetch a reasonable amount to cover history
         const weightHistoryRes = await myAuthFetch("/weightHistory/findWeightHistoriesForUser?size=100&sortDir=asc&sortBy=measurementDate")
         const weightHistory: WeightHistory[] = weightHistoryRes.content || []
 
-        // 3. Generate dates for the selected range (Last 7 days for "week")
-        // Note: The UI says "This Week", but usually charts show last 7 days. 
-        // Let's do last 7 days including today.
         const daysToFetch = 7
         const dates: Date[] = []
         for (let i = daysToFetch - 1; i >= 0; i--) {
           dates.push(subDays(new Date(), i))
         }
 
-        // 4. Fetch Daily Summaries for each date
         const summaryPromises = dates.map(async (date) => {
           const dateStr = format(date, "yyyy-MM-dd")
           try {
-            // We use the endpoint directly. 
-            // Note: If 404/Empty, we assume 0.
-            // The backend implementation of getDailySummary might return 404 if no data?
-            // `DailySummaryController` usually calculates on the fly.
-            // If it fails, we return zeroed summary.
             const summary = await myAuthFetch(`/dailySummary/find?date=${dateStr}`).catch(() => null)
 
-            // Find weight for this day
-            // Strategy: Find exact match, or use most recent previous weight
-            // This fills the line chart gaps
             let weight = userInfoData.weight // Default to current
 
-            // Try to find exact or prev
             const exactWeight = weightHistory.find(w => w.measurementDate === dateStr)
             if (exactWeight) {
               weight = exactWeight.weight
             } else {
-              // Find closest previous
-              // Since history is sorted ASC, we find the last one that is <= date
               const prevWeights = weightHistory.filter(w => w.measurementDate <= dateStr)
               if (prevWeights.length > 0) {
                 weight = prevWeights[prevWeights.length - 1].weight
               }
-              // If no previous weight, we might leave it as current or null? 
-              // Using current is a safe fallback for "current state"
             }
 
             return {
               date: dateStr,
-              day: format(date, "EEE"), // Mon, Tue
+              day: format(date, "EEE"),
               fullDate: dateStr,
               weight: weight,
               totalCalories: summary?.totalCalories || 0,
@@ -211,9 +170,8 @@ export default function ProgressPage() {
     }
 
     fetchData()
-  }, [timeRange]) // Re-run if timeRange changes (logic to be expanded for month/year)
+  }, [timeRange]) 
 
-  // Calculations based on fetched data
   const avgCalories = data.length > 0
     ? Math.round(data.reduce((sum, d) => sum + d.totalCalories, 0) / data.length)
     : 0
