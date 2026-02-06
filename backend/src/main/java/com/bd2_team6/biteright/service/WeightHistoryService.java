@@ -3,27 +3,33 @@ package com.bd2_team6.biteright.service;
 import com.bd2_team6.biteright.controllers.requests.create_requests.WeightHistoryCreateRequest;
 import com.bd2_team6.biteright.controllers.requests.update_requests.WeightHistoryUpdateRequest;
 import com.bd2_team6.biteright.entities.user.User;
+import com.bd2_team6.biteright.entities.user_info.UserInfoRepository;
 import com.bd2_team6.biteright.entities.user.UserRepository;
 import com.bd2_team6.biteright.entities.weight_history.WeightHistory;
 import com.bd2_team6.biteright.entities.weight_history.WeightHistoryRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
 @Service
+@RequiredArgsConstructor
 public class WeightHistoryService {
 
     private final UserRepository userRepository;
+    private final UserInfoRepository userInfoRepository;
     private final WeightHistoryRepository weightHistoryRepository;
 
     public WeightHistory createWeightHistory(String username, WeightHistoryCreateRequest request) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User not found"));
         WeightHistory weightHistory = new WeightHistory(user, request.getMeasurementDate(), request.getWeight());
+        user.getUserInfo().setWeight(request.getWeight());
 
+        userInfoRepository.save(user.getUserInfo());
         weightHistoryRepository.save(weightHistory);
         return weightHistory;
     }
@@ -101,10 +107,5 @@ public class WeightHistoryService {
         else {
             throw new IllegalArgumentException("Weight history with provided id does not belong to user");
         }
-    }
-
-    public WeightHistoryService(UserRepository userRepository, WeightHistoryRepository weightHistoryRepository) {
-        this.userRepository = userRepository;
-        this.weightHistoryRepository = weightHistoryRepository;
     }
 }
