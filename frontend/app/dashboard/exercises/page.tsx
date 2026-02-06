@@ -69,15 +69,24 @@ export default function ExercisesPage() {
   const dateString = format(selectedDate, "yyyy-MM-dd")
   const isToday = dateString === format(new Date(), "yyyy-MM-dd")
 
-  const totalCaloriesBurned = exercises.reduce((sum, e) => sum + e.caloriesBurnt, 0)
-  const totalDuration = exercises.reduce((sum, e) => sum + e.duration, 0)
+  const totalCaloriesBurned = Array.isArray(exercises) ? exercises.reduce((sum, e) => sum + (e.caloriesBurnt || 0), 0) : 0
+  const totalDuration = Array.isArray(exercises) ? exercises.reduce((sum, e) => sum + (e.duration || 0), 0) : 0
 
   // Fetch exercises for selected date
   const fetchExercises = useCallback(async () => {
     setIsLoading(true)
-    const data = await getExercisesByDate(dateString)
-    setExercises(data?.content || [])
-    setIsLoading(false)
+    console.log(`[ExercisesPage] Fetching exercises for date: ${dateString}`)
+    try {
+      const data = await getExercisesByDate(dateString)
+      const content = data?.content || []
+      console.log(`[ExercisesPage] Received ${content.length} exercises`)
+      setExercises(content)
+    } catch (error) {
+      console.error("[ExercisesPage] Error fetching exercises:", error)
+      setExercises([])
+    } finally {
+      setIsLoading(false)
+    }
   }, [dateString])
 
   useEffect(() => {
@@ -91,16 +100,29 @@ export default function ExercisesPage() {
     }
 
     setIsSearching(true)
-    const results = await searchExerciseInfo(searchQuery)
-    setSearchResults(results)
-    setIsSearching(false)
+    console.log(`[ExercisesPage] Searching for: ${searchQuery}`)
+    try {
+      const results = await searchExerciseInfo(searchQuery)
+      console.log(`[ExercisesPage] Search results: ${results.length}`)
+      setSearchResults(results)
+    } catch (error) {
+      console.error("[ExercisesPage] Search error:", error)
+      setSearchResults([])
+    } finally {
+      setIsSearching(false)
+    }
   }
 
   useEffect(() => {
     const fetchUserWeight = async () => {
-      const info = await getUserInfo()
-      if (info?.weight) {
-        setUserWeight(info.weight)
+      try {
+        const info = await getUserInfo()
+        if (info?.weight) {
+          console.log(`[ExercisesPage] User weight loaded: ${info.weight}`)
+          setUserWeight(info.weight)
+        }
+      } catch (error) {
+        console.error("[ExercisesPage] Error loading user weight:", error)
       }
     }
     fetchUserWeight()
@@ -116,6 +138,7 @@ export default function ExercisesPage() {
 
   const handleOpenDialog = (exercise?: UserExercise) => {
     if (exercise) {
+      console.log(`[ExercisesPage] Editing exercise:`, exercise)
       setEditingExercise(exercise)
       setSelectedExercise({
         id: exercise.exerciseInfoId,
@@ -124,6 +147,7 @@ export default function ExercisesPage() {
       })
       setDuration(exercise.duration)
     } else {
+      console.log(`[ExercisesPage] Opening add exercise dialog`)
       resetForm()
     }
     setDialogOpen(true)
@@ -145,21 +169,39 @@ export default function ExercisesPage() {
       duration,
     }
 
+    console.log(`[ExercisesPage] Submitting exercise:`, exerciseData)
+
     let success: boolean
-    if (editingExercise) {
-      const result = await updateUserExercise(editingExercise.id, exerciseData)
-      success = !!result
-    } else {
-      const result = await createUserExercise(exerciseData)
-      success = !!result
-    }
+    try {
+      if (editingExercise) {
+        const result = await updateUserExercise(editingExercise.id, exerciseData)
+        if (result) {
+          console.log(`[ExercisesPage] Update success:`, result)
+          success = true
+        } else {
+          console.error(`[ExercisesPage] Update failed - no result`)
+          success = false
+        }
+      } else {
+        const result = await createUserExercise(exerciseData)
+        if (result) {
+          console.log(`[ExercisesPage] Creation success:`, result)
+          success = true
+        } else {
+          console.error(`[ExercisesPage] Creation failed - no result`)
+          success = false
+        }
+      }
 
-    if (success) {
-      await fetchExercises()
-      handleCloseDialog()
+      if (success) {
+        await fetchExercises()
+        handleCloseDialog()
+      }
+    } catch (error) {
+      console.error("[ExercisesPage] Submission error:", error)
+    } finally {
+      setIsSubmitting(false)
     }
-
-    setIsSubmitting(false)
   }
 
   const handleDeleteClick = (exercise: UserExercise) => {
@@ -170,13 +212,21 @@ export default function ExercisesPage() {
   const handleConfirmDelete = async () => {
     if (!exerciseToDelete) return
 
-    const success = await deleteUserExercise(exerciseToDelete.id)
-    if (success) {
-      await fetchExercises()
+    console.log(`[ExercisesPage] Deleting exercise: ${exerciseToDelete.id}`)
+    try {
+      const success = await deleteUserExercise(exerciseToDelete.id)
+      if (success) {
+        console.log(`[ExercisesPage] Deletion success`)
+        await fetchExercises()
+      } else {
+        console.error(`[ExercisesPage] Deletion failed`)
+      }
+    } catch (error) {
+      console.error("[ExercisesPage] Deletion error:", error)
+    } finally {
+      setDeleteDialogOpen(false)
+      setExerciseToDelete(null)
     }
-
-    setDeleteDialogOpen(false)
-    setExerciseToDelete(null)
   }
 
   const estimatedCalories = selectedExercise

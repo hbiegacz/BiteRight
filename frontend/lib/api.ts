@@ -49,6 +49,7 @@ export interface DailySummary {
   totalFat: number
   totalCarbs: number
   totalWater: number
+  caloriesBurnt: number
 }
 
 export interface MealContent {
@@ -139,7 +140,16 @@ export async function getDailySummary(date: string): Promise<DailySummary | null
   try {
     const response = await authFetch(`/dailySummary/find?date=${date}`)
     if (response.ok) {
-      return await response.json()
+      const data = await response.json()
+      if (!data) return null
+      return {
+        totalCalories: data.calories || 0,
+        totalProtein: data.protein || 0,
+        totalFat: data.fat || 0,
+        totalCarbs: data.carbs || 0,
+        totalWater: data.waterDrank || 0,
+        caloriesBurnt: data.caloriesBurnt || 0,
+      }
     }
     return null
   } catch {
@@ -156,7 +166,15 @@ export async function getSummaryRange(
       `/dailySummary/find?startDate=${startDate}&endDate=${endDate}`
     )
     if (response.ok) {
-      return await response.json()
+      const summaries = await response.json()
+      return (summaries || []).map((data: any) => ({
+        totalCalories: data.calories || 0,
+        totalProtein: data.protein || 0,
+        totalFat: data.fat || 0,
+        totalCarbs: data.carbs || 0,
+        totalWater: data.waterDrank || 0,
+        caloriesBurnt: data.caloriesBurnt || 0,
+      }))
     }
     return null
   } catch {
@@ -423,12 +441,10 @@ export async function searchExerciseInfo(name: string): Promise<ExerciseInfo[]> 
     const response = await authFetch(`/exerciseInfo/find/${encodeURIComponent(name)}`)
     if (response.ok) {
       const data = await response.json()
-      // Map backend fields (exerciseId, metabolicEquivalent) to frontend fields
       return (data || []).map((item: any) => ({
-        id: item.exerciseId,
+        id: item.id,
         name: item.name,
         metabolicEquivalent: item.metabolicEquivalent,
-        // We will calculate caloriesPerMinute in the component where we have user weight
       }))
     }
     return []
