@@ -301,7 +301,7 @@ INSERT INTO app_user (username, email, password_hash, type, is_verified, forgott
     ('tomasz_lewandowski', 'tomasz.lewandowski@email.com', '$2a$10$gBuZYzI9c3GtU8exqV6O4ugkQehletVzjs.kjJhun3W4qu17dEU.C', 'exampleuser', true, 'W4X7Y9Z1A');
 
 INSERT INTO user_goal (goal_type, goal_weight, deadline) VALUES
-    ("Get skinny", 55.5, '2025-01-01'), ('weight_loss', 75.0, '2025-12-31'), ('muscle_gain', 65.0, '2025-10-15'),
+    ("Get skinny", 55.5, '2026-04-01'), ('weight_loss', 75.0, '2026-01-01'), ('muscle_gain', 65.0, '2025-10-15'),
     ('maintenance', 80.0, '2025-09-30'), ('weight_loss', 58.0, '2025-11-20'), ('muscle_gain', 85.0, '2026-01-15');
 
 INSERT INTO user_info (user_id, user_goal_id, name, surname, age, weight, height, lifestyle) VALUES
@@ -313,39 +313,39 @@ INSERT INTO user_preferences (user_id, language, darkmode, font, notifications) 
     (4, 'eng', true, 'Times New Roman', true), (5, 'eng', false, 'Calibri', true), (6, 'eng', true, 'Verdana', false);
 
 INSERT INTO verification_code (user_id, code, expiration_date) VALUES
-    (1, "123456", '2025-01-01 00:00:00'),    (2, 'M8N0P2Q4R', '2025-06-05 23:49:00'),  (3, 'S6T8U0V2W', '2025-06-05 23:49:00'),
-    (4, 'X4Y6Z8A0B', '2025-06-05 23:49:00'), (5, 'C2D4E6F8G', '2025-06-05 23:49:00'), (6, 'H0I2J4K6L', '2025-06-05 23:49:00');
+    (1, "123456", '2025-01-01 00:00:00'),    (2, 'M8N0P2Q4R', '2026-02-05 23:49:00'),  (3, 'S6T8U0V2W', '2026-02-05 23:49:00'),
+    (4, 'X4Y6Z8A0B', '2026-02-05 23:49:00'), (5, 'C2D4E6F8G', '2026-02-05 23:49:00'), (6, 'H0I2J4K6L', '2026-02-05 23:49:00');
 
 -- ----------->   EXMAPLE MEAL DATA   <--------------------------------
 
 INSERT INTO meal (user_id, meal_type_id, meal_date, name, description) VALUES 
-    (1, 1, '2025-06-12 00:00:00', 'Oatmeal Breakfast', 'Oatmeal with milk and banana'),
-    (1, 2, '2025-06-12 01:00:00', 'Chicken Salad', 'Chicken breast, lettuce, tomato, olive oil'),
-    (1, 3, '2025-06-12 02:00:00', 'Vegetable Rice', 'Rice with broccoli and carrots'),
-    (1, 4, '2025-06-12 03:00:00', 'Grilled Salmon Supper', 'Salmon fillet with asparagus and quinoa'),
-    (1, 5, '2025-06-11 04:00:00', 'Protein Snack Pack', 'Almonds, Greek yogurt, and blueberries'),
-    (1, 2, '2025-06-08 05:00:00', 'Turkey Club Lunch', 'Whole wheat sandwich with turkey bacon and avocado'),
-    (1, 1, '2025-06-10 08:00:00', 'Protein Breakfast', 'High protein morning meal with eggs and cheese'),
-	(1, 2, '2025-06-10 13:00:00', 'Mediterranean Lunch', 'Light lunch with olive oil and ham'),
-	(1, 3, '2025-06-10 19:00:00', 'Hearty Dinner', 'Satisfying evening meal with bacon and vegetables'),
-	(1, 1, '2025-06-09 07:30:00', 'Dairy Morning', 'Calcium rich breakfast with milk and cheese'),
-	(1, 2, '2025-06-09 12:30:00', 'Fish Lunch', 'Healthy seafood lunch with tuna and vegetables'),
-	(1, 3, '2025-06-09 18:30:00', 'Comfort Dinner', 'Traditional dinner with sausage and sides'),
-	(1, 1, '2025-06-11 08:30:00', 'Quick Breakfast', 'Fast morning meal with processed foods'),
-	(1, 2, '2025-06-11 14:00:00', 'Snack Lunch', 'Light lunch with chips and juice'),
-	(1, 3, '2025-06-11 20:00:00', 'Simple Dinner', 'Easy dinner with canned foods'),
-	(1, 1, '2025-06-07 07:00:00', 'Healthy Start', 'Nutritious breakfast with skim milk and fruit'),
-	(1, 2, '2025-06-07 12:00:00', 'Gourmet Lunch', 'Refined lunch with specialty cheeses'),
-	(1, 3, '2025-06-07 18:00:00', 'Seafood Dinner', 'Ocean-fresh dinner with sardines and sides'),
-	(1, 1, '2025-06-06 09:00:00', 'Energy Breakfast', 'High-energy morning meal with cream and oils'),
-	(1, 2, '2025-06-06 13:30:00', 'Meat Lunch', 'Protein-packed lunch with various meats'),
-	(1, 3, '2025-06-06 19:30:00', 'Vegetable Dinner', 'Plant-based dinner with mushrooms and peppers'),
-	(1, 5, '2025-06-12 08:00:00', 'Chocolate Musse', 'quick snack'),
-    (1, 1, '2025-06-13 08:00:00', 'Morning Energy Bowl', 'Nutritious breakfast with cereals and milk'),
-    (1, 2, '2025-06-13 13:00:00', 'Hearty Lunch Combo', 'Satisfying midday meal with soup and bread'),
-    (1, 3, '2025-06-13 19:00:00', 'Classic Dinner Plate', 'Traditional evening meal with meat and vegetables'),
-    (1, 4, '2025-06-13 21:30:00', 'Light Evening Bite', 'Simple supper with cheese and crackers'),
-    (1, 5, '2025-06-13 15:30:00', 'Sweet Afternoon Treat', 'Delicious snack with nuts and chocolate');
+    (1, 1, '2026-02-02 00:00:00', 'Oatmeal Breakfast', 'Oatmeal with milk and banana'),
+    (1, 2, '2026-02-02 01:00:00', 'Chicken Salad', 'Chicken breast, lettuce, tomato, olive oil'),
+    (1, 3, '2026-02-02 02:00:00', 'Vegetable Rice', 'Rice with broccoli and carrots'),
+    (1, 4, '2026-02-02 03:00:00', 'Grilled Salmon Supper', 'Salmon fillet with asparagus and quinoa'),
+    (1, 5, '2026-02-01 04:00:00', 'Protein Snack Pack', 'Almonds, Greek yogurt, and blueberries'),
+    (1, 2, '2026-02-01 05:00:00', 'Turkey Club Lunch', 'Whole wheat sandwich with turkey bacon and avocado'),
+    (1, 1, '2026-02-01 08:00:00', 'Protein Breakfast', 'High protein morning meal with eggs and cheese'),
+	(1, 2, '2026-02-04 13:00:00', 'Mediterranean Lunch', 'Light lunch with olive oil and ham'),
+	(1, 3, '2026-02-03 19:00:00', 'Hearty Dinner', 'Satisfying evening meal with bacon and vegetables'),
+	(1, 1, '2026-02-04 07:30:00', 'Dairy Morning', 'Calcium rich breakfast with milk and cheese'),
+	(1, 2, '2026-02-04 12:30:00', 'Fish Lunch', 'Healthy seafood lunch with tuna and vegetables'),
+	(1, 3, '2026-02-05 18:30:00', 'Comfort Dinner', 'Traditional dinner with sausage and sides'),
+	(1, 1, '2026-02-06 08:30:00', 'Quick Breakfast', 'Fast morning meal with processed foods'),
+	(1, 2, '2026-02-05 14:00:00', 'Snack Lunch', 'Light lunch with chips and juice'),
+	(1, 3, '2026-02-03 20:00:00', 'Simple Dinner', 'Easy dinner with canned foods'),
+	(1, 1, '2026-02-01 07:00:00', 'Healthy Start', 'Nutritious breakfast with skim milk and fruit'),
+	(1, 2, '2026-02-02 12:00:00', 'Gourmet Lunch', 'Refined lunch with specialty cheeses'),
+	(1, 3, '2026-02-02 18:00:00', 'Seafood Dinner', 'Ocean-fresh dinner with sardines and sides'),
+	(1, 1, '2026-01-30 09:00:00', 'Energy Breakfast', 'High-energy morning meal with cream and oils'),
+	(1, 2, '2026-01-30 13:30:00', 'Meat Lunch', 'Protein-packed lunch with various meats'),
+	(1, 3, '2026-01-30 19:30:00', 'Vegetable Dinner', 'Plant-based dinner with mushrooms and peppers'),
+	(1, 5, '2026-01-30 08:00:00', 'Chocolate Musse', 'quick snack'),
+    (1, 1, '2026-01-29 08:00:00', 'Morning Energy Bowl', 'Nutritious breakfast with cereals and milk'),
+    (1, 2, '2026-01-29 13:00:00', 'Hearty Lunch Combo', 'Satisfying midday meal with soup and bread'),
+    (1, 3, '2026-01-28 19:00:00', 'Classic Dinner Plate', 'Traditional evening meal with meat and vegetables'),
+    (1, 4, '2026-01-29 21:30:00', 'Light Evening Bite', 'Simple supper with cheese and crackers'),
+    (1, 5, '2026-01-28 15:30:00', 'Sweet Afternoon Treat', 'Delicious snack with nuts and chocolate');
     
 INSERT INTO meal_content (ingredient_id, meal_id, ingredient_amount) VALUES
     (192, 1, 50),   (1, 1, 150),    (168, 1, 100), (120, 2, 100), (150, 2, 50),  (162, 2, 50),  (48, 2, 10), (190, 3, 100),  (137, 3, 50),  
@@ -363,27 +363,27 @@ INSERT INTO daily_limits (user_id, calorie_limit, protein_limit, fat_limit, carb
 
 -- ----------->   EXMAPLE RECIPE DATA   <--------------------------------
 
-INSERT INTO recipe (name, description) VALUES 
-    ('Classic Pancakes', 'Fluffy American-style pancakes with maple syrup'),
-    ('Chicken Stir-Fry', 'Asian-style chicken with vegetables'),
-    ('Greek Salad', 'Fresh Mediterranean salad with feta'),
-    ('Beef Chili', 'Spicy chili con carne with beans'),
-    ('Fruit Smoothie', 'Refreshing mixed fruit drink'),
-    ('Bacon & Eggs Breakfast', 'Classic American breakfast with crispy bacon'),
-    ('Tuna Salad Sandwich', 'Protein-rich lunch with canned tuna'),
-    ('Creamy Mushroom Soup', 'Rich and hearty soup with mushrooms'),
-    ('Chocolate Chip Cookies', 'Sweet homemade cookies with chocolate'),
-    ('Ham & Cheese Omelet', 'Fluffy eggs with ham and melted cheese'),
-    ('Sardine Toast', 'Nutritious open-faced sandwich'),
-    ('Peanut Butter Smoothie', 'Protein-packed drink with nuts'),
-    ('Beef Chili Supreme', 'Spicy meat dish with beans'),
-    ('Caesar Salad', 'Classic salad with cheese and dressing'),
-    ('Apple Pie Delight', 'Traditional American dessert'),
-    ('Chicken Noodle Soup', 'Comforting soup with tender chicken'),
-    ('Chocolate Fudge Cake', 'Rich dessert with chocolate layers'),
-    ('Greek Yogurt Bowl', 'Healthy breakfast with nuts and honey'),
-    ('Fish & Chips', 'Crispy fried fish with potato chips'),
-    ('Vegetable Stir-Fry', 'Fresh mixed vegetables with oil');
+INSERT INTO recipe (name, description, image_url) VALUES 
+    ('Classic Pancakes', 'Fluffy American-style pancakes with maple syrup', "https://imgs.search.brave.com/jKO2xNWICax61UymkqnFvXUxXhptseoyQdpV-zpJ6dE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly93d3cu/bXV5ZGVsaXNoLmNv/bS93cC1jb250ZW50/L3VwbG9hZHMvMjAy/My8xMC9lbnNhbGFk/YS1jZXNhci1yZWNp/cGUuanBn"),
+    ('Chicken Stir-Fry', 'Asian-style chicken with vegetables', "https://imgs.search.brave.com/zG_Y7DgwBlvi6ySEt2RrsjOXjCotuwmtazHDbUnTWJo/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jb29r/aW5nd2l0aGthcmxp/LmNvbS93cC1jb250/ZW50L3VwbG9hZHMv/MjAyMy8wMS9jaGlj/a2VuLXN0aXItZnJ5/LWZ0LTMwMHgzMDAu/anBn"),
+    ('Greek Salad', 'Fresh Mediterranean salad with feta', "https://imgs.search.brave.com/2R1-OtrgNGALGHVnHeEsSKRGfwGdGQ8PQ6PQ3BEt8Fc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/am9jb29rcy5jb20v/d3AtY29udGVudC91/cGxvYWRzLzIwMTMv/MTAvY2xhc3NpYy1n/cmVlay1zYWxhZC0x/LTIuanBn"),
+    ('Beef Chili', 'Spicy chili con carne with beans', "https://imgs.search.brave.com/7uTq8rUtgQ5A55IG_qC83Wc699OMuAnseFe4Ysl022s/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9yZXMu/Y2xvdWRpbmFyeS5j/b20vaGtzcWtkbGFo/L2ltYWdlL3VwbG9h/ZC9hcl8xOjEsY19m/aWxsLGRwcl8yLjAs/Zl9hdXRvLGZsX2xv/c3N5LnByb2dyZXNz/aXZlLnN0cmlwX3By/b2ZpbGUsZ19mYWNl/czphdXRvLHFfYXV0/bzpsb3csd18yMDAv/MjU1MjBfc2ZzLWJl/c3QtZ3JvdW5kLWJl/ZWYtY2hpbGktNA"),
+    ('Fruit Smoothie', 'Refreshing mixed fruit drink', "https://imgs.search.brave.com/w48lO9YxXQ_wPjeFe8-lyg981URsGIo2L6fPiwjrsLE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jb29r/aW5nbWF0dGVycy5v/cmcvd3AtY29udGVu/dC91cGxvYWRzLzIw/MjEvMTEvQ29va2lu/Zy1NYXR0ZXJzLVJl/Y2lwZS1GcnVpdFNt/b290aGllLnBuZw"),
+    ('Bacon & Eggs Breakfast', 'Classic American breakfast with crispy bacon', "https://imgs.search.brave.com/wH51ohGkCuruODul2B3DGE-P3VFMvPvv1QjYXu2BWEw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9ibG9n/Z2VyLmdvb2dsZXVz/ZXJjb250ZW50LmNv/bS9pbWcvYi9SMjl2/WjJ4bC9BVnZYc0Vo/ZmNFMURFNVNFSzRm/UGgwTk11VzUxZV9Y/Q1NlNmtLc2dWN00t/NFVhbl9QSnNQU1lh/NkpIcWJoMk5GdnZs/RXBpZDUtbjZyVFVw/YXZrZmJ1TkQ2RUI5/MUlubXVCUm1UMFM4/dlpZdXpHTHBBZVU5/QzkzRjdBQWxtVGlk/T2VnOWRVT1huZU5r/MzA0M0RuYTkzL3M2/NDAtcncvUGVyZmVj/dC1CYWNvbi1hbmQt/RWdnc19JTUdfMDgy/MC5KUEc" ),
+    ('Tuna Salad Sandwich', 'Protein-rich lunch with canned tuna', "https://imgs.search.brave.com/H6wl_qOmVabTUPeH4Dzzn_K3rciKczlyDuR924Y7rnE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Zm9vZGllY3J1c2gu/Y29tL3dwLWNvbnRl/bnQvdXBsb2Fkcy8y/MDI0LzAxL1R1bmEt/U2FsYWQtZm9vZGll/Y3J1c2guY29tLTEx/LTcyOHgxMDkyLmpw/Zw"),
+    ('Creamy Mushroom Soup', 'Rich and hearty soup with mushrooms', "https://imgs.search.brave.com/R7Ywgb1WDo2ZEjbOGATpqdFa9-YowCzo4bnevByLg0M/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/d2lsbGNvb2tmb3Jz/bWlsZXMuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI0LzAx/L011c2hyb29tLVNv/dXAtaW4tcG90LWhv/cml6b250YWwuanBn"),
+    ('Chocolate Chip Cookies', 'Sweet homemade cookies with chocolate', "https://imgs.search.brave.com/guScSNjwibkAwi6Xq8klRm6bHhY3IgA89f50xl9bhtw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9wcmV2/aWV3LnJlZGQuaXQv/aG93LXRvLWktZ2V0/LXRleHR1cmVkLWNo/b2NvbGF0ZS1jaGlw/LWNvb2tpZXMtbGlr/ZS10aGUtb25lcy12/MC1zZ3MzaG1tajk0/ZmExLmpwZz93aWR0/aD02NDAmY3JvcD1z/bWFydCZhdXRvPXdl/YnAmcz0zZGMyZmVl/MTg5OTI2NjY1NTI4/MWJiODc3N2MwYTRh/MzhlZGNkNDkx"),
+    ('Ham & Cheese Omelet', 'Fluffy eggs with ham and melted cheese', "https://imgs.search.brave.com/mcEyL-i2_KNz1MN24EEqxqqHio6ayFqff_OYxMdJrEI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pMC53/cC5jb20vd3d3LnNv/bnNoaW5la2l0Y2hl/bi5jb20vd3AtY29u/dGVudC91cGxvYWRz/LzIwMTkvMDQvSGFt/LWFuZC1DaGVlc2Ut/T21lbGV0LTA0Lmpw/Zz9yZXNpemU9NzAw/LDQ2NyZzc2w9MQ" ),
+    ('Sardine Toast', 'Nutritious open-faced sandwich', "https://imgs.search.brave.com/pQMpSYZGv1U1Qe64S58scccbbyVD42x3f9-TFHuX6vg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTEz/NzA1NTg1NS9waG90/by9icnVzY2hldHRh/LWFuZC1zbWFsbC1z/YW5kd2ljaGVzLXdp/dGgtc2FyZGluZS10/b2FzdGVkLWJyZWFk/LXNuYWNrLW9yLWFw/cGV0aXplci1zYXJk/aW5lLmpwZz9zPTYx/Mng2MTImdz0wJms9/MjAmYz1KYVdUd0My/Sk5QbDBYR1hkTVZR/aTJBSXZYdHhxZjZP/bEhIalRvcUdDeXNv/PQ"),
+    ('Peanut Butter Smoothie', 'Protein-packed drink with nuts', "https://imgs.search.brave.com/2sMqO_OOHZsekwA96BBqK5Cr-2k2sjVpwqIaesVbYws/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jaGVm/c2F2dnkuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy9wZWFudXQt/YnV0dGVyLW9hdG1l/YWwtc21vb3RoaWUu/anBn" ),
+    ('Beef Chili Supreme', 'Spicy meat dish with beans', "https://imgs.search.brave.com/wSbC9MA3sGyBPktiSXblNCGXZhG-EgI6XG-4hPw9Ydo/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/d2ViZm9vZHN0b3Jl/LmNvbS9jZG4vc2hv/cC9wcm9kdWN0cy9j/MGFhNTM1NS1iYmNk/LTQ3MjgtODQxOS1m/NzFkZTEwY2ViYjZf/NDY3MDAyYzYtMjZj/YS00ZDc1LWJiM2Mt/NzgwNTQ4MDE3MTBj/LmpwZz92PTE2Mzkx/MjY4MjImd2lkdGg9/MTQ0NQ"),
+    ('Caesar Salad', 'Classic salad with cheese and dressing', "https://imgs.search.brave.com/OhqiDi15Je4TqAXGvkqOrWzVmRfmhD7nV8i_VHBYW2U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/bXV5ZGVsaXNoLmNv/bS93cC1jb250ZW50/L3VwbG9hZHMvMjAy/My8xMC9lbnNhbGFk/YS1jZXNhci5qcGc"),
+    ('Apple Pie Delight', 'Traditional American dessert', "https://imgs.search.brave.com/b6VDPfzC6dnujL_WTUSFmy95j-mGoCAJWyfbLwrxuSo/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9hc3Nl/dHMuYm9uYXBwZXRp/dC5jb20vcGhvdG9z/LzU5YzE3ZTgxYWQ5/NjdmNmQwMTM5NmEy/ZS9tYXN0ZXIvd18x/MDI0LGNfbGltaXQv/YnV0dGVyc2NvdGNo/LWFwcGxlLWN1c3Rh/cmQuanBn"),
+    ('Chicken Noodle Soup', 'Comforting soup with tender chicken', "https://imgs.search.brave.com/jEUcIlYT7c5FPMqntnZrpP8g6mCEnkW7ASEz2xFh3vE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/YXZlcmllY29va3Mu/Y29tL3dwLWNvbnRl/bnQvdXBsb2Fkcy8y/MDI0LzEwL2NoaWNr/ZW5ub29kbGVzb3Vw/LTIyLmpwZw"),
+    ('Chocolate Fudge Cake', 'Rich dessert with chocolate layers', "https://imgs.search.brave.com/PCn4NyupE-feeUWvqyFqgzzq9IGXVNT6Kk9yyix-Neg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9wcmV2/aWV3LnJlZGQuaXQv/Y2hvY29sYXRlLWZ1/ZGdlLWNha2UtdGhh/dC1pLW1hZGUtZm9y/LW15LXBhcnRuZXJz/LTQwdGgtdjAtMmdt/ZDZ3ajAxZmFiMS5q/cGc_d2lkdGg9NjQw/JmNyb3A9c21hcnQm/YXV0bz13ZWJwJnM9/Y2EyMzNlNTQ3Yjc4/NTQzMjFmYjFmMWM5/N2VlMTdjMTYyNDg4/ZTM1ZQ"),
+    ('Greek Yogurt Bowl', 'Healthy breakfast with nuts and honey', "https://imgs.search.brave.com/2KtTKxyM5wHLUaqUYM5DqtQ1DSnDJYN-Nj9IW8-Ms8o/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/d2FsZGVyd2VsbG5l/c3MuY29tL3dwLWNv/bnRlbnQvdXBsb2Fk/cy8yMDIyLzAyL1Bl/YW51dC1CdXR0ZXIt/R3JlZWstWW9ndXJ0/LVdhbGRlci1XZWxs/bmVzcy0yLTY4MHgx/MDIwLmpwZw"),
+    ('Fish & Chips', 'Crispy fried fish with potato chips', "https://imgs.search.brave.com/JbOvs_UzFhpAnNkYSqxGKQRUFn76gLM3KOR7Qc9xRi4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTIw/MjU0NTU1Mi9waG90/by9maXNoLWFuZC1j/aGlwcy1vbi1hLXdv/b2Rlbi1iYWNrZ3Jv/dW5kLWJyaXRpc2gt/ZmFzdC1mb29kLXJl/Y2lwZXMtc25hY2st/dG8tYmVlci1lbmds/aXNoLWN1aXNpbmUu/anBnP3M9NjEyeDYx/MiZ3PTAmaz0yMCZj/PWxsQTdoUnNScVAw/ZlY2VUVrblFIN2JG/THlXajZ5Q3p4THpj/SEhVZTFtUjA9"),
+    ('Vegetable Stir-Fry', 'Fresh mixed vegetables with oil', "https://imgs.search.brave.com/c0jLYAVHDzp4yyVT6i09w3vD5A56IollZ97N-kdIShk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/YWxscmVjaXBlcy5j/b20vdGhtYi9NRjd5/VTFNQmJSbGFUNDBv/Z1ZyLTFQZ2dnS2M9/LzE1MDB4MC9maWx0/ZXJzOm5vX3Vwc2Nh/bGUoKTptYXhfYnl0/ZXMoMTUwMDAwKTpz/dHJpcF9pY2MoKS8y/MjI2NTgtZnJvemVu/LXZlZ2V0YWJsZS1z/dGlyLWZyeS00eDMt/MTM4Mi01ODNiNTNm/YTBiY2Q0MjQ3OTIw/NjExYWQ0MzFjMTRj/Yi5qcGc");
 
 INSERT INTO recipe_content (recipe_id, ingredient_id, ingredient_amount) VALUES
     (1, 192, 200),  (1, 1, 300),    (1, 6, 2),      (1, 206, 10),   (1, 168, 50),
@@ -410,15 +410,15 @@ INSERT INTO recipe_content (recipe_id, ingredient_id, ingredient_amount) VALUES
 -- ----------->   EXMAPLE WATER INTAKE DATA   <--------------------------------
 
 INSERT INTO water_intake (intake_date, user_id, water_amount) VALUES
-	('2025-06-13 08:00:00', 1, 500), ('2025-06-02 16:45:00', 1, 600),  ('2025-06-01 12:30:00', 1, 750), ('2025-06-01 20:15:00', 1, 400), ('2025-06-02 07:30:00', 1, 650),
-	('2025-06-12 11:00:00', 1, 800), ('2025-06-03 15:30:00', 1, 550),  ('2025-06-02 19:45:00', 1, 450), ('2025-06-03 08:15:00', 1, 700), ('2025-06-03 13:00:00', 1, 900),
-	('2025-06-11 17:30:00', 1, 350), ('2025-06-04 21:00:00', 1, 300),  ('2025-06-09 09:00:00', 1, 850), ('2025-06-04 14:15:00', 1, 600), ('2025-06-04 18:30:00', 1, 500),
-	('2025-06-10 07:45:00', 1, 750), ('2025-06-01 09:30:00', 2, 300),  ('2025-06-01 14:00:00', 2, 400), ('2025-06-01 18:30:00', 2, 250), ('2025-06-02 08:15:00', 2, 350),
-	('2025-06-09 13:45:00', 2, 450), ('2025-06-02 19:00:00', 2, 200),  ('2025-06-03 10:00:00', 2, 500), ('2025-06-03 15:30:00', 2, 300), ('2025-06-01 10:15:00', 3, 250),
-	('2025-06-08 15:30:00', 3, 350), ('2025-06-01 20:00:00', 3, 200),  ('2025-06-02 08:45:00', 3, 300), ('2025-06-02 14:30:00', 3, 400), ('2025-06-02 18:15:00', 3, 150),
-	('2025-06-07 11:00:00', 4, 200), ('2025-06-01 16:15:00', 4, 300),  ('2025-06-01 21:30:00', 4, 150), ('2025-06-02 09:30:00', 4, 250), ('2025-06-01 12:30:00', 5, 180),
-	('2025-06-06 17:45:00', 5, 280), ('2025-06-01 22:00:00', 5, 120),  ('2025-06-02 10:15:00', 5, 220), ('2025-06-02 11:00:00', 6, 200), ('2025-06-02 17:15:00', 6, 300),
-	('2025-06-05 21:30:00', 6, 50),  ('2025-06-03 14:30:00', 6, 350),  ('2025-06-03 19:45:00', 6, 150);
+	('2026-02-01 08:00:00', 1, 500), ('2026-02-08 16:45:00', 1, 600),  ('2026-02-01 12:30:00', 1, 750), ('2026-01-29 20:15:00', 1, 400), ('2026-02-02 07:30:00', 1, 650),
+	('2026-02-02 11:00:00', 1, 800), ('2026-01-29 15:30:00', 1, 550),  ('2026-02-02 19:45:00', 1, 450), ('2026-01-28 08:15:00', 1, 700), ('2026-02-03 13:00:00', 1, 900),
+	('2026-02-03 17:30:00', 1, 350), ('2026-02-28 21:00:00', 1, 300),  ('2026-02-09 09:00:00', 1, 850), ('2026-01-27 14:15:00', 1, 600), ('2026-02-04 18:30:00', 1, 500),
+	('2026-02-04 07:45:00', 1, 750), ('2026-02-01 09:30:00', 2, 300),  ('2026-02-01 14:00:00', 2, 400), ('2026-02-01 18:30:00', 2, 250), ('2026-02-02 08:15:00', 2, 350),
+	('2026-02-05 13:45:00', 1, 450), ('2026-02-02 19:00:00', 2, 200),  ('2026-02-03 10:00:00', 2, 500), ('2026-02-03 15:30:00', 2, 300), ('2026-02-01 10:15:00', 3, 250),
+	('2026-02-06 15:30:00', 1, 350), ('2026-02-01 20:00:00', 3, 200),  ('2026-02-02 08:45:00', 3, 300), ('2026-02-02 14:30:00', 3, 400), ('2026-02-02 18:15:00', 3, 150),
+	('2026-02-07 11:00:00', 1, 200), ('2026-02-01 16:15:00', 4, 300),  ('2026-02-01 21:30:00', 4, 150), ('2026-02-02 09:30:00', 4, 250), ('2026-02-01 12:30:00', 5, 180),
+	('2026-01-30 17:45:00', 1, 280), ('2026-02-01 22:00:00', 5, 120),  ('2026-02-02 10:15:00', 5, 220), ('2026-02-02 11:00:00', 6, 200), ('2026-02-02 17:15:00', 6, 300),
+	('2026-01-30 21:30:00', 6, 50),  ('2026-02-03 14:30:00', 6, 350),  ('2026-02-03 19:45:00', 6, 150);
 
 -- ----------->   EXMAPLE EXERCISE DATA   <--------------------------------
 
@@ -434,31 +434,31 @@ INSERT INTO exercise_info (metabolic_equivalent, name) VALUES
 
 
 INSERT INTO user_exercise (user_id, exercise_id, activity_date, duration) VALUES
-	(1, 1,  '2025-06-11 08:30:00', 30), (1, 2,  '2025-06-12 18:00:00', 45), (1, 3, '2025-06-13 07:15:00', 60),  (1, 4, '2025-06-13 12:00:00', 40),  (1, 5, '2025-06-12 09:00:00', 50),      
-	(1, 6,  '2025-06-11 17:30:00', 35), (1, 7,  '2025-06-10 10:00:00', 30), (1, 8, '2025-06-08 15:45:00', 25),  (1, 9, '2025-06-09 19:00:00', 30),  (1, 10, '2025-06-10 08:00:00', 60),
-	(1, 15, '2025-06-10 07:00:00', 45), (1, 22, '2025-06-12 19:30:00', 60), (2, 8, '2025-06-03 06:45:00', 30),  (2, 33, '2025-06-04 20:15:00', 40), (2, 12, '2025-06-05 08:30:00', 35),
-	(1, 28, '2025-06-10 18:00:00', 50), (1, 5,  '2025-06-12 07:30:00', 25), (2, 19, '2025-06-08 16:45:00', 55), (2, 31, '2025-06-09 09:15:00', 40), (2, 14, '2025-06-10 17:00:00', 35), 
-	(1, 17, '2025-06-02 18:45:00', 35), (3, 25, '2025-06-03 08:00:00', 45), (3, 9, '2025-06-04 19:30:00', 30),  (3, 21, '2025-06-05 07:15:00', 60), (3, 36, '2025-06-06 16:30:00', 40),
-	(1, 11, '2025-06-07 09:45:00', 25), (3, 27, '2025-06-08 20:00:00', 50), (3, 4, '2025-06-09 06:00:00', 35),  (3, 18, '2025-06-10 15:30:00', 45), (4, 7, '2025-06-01 08:15:00', 40),
-	(1, 24, '2025-06-06 17:30:00', 55), (4, 13, '2025-06-03 09:30:00', 30), (4, 32, '2025-06-04 18:15:00', 45), (4, 6, '2025-06-05 07:45:00', 35),  (4, 20, '2025-06-06 19:45:00', 50),
-	(1, 29, '2025-06-08 08:00:00', 25), (4, 16, '2025-06-08 17:15:00', 40), (4, 35, '2025-06-09 10:30:00', 60), (4, 23, '2025-06-10 16:00:00', 30), (5, 26, '2025-06-01 05:45:00', 65),
-	(5, 10, '2025-06-02 20:30:00', 35), (5, 34, '2025-06-03 06:15:00', 50), (5, 1, '2025-06-04 19:00:00', 40),  (5, 30, '2025-06-05 08:45:00', 45), (5, 37, '2025-06-06 17:45:00', 30),
-	(5, 8,  '2025-06-07 07:00:00', 55), (5, 22, '2025-06-08 18:30:00', 25), (5, 15, '2025-06-09 09:00:00', 40), (5, 31, '2025-06-10 20:15:00', 50), (6, 29, '2025-06-01 10:00:00', 30),
-	(6, 2,  '2025-06-02 16:45:00', 45), (6, 33, '2025-06-03 08:30:00', 35), (6, 12, '2025-06-04 21:00:00', 60), (6, 25, '2025-06-05 06:30:00', 40), (6, 17, '2025-06-06 18:45:00', 50),
-	(6, 31, '2025-06-07 09:15:00', 25), (6, 4,  '2025-06-08 19:30:00', 35), (6, 28, '2025-06-09 07:30:00', 45), (3, 3, '2025-06-01 06:30:00', 50),  (6, 14, '2025-06-10 15:45:00', 55);
+	(1, 1,  '2026-02-11 08:30:00', 30), (1, 2,  '2026-02-12 18:00:00', 45), (1, 3, '2026-02-13 07:15:00', 60),  (1, 4, '2026-02-13 12:00:00', 40),  (1, 5, '2026-02-12 09:00:00', 50),      
+	(1, 6,  '2026-02-11 17:30:00', 35), (1, 7,  '2026-02-10 10:00:00', 30), (1, 8, '2026-02-08 15:45:00', 25),  (1, 9, '2026-02-09 19:00:00', 30),  (1, 10, '2026-02-10 08:00:00', 60),
+	(1, 15, '2026-02-10 07:00:00', 45), (1, 22, '2026-02-12 19:30:00', 60), (2, 8, '2026-02-03 06:45:00', 30),  (2, 33, '2026-02-04 20:15:00', 40), (2, 12, '2026-02-05 08:30:00', 35),
+	(1, 28, '2026-02-10 18:00:00', 50), (1, 5,  '2026-02-12 07:30:00', 25), (2, 19, '2026-02-08 16:45:00', 55), (2, 31, '2026-02-09 09:15:00', 40), (2, 14, '2026-02-10 17:00:00', 35), 
+	(1, 17, '2026-02-02 18:45:00', 35), (3, 25, '2026-02-03 08:00:00', 45), (3, 9, '2026-02-04 19:30:00', 30),  (3, 21, '2026-02-05 07:15:00', 60), (3, 36, '2026-02-06 16:30:00', 40),
+	(1, 11, '2026-02-07 09:45:00', 25), (3, 27, '2026-02-08 20:00:00', 50), (3, 4, '2026-02-09 06:00:00', 35),  (3, 18, '2026-02-10 15:30:00', 45), (4, 7, '2026-02-01 08:15:00', 40),
+	(1, 24, '2026-02-06 17:30:00', 55), (4, 13, '2026-02-03 09:30:00', 30), (4, 32, '2026-02-04 18:15:00', 45), (4, 6, '2026-02-05 07:45:00', 35),  (4, 20, '2026-02-06 19:45:00', 50),
+	(1, 29, '2026-02-08 08:00:00', 25), (4, 16, '2026-02-08 17:15:00', 40), (4, 35, '2026-02-09 10:30:00', 60), (4, 23, '2026-02-10 16:00:00', 30), (5, 26, '2026-02-01 05:45:00', 65),
+	(1, 10, '2026-02-02 20:30:00', 35), (5, 34, '2026-02-03 06:15:00', 50), (5, 1, '2026-02-04 19:00:00', 40),  (5, 30, '2026-02-05 08:45:00', 45), (5, 37, '2026-02-06 17:45:00', 30),
+	(1, 8,  '2026-02-07 07:00:00', 55), (5, 22, '2026-02-08 18:30:00', 25), (5, 15, '2026-02-09 09:00:00', 40), (5, 31, '2026-02-10 20:15:00', 50), (6, 29, '2026-02-01 10:00:00', 30),
+	(1, 2,  '2026-02-02 16:45:00', 45), (6, 33, '2026-02-03 08:30:00', 35), (6, 12, '2026-02-04 21:00:00', 60), (6, 25, '2026-02-05 06:30:00', 40), (6, 17, '2026-02-06 18:45:00', 50),
+	(1, 31, '2026-02-05 09:15:00', 25), (6, 4,  '2026-02-08 19:30:00', 35), (6, 28, '2026-02-09 07:30:00', 45), (3, 3, '2026-02-01 06:30:00', 50),  (6, 14, '2026-02-10 15:45:00', 55);
 
 -- ----------->   EXMAPLE LIMIT AND WEIGHT HISTORY DATA   <--------------------------------
 INSERT INTO weight_history (user_id, measurement_date, weight) VALUES 
-(1, '2025-01-15 08:30:00', 65.50), (1, '2025-01-29 08:15:00', 64.80), (1, '2025-02-12 08:45:00', 64.20), (1, '2025-02-26 08:20:00', 63.60), 
-(1, '2025-03-11 08:35:00', 63.00), (1, '2025-03-25 08:25:00', 62.40), (1, '2025-04-08 08:40:00', 61.90), (1, '2025-04-22 08:15:00', 61.20), 
-(1, '2025-05-06 08:30:00', 60.90), (1, '2025-05-14 08:45:00', 60.0),  (1, '2025-05-18 08:25:00', 59.60), (1, '2025-05-23 08:30:00', 59.5),
-(1, '2025-05-27 08:25:00', 59.60), (1, '2025-05-30 08:30:00', 61.80), (1, '2025-06-06 08:45:00', 59.20), (1, '2025-06-09 08:25:00', 58.60);
+(1, '2025-01-15 08:30:00', 65.50), (1, '2025-01-29 08:15:00', 60.80), (1, '2025-02-04 08:45:00', 60.20), (1, '2025-02-26 08:20:00', 63.60), 
+(1, '2025-01-18 08:35:00', 63.00), (1, '2025-02-01 08:25:00', 61.40), (1, '2025-04-05 08:40:00', 60.90), (1, '2025-04-22 08:15:00', 61.20), 
+(1, '2025-01-22 08:30:00', 60.90), (1, '2025-02-02 08:45:00', 60.0),  (1, '2025-05-06 08:25:00', 59.60), (1, '2025-05-23 08:30:00', 59.5),
+(1, '2025-01-27 08:25:00', 59.60), (1, '2025-02-03 08:30:00', 60.80), (1, '2026-02-07 08:45:00', 59.20), (1, '2026-02-09 08:25:00', 58.60);
 UPDATE user_info SET weight=55.0 WHERE user_id = 1;
 
 UPDATE daily_limits 
     SET calorie_limit = 1700, protein_limit = 120, fat_limit = 60, carb_limit = 200, water_goal = 2500
 WHERE user_id = 1;
 UPDATE daily_limits 
-    SET calorie_limit = 1900, protein_limit = 150, fat_limit = 65, carb_limit = 180, water_goal = 3000
+    SET calorie_limit = 1836, protein_limit = 150, fat_limit = 65, carb_limit = 180, water_goal = 3000
 WHERE user_id = 1;
 
