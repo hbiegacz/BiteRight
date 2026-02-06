@@ -38,7 +38,7 @@ export function MacroCard({ label, value, limit, unit, color }: MacroCardProps) 
     <div className="rounded-xl border border-border bg-card p-4">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-muted-foreground">{label}</span>
-        <span className={cn("text-xs font-medium", isOverLimit ? "destructive" : colors.text)}>
+        <span className={cn("text-xs font-medium", isOverLimit ? "text-destructive" : colors.text)}>
           {Math.round(actualPercentage)}%
         </span>
       </div>
@@ -46,9 +46,9 @@ export function MacroCard({ label, value, limit, unit, color }: MacroCardProps) 
         <span className="text-2xl font-bold text-foreground">{Math.round(value)}</span>
         <span className="text-sm text-muted-foreground">/ {limit}{unit}</span>
       </div>
-      <div className={cn("mt-3 h-2 w-full overflow-hidden rounded-full", isOverLimit ? "bg-red-500/20" : colors.bg)}>
+      <div className={cn("mt-3 h-2 w-full overflow-hidden rounded-full", isOverLimit ? "bg-destructive/20" : colors.bg)}>
         <div
-          className={cn("h-full rounded-full transition-all duration-500", isOverLimit ? "bg-red-500" : colors.bar)}
+          className={cn("h-full rounded-full transition-all duration-500", isOverLimit ? "bg-destructive" : colors.bar)}
           style={{ width: `${barPercentage}%` }}
         />
       </div>

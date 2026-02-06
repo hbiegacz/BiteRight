@@ -47,11 +47,11 @@ export function WaterTracker({ consumed, goal, onAddWater }: WaterTrackerProps) 
           </span>
           <span className="text-sm text-muted-foreground">/ {(goal / 1000).toFixed(1)}L goal</span>
         </div>
-        <div className={cn("mt-2 h-3 w-full overflow-hidden rounded-full", isOverGoal ? "bg-red-500/20" : "bg-blue-500/20")}>
+        <div className={cn("mt-2 h-3 w-full overflow-hidden rounded-full", isOverGoal ? "bg-destructive/20" : "bg-blue-500/20")}>
           <div
             className={cn(
               "h-full rounded-full transition-all duration-500",
-              isOverGoal ? "bg-red-500" : "bg-blue-500"
+              isOverGoal ? "bg-destructive" : "bg-blue-500"
             )}
             style={{ width: `${percentage}%` }}
           />

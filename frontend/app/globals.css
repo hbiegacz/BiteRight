@@ -19,7 +19,7 @@
   --muted-foreground: oklch(0.45 0.04 150);
   --accent: oklch(0.72 0.15 10); /* Pink accent */
   --accent-foreground: oklch(0.22 0.05 150);
-  --destructive: oklch(0.55 0.2 25);
+  --destructive: oklch(46.025% 0.17894 26.658);
   --destructive-foreground: oklch(0.98 0.005 110);
   --border: oklch(0.85 0.03 145);
   --input: oklch(0.92 0.02 145);
@@ -55,7 +55,7 @@
   --muted-foreground: oklch(0.7 0.04 145);
   --accent: oklch(0.72 0.15 10);
   --accent-foreground: oklch(0.18 0.04 150);
-  --destructive: oklch(0.5 0.18 25);
+  --destructive: oklch(41.571% 0.15699 26.406);
   --destructive-foreground: oklch(0.96 0.01 110);
   --border: oklch(0.32 0.05 150);
   --input: oklch(0.28 0.05 150);

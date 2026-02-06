@@ -52,19 +52,19 @@ export function CalorieRing({
           strokeLinecap="round"
           className={cn(
             "transition-all duration-700 ease-out",
-            isOver ? "destructive" : "text-secondary"
+            isOver ? "text-destructive" : "text-secondary"
           )}
         />
       </svg>
       <div className="absolute flex flex-col items-center justify-center text-center">
-        <span className={cn("text-5xl font-bold", isOver ? "destructive" : "text-foreground")}>
+        <span className={cn("text-5xl font-bold", isOver ? "text-destructive" : "text-foreground")}>
           {Math.round(difference).toLocaleString()}
         </span>
         <span className="mt-1 text-sm font-medium text-muted-foreground">
           {isOver ? "kcal over limit" : "kcal remaining"}
         </span>
         <div className="mt-3 flex items-baseline gap-1.5">
-          <span className={cn("text-lg font-semibold", isOver ? "destructive" : "text-foreground")}>
+          <span className={cn("text-lg font-semibold", isOver ? "text-destructive" : "text-foreground")}>
             {consumed.toLocaleString()}
           </span>
           <span className="text-sm text-muted-foreground">/ {limit.toLocaleString()} kcal</span>
