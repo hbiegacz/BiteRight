@@ -594,6 +594,7 @@ export interface RecipeDTO {
   recipeId: number
   name: string
   description: string
+  imageUrl?: string
   contents: RecipeContentDTO[]
 }
 
@@ -640,6 +641,7 @@ export async function getRecipeById(id: number): Promise<RecipeDTO | null> {
 export async function createRecipe(recipe: {
   name: string
   description: string
+  imageUrl?: string
   contents: { ingredientId: number; ingredientAmount: number }[]
 }): Promise<RecipeDTO | null> {
   try {
@@ -661,6 +663,7 @@ export async function updateRecipe(
   recipe: {
     name: string
     description: string
+    imageUrl?: string
     contents: { ingredientId: number; ingredientAmount: number }[]
   }
 ): Promise<RecipeDTO | null> {
