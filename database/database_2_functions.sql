@@ -20,15 +20,6 @@ CREATE TRIGGER UPDATE_HISTORICAL_LIMITS
             (NOW(), OLD.user_id, OLD.calorie_limit, OLD.protein_limit, OLD.fat_limit, OLD.carb_limit, OLD.water_goal );
     END $$
 
-CREATE TRIGGER INSERT_USER_WEIGHT_HISTORY
-BEFORE INSERT ON user_info
-FOR EACH ROW
-BEGIN
-    INSERT INTO weight_history ( user_id, measurement_date, weight) 
-    VALUES ( NEW.user_id, NOW(), NEW.weight );
-END $$
-
-
 CREATE TRIGGER UPDATE_USER_WEIGHT_HISTORY
 BEFORE UPDATE ON user_info
 FOR EACH ROW
