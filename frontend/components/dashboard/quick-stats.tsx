@@ -9,6 +9,7 @@ interface QuickStatsProps {
   streak?: number
   weeklyAvgCalories?: number
   calorieGoal?: number
+  bmi?: number
 }
 
 export function QuickStats({
@@ -17,12 +18,13 @@ export function QuickStats({
   streak = 0,
   weeklyAvgCalories = 0,
   calorieGoal = 2000,
+  bmi,
 }: QuickStatsProps) {
   const weightTrend = weightChange > 0 ? "up" : weightChange < 0 ? "down" : "neutral"
   const WeightIcon = weightTrend === "up" ? TrendingUp : weightTrend === "down" ? TrendingDown : Minus
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
       <div className="rounded-xl border border-border bg-card p-4">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/20">
           <Scale className="h-5 w-5 text-primary" />
@@ -43,6 +45,16 @@ export function QuickStats({
             {weightChange !== 0 ? `${weightChange > 0 ? "+" : ""}${weightChange}kg` : "No change"}
           </span>
         </div>
+      </div>
+
+      <div className="rounded-xl border border-border bg-card p-4">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/20">
+          <Scale className="h-5 w-5 text-accent" />
+        </div>
+        <p className="mt-3 text-2xl font-bold text-foreground">
+          {bmi ? bmi : "--"}
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">BMI</p>
       </div>
 
       <div className="rounded-xl border border-border bg-card p-4">
