@@ -1,6 +1,7 @@
 package com.bd2_team6.biteright.controllers;
 
 import com.bd2_team6.biteright.controllers.DTO.UserInfoDTO;
+import com.bd2_team6.biteright.controllers.requests.update_requests.UpdateWeightRequest;
 import com.bd2_team6.biteright.controllers.requests.update_requests.UserInfoUpdateRequest;
 import com.bd2_team6.biteright.entities.user.UserRepository;
 import com.bd2_team6.biteright.entities.user_info.UserInfo;
@@ -54,6 +55,21 @@ public class UserInfoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             logger.error("Error updating user info." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/updateWeight")
+    public ResponseEntity<?> updateWeight(Authentication authentication, @RequestBody UpdateWeightRequest request) {
+        try {
+            String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
+            userInfoService.updateUsersWeight(username, request.getWeight());
+            return ResponseEntity.ok("Weight updated successfully.");
+        } catch (IllegalArgumentException e) {
+            logger.error("Error updating weight." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error updating weight." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
