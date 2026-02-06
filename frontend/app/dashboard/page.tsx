@@ -20,6 +20,7 @@ import {
   searchIngredients,
   getStreak,
   getAverageDailyCalories,
+  getUserInfo,
   type DailyLimits,
   type Meal,
   type WaterIntake,
@@ -46,6 +47,7 @@ export default function DashboardPage() {
   const [currentWeight, setCurrentWeight] = useState<number | undefined>()
   const [streak, setStreak] = useState<number>(0)
   const [avgCalories, setAvgCalories] = useState<number>(0)
+  const [bmi, setBmi] = useState<number | undefined>()
   const [loading, setLoading] = useState(true)
 
   const dateString = format(selectedDate, "yyyy-MM-dd")
@@ -131,6 +133,12 @@ export default function DashboardPage() {
 
       const userAvgCalories = await getAverageDailyCalories(7)
       setAvgCalories(userAvgCalories)
+
+      // Load BMI from user info
+      const userInfo = await getUserInfo()
+      if (userInfo) {
+        setBmi(userInfo.bmi)
+      }
 
       setLoading(false)
     }
@@ -224,6 +232,7 @@ export default function DashboardPage() {
         calorieGoal={limits.calorieLimit}
         streak={streak}
         weeklyAvgCalories={avgCalories}
+        bmi={bmi}
       />
 
       {/* Main content grid */}

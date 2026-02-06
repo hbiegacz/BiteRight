@@ -19,12 +19,15 @@ public class UserInfoService {
     private final UserRepository userRepository;
     private final UserInfoRepository userInfoRepository;
     private final WeightHistoryRepository weightHistoryRepository;
+    private final DailyLimitsService dailyLimitsService;
 
     @Autowired
-    public UserInfoService(UserRepository userRepository, UserInfoRepository userInfoRepository, WeightHistoryRepository weightHistoryRepository) {
+    public UserInfoService(UserRepository userRepository, UserInfoRepository userInfoRepository,
+            WeightHistoryRepository weightHistoryRepository, DailyLimitsService dailyLimitsService) {
         this.userRepository = userRepository;
         this.userInfoRepository = userInfoRepository;
         this.weightHistoryRepository = weightHistoryRepository;
+        this.dailyLimitsService = dailyLimitsService;
     }
 
     public UserInfo findUserInfoByUsername(String username) {
@@ -63,6 +66,8 @@ public class UserInfoService {
             weightHistoryRepository.save(weightHistory);
         }
 
+        dailyLimitsService.recalculateDailyLimits(user);
+
         return userInfo;
     }
 
@@ -71,5 +76,6 @@ public class UserInfoService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         user.getUserInfo().setWeight(weight);
         userRepository.save(user);
+        dailyLimitsService.recalculateDailyLimits(user);
     }
 }
