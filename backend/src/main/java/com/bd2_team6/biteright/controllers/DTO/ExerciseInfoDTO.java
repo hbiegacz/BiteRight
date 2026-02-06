@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExerciseInfoDTO {
-    private Long exerciseId;
+    private Long id;
     private Float metabolicEquivalent;
     private String name;
 
     public ExerciseInfoDTO(ExerciseInfo exerciseInfo) {
-        this.exerciseId = exerciseInfo.getExerciseId();
+        this.id = exerciseInfo.getExerciseId();
         this.metabolicEquivalent = exerciseInfo.getMetabolicEquivalent();
         this.name = exerciseInfo.getName();
     } 

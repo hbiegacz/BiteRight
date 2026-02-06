@@ -27,19 +27,19 @@ public class ExerciseInfoService {
                 .collect(Collectors.toSet());
     }
 
-    public ExerciseInfo createExerciseInfo(ExerciseInfoCreateRequest request) {
+    public ExerciseInfoDTO createExerciseInfo(ExerciseInfoCreateRequest request) {
         ExerciseInfo newInfo = new ExerciseInfo();
         newInfo.setMetabolicEquivalent(request.getMetabolicEquivalent());
         newInfo.setName(request.getName());
-        return exerciseInfoRepository.save(newInfo);
+        return new ExerciseInfoDTO(exerciseInfoRepository.save(newInfo));
     }
 
-    public ExerciseInfo updateExerciseInfo(String name, ExerciseInfoUpdateRequest request) {
-        ExerciseInfo newInfo = exerciseInfoRepository.findByName(name)
+    public ExerciseInfoDTO updateExerciseInfo(String name, ExerciseInfoUpdateRequest request) {
+        ExerciseInfo info = exerciseInfoRepository.findByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("Exercise with name '" + name + "' not found"));
-        newInfo.setMetabolicEquivalent(request.getMetabolicEquivalent());
-        newInfo.setName(request.getName());
-        return exerciseInfoRepository.save(newInfo);
+        info.setMetabolicEquivalent(request.getMetabolicEquivalent());
+        info.setName(request.getName());
+        return new ExerciseInfoDTO(exerciseInfoRepository.save(info));
     }
 
     public void deleteExerciseInfo(String name) {

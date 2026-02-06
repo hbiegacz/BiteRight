@@ -32,17 +32,18 @@ public class UserExerciseController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createUserExercise(Authentication authentication,
-                                               @RequestBody UserExerciseCreateRequest request) {
+            @RequestBody UserExerciseCreateRequest request) {
+        String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
+        logger.info("REST request to create UserExercise for user: {}", username);
         try {
-            String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             UserExercise userExercise = userExerciseService.createUserExercise(username, request);
             return ResponseEntity.ok(mapToDTO(userExercise));
         }
         catch (IllegalArgumentException e){
-            logger.error("Error creating user exercise." + e.getMessage());
+            logger.error("Bad Request: Failed to create user exercise: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            logger.error("Error creating user exercise." + e.getMessage());
+            logger.error("Internal Error: Critical failure during exercise creation", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -52,9 +53,10 @@ public class UserExerciseController {
                                                     @RequestParam(defaultValue = "0") int page,
                                                     @RequestParam(defaultValue = "10") int size,
                                                     @RequestParam(defaultValue = "desc") String sortDir,
-                                                    @RequestParam(defaultValue = "activityDate") String sortBy) {
+            @RequestParam(defaultValue = "activityDate") String sortBy) {
+        String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
+        logger.info("REST request to get all exercises for user: {}, page: {}", username, page);
         try {
-            String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             Sort sort = sortDir.equalsIgnoreCase("desc")
                     ? Sort.by(sortBy).descending()
                     : Sort.by(sortBy).ascending();
@@ -63,10 +65,10 @@ public class UserExerciseController {
             return ResponseEntity.ok(mapToDTOPage(userExercises));
         }
         catch (IllegalArgumentException e){
-            logger.error("Error finding user exercises for user." + e.getMessage());
+            logger.error("Search failed for user: {}: {}", username, e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            logger.error("Error finding user exercises for user." + e.getMessage());
+            logger.error("Internal Error: Critical failure finding user exercises", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -77,10 +79,10 @@ public class UserExerciseController {
                                                     @RequestParam(defaultValue = "10") int size,
                                                     @RequestParam(defaultValue = "desc") String sortDir,
                                                     @RequestParam(defaultValue = "activityDate") String sortBy,
-                                                    @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
+        logger.info("REST request to get exercises for user: {}, date: {}", username, date);
         try {
-            String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             Sort sort = sortDir.equalsIgnoreCase("desc")
                     ? Sort.by(sortBy).descending()
                     : Sort.by(sortBy).ascending();
@@ -88,43 +90,44 @@ public class UserExerciseController {
             Page<UserExercise> userExercises = userExerciseService.findUserExercisesByDate(username, date, pageable);
             return ResponseEntity.ok(mapToDTOPage(userExercises));
         } catch (IllegalArgumentException e) {
-            logger.error("Error finding user exercises by date." + e.getMessage());
+            logger.error("Date search failed for user: {}, date: {}: {}", username, date, e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            logger.error("Error finding user exercises by date." + e.getMessage());
+            logger.error("Internal Error: Critical failure finding exercises by date", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/findLastExercise")
     public ResponseEntity<?> findLastExerciseByDate(Authentication authentication) {
-
+        String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
+        logger.info("REST request to get last exercise for user: {}", username);
         try {
-            String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             UserExercise userExercise = userExerciseService.findLastExerciseByUsername(username);
             return ResponseEntity.ok(mapToDTO(userExercise));
         }
         catch (IllegalArgumentException e) {
-            logger.error("Error finding last user exercise by date." + e.getMessage());
+            logger.warn("Last exercise not found for user: {}: {}", username, e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            logger.error("Error finding last user exercise by date." + e.getMessage());
+            logger.error("Internal Error: Critical failure finding last exercise", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/findExerciseById/{id}")
     public ResponseEntity<?> findExerciseById(Authentication authentication, @PathVariable("id") Long userExerciseId) {
+        String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
+        logger.info("REST request to get exercise: {} for user: {}", userExerciseId, username);
         try {
-            String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             UserExercise userExercise = userExerciseService.findExerciseById(username, userExerciseId);
             return ResponseEntity.ok(mapToDTO(userExercise));
         }
         catch (IllegalArgumentException e){
-            logger.error("Error finding user exercise by id." + e.getMessage());
+            logger.error("Exercise lookup failed: {}: {}", userExerciseId, e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            logger.error("Error finding user exercise by id." + e.getMessage());
+            logger.error("Internal Error: Critical failure finding exercise by id", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -132,34 +135,36 @@ public class UserExerciseController {
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateExerciseById(Authentication authentication,
             @PathVariable("id") Long userExerciseId,
-                                                   @RequestBody UserExerciseUpdateRequest request) {
+            @RequestBody UserExerciseUpdateRequest request) {
+        String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
+        logger.info("REST request to update exercise: {} for user: {}", userExerciseId, username);
         try {
-            String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             UserExercise updatedUserExercise = userExerciseService.updateUserExerciseById(username, userExerciseId,
                     request);
             return ResponseEntity.ok(mapToDTO(updatedUserExercise));
         }
         catch (IllegalArgumentException e){
-            logger.error("Error updating user exercise by id." + e.getMessage());
+            logger.error("Update failed for exercise: {}: {}", userExerciseId, e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            logger.error("Error updating user exercise by id." + e.getMessage());
+            logger.error("Internal Error: Critical failure updating exercise", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteExercise(Authentication authentication, @PathVariable("id") Long userExerciseId) {
+        String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
+        logger.info("REST request to delete exercise: {} for user: {}", userExerciseId, username);
         try {
-            String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
             userExerciseService.deleteUserExerciseById(username, userExerciseId);
             return ResponseEntity.ok("User exercise deleted successfully");
         }
         catch (IllegalArgumentException e) {
-            logger.error("Error deleting user exercise by id." + e.getMessage());
+            logger.error("Deletion failed for exercise: {}: {}", userExerciseId, e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            logger.error("Error deleting user exercise by id." + e.getMessage());
+            logger.error("Internal Error: Critical failure deleting exercise", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

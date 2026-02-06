@@ -3,7 +3,6 @@ package com.bd2_team6.biteright.controllers;
 import com.bd2_team6.biteright.controllers.DTO.ExerciseInfoDTO;
 import com.bd2_team6.biteright.controllers.requests.create_requests.ExerciseInfoCreateRequest;
 import com.bd2_team6.biteright.controllers.requests.update_requests.ExerciseInfoUpdateRequest;
-import com.bd2_team6.biteright.entities.exercise_info.ExerciseInfo;
 import com.bd2_team6.biteright.service.ExerciseInfoService;
 import lombok.RequiredArgsConstructor;
 
@@ -34,33 +33,45 @@ public class ExerciseInfoController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createExerciseInfo(@RequestBody ExerciseInfoCreateRequest request){
+        logger.info("REST request to create ExerciseInfo: {}", request.getName());
         try {
-            ExerciseInfo newInfo = exerciseInfoService.createExerciseInfo(request);
+            ExerciseInfoDTO newInfo = exerciseInfoService.createExerciseInfo(request);
             return ResponseEntity.ok(newInfo);
         } catch (IllegalArgumentException e) {
-            logger.error("Error creating exercise info.\n" + e.getMessage());
+            logger.error("Failed to create exercise info: {}: {}", request.getName(), e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Internal Error: Critical failure during ExerciseInfo creation", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("/update/{name}") 
     public ResponseEntity<?> updateExerciseInfo(@PathVariable("name") String exerciseName, @RequestBody ExerciseInfoUpdateRequest request){
+        logger.info("REST request to update ExerciseInfo: {}", exerciseName);
         try {
-            ExerciseInfo updatedInfo = exerciseInfoService.updateExerciseInfo(exerciseName, request);
+            ExerciseInfoDTO updatedInfo = exerciseInfoService.updateExerciseInfo(exerciseName, request);
             return ResponseEntity.ok(updatedInfo);
         } catch (IllegalArgumentException e) {
-            logger.error("Error updating exercise info.\n" + e.getMessage());
+            logger.error("Update failed for exercise info: {}: {}", exerciseName, e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Internal Error: Critical failure updating ExerciseInfo", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @DeleteMapping("/delete/{name}") 
     public ResponseEntity<?> deleteExerciseInfo(@PathVariable("name") String exerciseName) {
+        logger.info("REST request to delete ExerciseInfo: {}", exerciseName);
         try {
             exerciseInfoService.deleteExerciseInfo(exerciseName);
-            return ResponseEntity.ok("Exercise info delete successfully");
+            return ResponseEntity.ok("Exercise info deleted successfully");
         } catch (IllegalArgumentException e) {
-            logger.error("Error deleting exercise info.\n" + e.getMessage());
+            logger.error("Deletion failed for exercise info: {}: {}", exerciseName, e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Internal Error: Critical failure deleting ExerciseInfo", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
