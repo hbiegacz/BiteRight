@@ -277,39 +277,39 @@ export default function RecipesPage() {
             <BookOpen className="h-8 w-8 text-muted-foreground" />
           </div>
           <h3 className="mt-4 text-lg font-semibold text-foreground">No recipes found</h3>
-            <p className="mt-1 text-muted-foreground">Try adjusting your search</p>
+          <p className="mt-1 text-muted-foreground">Try adjusting your search</p>
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {recipes.map((recipe) => (
-                <div key={recipe.recipeId} className="group overflow-hidden rounded-xl border border-border bg-card transition-all hover:shadow-lg">
-                  <div className="relative aspect-video bg-muted overflow-hidden">
-                    <img
-                      src={recipe.imageUrl || "https://images.unsplash.com/photo-1495195129352-aed325a55b65?q=80&w=400&h=225&auto=format&fit=crop"}
-                      alt={recipe.name}
-                      className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1495195129352-aed325a55b65?q=80&w=400&h=225&auto=format&fit=crop"
-                      }}
-                    />
+          {recipes.map((recipe) => (
+            <div key={recipe.recipeId} className="group overflow-hidden rounded-xl border border-border bg-card transition-all hover:shadow-lg">
+              <div className="relative aspect-video bg-muted overflow-hidden">
+                <img
+                  src={recipe.imageUrl || "https://images.unsplash.com/photo-1495195129352-aed325a55b65?q=80&w=400&h=225&auto=format&fit=crop"}
+                  alt={recipe.name}
+                  className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1495195129352-aed325a55b65?q=80&w=400&h=225&auto=format&fit=crop"
+                  }}
+                />
+              </div>
+              <div className="p-4">
+                <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">{recipe.name}</h3>
+                <p className="mt-1 text-sm text-muted-foreground line-clamp-2 min-h-[40px]">{recipe.description}</p>
+                <div className="mt-4 flex items-center justify-between">
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Utensils className="h-3 w-3" />
+                    <span>{recipe.contents?.length || 0} ingredients</span>
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">{recipe.name}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground line-clamp-2 min-h-[40px]">{recipe.description}</p>
-                    <div className="mt-4 flex items-center justify-between">
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Utensils className="h-3 w-3" />
-                        <span>{recipe.contents?.length || 0} ingredients</span>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 text-primary hover:text-primary hover:bg-primary/10"
-                        onClick={() => {
-                          setSelectedRecipe(recipe)
-                          setIsViewOpen(true)
-                        }}
-                      >
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 text-primary hover:text-primary hover:bg-primary/10"
+                    onClick={() => {
+                      setSelectedRecipe(recipe)
+                      setIsViewOpen(true)
+                    }}
+                  >
                     View Details
                   </Button>
                 </div>
@@ -320,7 +320,7 @@ export default function RecipesPage() {
       )}
 
       <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
-        <DialogContent className="max-w-4xl p-0 overflow-hidden sm:rounded-2xl border-none">
+        <DialogContent className="w-full max-w-md sm:max-w-2xl lg:max-w-4xl p-0 overflow-hidden sm:rounded-2xl border-none">
           {selectedRecipe && (
             <div className="grid md:grid-cols-2 min-h-[500px]">
               <div className="relative h-64 md:h-auto overflow-hidden">
