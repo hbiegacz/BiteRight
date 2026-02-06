@@ -19,8 +19,8 @@ export function CalorieRing({
   const circumference = radius * 2 * Math.PI
   const percentage = Math.min((consumed / limit) * 100, 100)
   const offset = circumference - (percentage / 100) * circumference
-  const remaining = Math.max(limit - consumed, 0)
   const isOver = consumed > limit
+  const difference = Math.abs(consumed - limit)
 
   return (
     <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
@@ -52,19 +52,19 @@ export function CalorieRing({
           strokeLinecap="round"
           className={cn(
             "transition-all duration-700 ease-out",
-            isOver ? "text-accent" : "text-secondary"
+            isOver ? "destructive" : "text-secondary"
           )}
         />
       </svg>
       <div className="absolute flex flex-col items-center justify-center text-center">
-        <span className="text-5xl font-bold text-foreground">
-          {remaining.toLocaleString()}
+        <span className={cn("text-5xl font-bold", isOver ? "destructive" : "text-foreground")}>
+          {Math.round(difference).toLocaleString()}
         </span>
         <span className="mt-1 text-sm font-medium text-muted-foreground">
-          {isOver ? "over limit" : "kcal remaining"}
+          {isOver ? "kcal over limit" : "kcal remaining"}
         </span>
         <div className="mt-3 flex items-baseline gap-1.5">
-          <span className={cn("text-lg font-semibold", isOver ? "text-accent" : "text-foreground")}>
+          <span className={cn("text-lg font-semibold", isOver ? "destructive" : "text-foreground")}>
             {consumed.toLocaleString()}
           </span>
           <span className="text-sm text-muted-foreground">/ {limit.toLocaleString()} kcal</span>

@@ -29,25 +29,27 @@ const colorMap = {
 }
 
 export function MacroCard({ label, value, limit, unit, color }: MacroCardProps) {
-  const percentage = Math.min((value / limit) * 100, 100)
+  const actualPercentage = (value / limit) * 100
+  const barPercentage = Math.min(actualPercentage, 100)
+  const isOverLimit = value > limit
   const colors = colorMap[color]
 
   return (
     <div className="rounded-xl border border-border bg-card p-4">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-muted-foreground">{label}</span>
-        <span className={cn("text-xs font-medium", colors.text)}>
-          {Math.round(percentage)}%
+        <span className={cn("text-xs font-medium", isOverLimit ? "destructive" : colors.text)}>
+          {Math.round(actualPercentage)}%
         </span>
       </div>
       <div className="mt-2 flex items-baseline gap-1">
         <span className="text-2xl font-bold text-foreground">{Math.round(value)}</span>
         <span className="text-sm text-muted-foreground">/ {limit}{unit}</span>
       </div>
-      <div className={cn("mt-3 h-2 w-full overflow-hidden rounded-full", colors.bg)}>
+      <div className={cn("mt-3 h-2 w-full overflow-hidden rounded-full", isOverLimit ? "bg-red-500/20" : colors.bg)}>
         <div
-          className={cn("h-full rounded-full transition-all duration-500", colors.bar)}
-          style={{ width: `${percentage}%` }}
+          className={cn("h-full rounded-full transition-all duration-500", isOverLimit ? "bg-red-500" : colors.bar)}
+          style={{ width: `${barPercentage}%` }}
         />
       </div>
     </div>

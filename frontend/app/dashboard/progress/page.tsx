@@ -53,7 +53,7 @@ interface DayData extends DailySummary {
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080").replace(/\/$/, "")
 
-async function myAuthFetch(endpoint: string) {
+async function myAuthFetch(endpoint: string) { // TODO: czym to się różni od authFetch??
   const token = getToken()
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -80,7 +80,7 @@ export default function ProgressPage() {
         const userInfoData = await myAuthFetch("/userInfo/findUserInfo")
         setUserInfo(userInfoData)
 
-        const weightHistoryRes = await myAuthFetch("/weightHistory/findWeightHistoriesForUser?size=100&sortDir=asc&sortBy=measurementDate")
+        const weightHistoryRes = await myAuthFetch("/weightHistory/findWeightHistoriesForUser?size=100&sortDir=desc&sortBy=measurementDate")
         const weightHistory: WeightHistory[] = weightHistoryRes.content || []
 
         const daysToFetch = 7
@@ -102,7 +102,7 @@ export default function ProgressPage() {
             } else {
               const prevWeights = weightHistory.filter(w => w.measurementDate <= dateStr)
               if (prevWeights.length > 0) {
-                weight = prevWeights[prevWeights.length - 1].weight
+                weight = prevWeights[0].weight
               }
             }
 

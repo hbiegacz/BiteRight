@@ -13,6 +13,7 @@ interface WaterTrackerProps {
 export function WaterTracker({ consumed, goal, onAddWater }: WaterTrackerProps) {
   const percentage = Math.min((consumed / goal) * 100, 100)
   const glasses = Math.floor(consumed / 250) // 250ml per glass
+  const isOverGoal = consumed > goal
 
   return (
     <div className="rounded-xl border border-border bg-card p-5">
@@ -46,10 +47,11 @@ export function WaterTracker({ consumed, goal, onAddWater }: WaterTrackerProps) 
           </span>
           <span className="text-sm text-muted-foreground">/ {(goal / 1000).toFixed(1)}L goal</span>
         </div>
-        <div className="mt-2 h-3 w-full overflow-hidden rounded-full bg-blue-500/20">
+        <div className={cn("mt-2 h-3 w-full overflow-hidden rounded-full", isOverGoal ? "bg-red-500/20" : "bg-blue-500/20")}>
           <div
             className={cn(
-              "h-full rounded-full bg-blue-500 transition-all duration-500"
+              "h-full rounded-full transition-all duration-500",
+              isOverGoal ? "bg-red-500" : "bg-blue-500"
             )}
             style={{ width: `${percentage}%` }}
           />
