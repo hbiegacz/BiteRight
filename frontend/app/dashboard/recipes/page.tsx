@@ -35,8 +35,10 @@ import {
   searchRecipes,
   createRecipe,
   searchIngredients,
+  getRecipeMacros,
   type RecipeDTO,
   type Ingredient,
+  type RecipeMacrosDTO,
 } from "@/lib/api"
 
 interface SelectedIngredient {
@@ -51,7 +53,9 @@ export default function RecipesPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
   const [selectedRecipe, setSelectedRecipe] = useState<RecipeDTO | null>(null)
+  const [selectedMacros, setSelectedMacros] = useState<RecipeMacrosDTO | null>(null)
   const [isViewOpen, setIsViewOpen] = useState(false)
+  const [isLoadingMacros, setIsLoadingMacros] = useState(false)
 
   const [newName, setNewName] = useState("")
   const [newDescription, setNewDescription] = useState("")
@@ -75,6 +79,20 @@ export default function RecipesPage() {
     }, 300)
     return () => clearTimeout(timer)
   }, [searchQuery, fetchRecipes])
+
+  useEffect(() => {
+    const fetchMacros = async () => {
+      if (selectedRecipe && isViewOpen) {
+        setIsLoadingMacros(true)
+        const macros = await getRecipeMacros(selectedRecipe.recipeId)
+        setSelectedMacros(macros)
+        setIsLoadingMacros(false)
+      } else {
+        setSelectedMacros(null)
+      }
+    }
+    fetchMacros()
+  }, [selectedRecipe, isViewOpen])
 
   const handleIngredientSearch = async () => {
     if (!ingredientSearch.trim()) return
@@ -134,15 +152,9 @@ export default function RecipesPage() {
   }
 
   const calculateTotals = (recipe: RecipeDTO) => {
-    let calories = 0, protein = 0, carbs = 0, fat = 0
-    recipe.contents?.forEach(c => {
-      const multiplier = c.ingredientAmount / (c.ingredientPortionSize || 100)
-      calories += (c.ingredientCalories || 0) * multiplier
-      protein += (c.ingredientProtein || 0) * multiplier
-      carbs += (c.ingredientCarbs || 0) * multiplier
-      fat += (c.ingredientFat || 0) * multiplier
-    })
-    return { calories, protein, carbs, fat }
+    // This local calculation is unreliable because RecipeContentDTO is missing nutrition info.
+    // We now use getRecipeMacros instead.
+    return { calories: 0, protein: 0, carbs: 0, fat: 0 }
   }
 
   return (
@@ -341,34 +353,39 @@ export default function RecipesPage() {
                   <p className="mt-6 text-muted-foreground leading-relaxed text-lg">{selectedRecipe.description}</p>
                 </div>
 
-                <div className="grid grid-cols-4 gap-4 p-5 rounded-2xl bg-muted/50 border border-border/50 backdrop-blur-sm">
-                  {(() => {
-                    const t = calculateTotals(selectedRecipe)
-                    return (
-                      <>
-                        <div className="text-center space-y-1">
-                          <Flame className="h-4 w-4 mx-auto text-orange-500" />
-                          <p className="text-xl font-bold">{Math.round(t.calories)}</p>
+                <div className="grid grid-cols-4 gap-4 p-5 rounded-2xl bg-muted/50 border border-border/50 backdrop-blur-sm relative min-h-[100px] items-center">
+                  {isLoadingMacros ? (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                    </div>
+                  ) : selectedMacros ? (
+                    <>
+                      <div className="text-center space-y-1">
+                        <Flame className="h-4 w-4 mx-auto text-orange-500" />
+                          <p className="text-xl font-bold">{Math.round(selectedMacros.calories)}</p>
                           <p className="text-[10px] uppercase font-bold text-muted-foreground">Kcal</p>
                         </div>
                         <div className="text-center space-y-1">
                           <Dna className="h-4 w-4 mx-auto text-blue-500" />
-                          <p className="text-xl font-bold">{Math.round(t.protein)}g</p>
+                          <p className="text-xl font-bold">{Math.round(selectedMacros.protein)}g</p>
                           <p className="text-[10px] uppercase font-bold text-muted-foreground">Prot.</p>
                         </div>
                         <div className="text-center space-y-1">
                           <Wheat className="h-4 w-4 mx-auto text-yellow-600" />
-                          <p className="text-xl font-bold">{Math.round(t.carbs)}g</p>
+                          <p className="text-xl font-bold">{Math.round(selectedMacros.carbs)}g</p>
                           <p className="text-[10px] uppercase font-bold text-muted-foreground">Carbs</p>
                         </div>
                         <div className="text-center space-y-1">
                           <Droplets className="h-4 w-4 mx-auto text-red-500" />
-                          <p className="text-xl font-bold">{Math.round(t.fat)}g</p>
+                          <p className="text-xl font-bold">{Math.round(selectedMacros.fat)}g</p>
                           <p className="text-[10px] uppercase font-bold text-muted-foreground">Fat</p>
                         </div>
                       </>
-                    )
-                  })()}
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground">
+                      No nutritional data available
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-4">

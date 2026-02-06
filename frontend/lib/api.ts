@@ -599,6 +599,13 @@ export async function deleteUserExercise(id: number): Promise<boolean> {
 
 // ==================== RECIPE TYPES ====================
 
+export interface RecipeMacrosDTO {
+  calories: number
+  protein: number
+  fat: number
+  carbs: number
+}
+
 export interface RecipeContentDTO {
   recipeContentId: number
   ingredientId: number
@@ -650,6 +657,19 @@ export async function getRecipeById(id: number): Promise<RecipeDTO | null> {
     return null
   } catch (error) {
     console.error("Error getting recipe by id:", error)
+    return null
+  }
+}
+
+export async function getRecipeMacros(id: number): Promise<RecipeMacrosDTO | null> {
+  try {
+    const response = await authFetch(`/recipe/getMacros/${id}`)
+    if (response.ok) {
+      return await response.json()
+    }
+    return null
+  } catch (error) {
+    console.error("Error getting recipe macros:", error)
     return null
   }
 }
