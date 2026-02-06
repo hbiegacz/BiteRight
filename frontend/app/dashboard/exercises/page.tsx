@@ -45,6 +45,7 @@ import {
   createUserExercise,
   updateUserExercise,
   deleteUserExercise,
+  getUserInfo,
 } from "@/lib/api"
 
 export default function ExercisesPage() {
@@ -63,6 +64,7 @@ export default function ExercisesPage() {
   const [selectedExercise, setSelectedExercise] = useState<ExerciseInfo | null>(null)
   const [duration, setDuration] = useState(30)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [userWeight, setUserWeight] = useState<number>(70) // Default weight
 
   const dateString = format(selectedDate, "yyyy-MM-dd")
   const isToday = dateString === format(new Date(), "yyyy-MM-dd")
@@ -82,22 +84,27 @@ export default function ExercisesPage() {
     fetchExercises()
   }, [fetchExercises])
 
-  // Search for exercise types
-  useEffect(() => {
-    const searchExercises = async () => {
-      if (searchQuery.length < 2) {
-        setSearchResults([])
-        return
-      }
-      setIsSearching(true)
-      const results = await searchExerciseInfo(searchQuery)
-      setSearchResults(results)
-      setIsSearching(false)
+  const handleSearch = async () => {
+    if (searchQuery.length < 2) {
+      setSearchResults([])
+      return
     }
 
-    const debounce = setTimeout(searchExercises, 300)
-    return () => clearTimeout(debounce)
-  }, [searchQuery])
+    setIsSearching(true)
+    const results = await searchExerciseInfo(searchQuery)
+    setSearchResults(results)
+    setIsSearching(false)
+  }
+
+  useEffect(() => {
+    const fetchUserWeight = async () => {
+      const info = await getUserInfo()
+      if (info?.weight) {
+        setUserWeight(info.weight)
+      }
+    }
+    fetchUserWeight()
+  }, [])
 
   const resetForm = () => {
     setSearchQuery("")
@@ -113,7 +120,7 @@ export default function ExercisesPage() {
       setSelectedExercise({
         id: exercise.exerciseInfoId,
         name: exercise.activityName,
-        caloriesPerMinute: exercise.caloriesBurnt / exercise.duration,
+        metabolicEquivalent: (exercise.caloriesBurnt * 60) / (userWeight * exercise.duration),
       })
       setDuration(exercise.duration)
     } else {
@@ -173,7 +180,7 @@ export default function ExercisesPage() {
   }
 
   const estimatedCalories = selectedExercise
-    ? Math.round(duration * selectedExercise.caloriesPerMinute)
+    ? Math.round((duration / 60) * selectedExercise.metabolicEquivalent * userWeight)
     : 0
 
   return (
@@ -221,14 +228,25 @@ export default function ExercisesPage() {
                 {/* Exercise Search */}
                 <div className="space-y-2">
                   <Label>Search Exercise Type</Label>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      placeholder="Search exercises (e.g., Running, Cycling)..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10"
-                    />
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        placeholder="Search exercises (e.g., Running, Cycling)..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                        className="pl-10"
+                      />
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={handleSearch}
+                      disabled={isSearching}
+                    >
+                      <Search className="h-4 w-4" />
+                    </Button>
                   </div>
 
                   {/* Search Results */}
@@ -257,7 +275,7 @@ export default function ExercisesPage() {
                               <span className="font-medium text-foreground">{exercise.name}</span>
                             </div>
                             <span className="text-sm text-muted-foreground">
-                              {exercise.caloriesPerMinute} kcal/min
+                              {Math.round((exercise.metabolicEquivalent * userWeight) / 60 * 10) / 10} kcal/min
                             </span>
                           </button>
                         ))
@@ -277,7 +295,7 @@ export default function ExercisesPage() {
                         <div>
                           <p className="font-medium text-foreground">{selectedExercise.name}</p>
                           <p className="text-sm text-muted-foreground">
-                            {selectedExercise.caloriesPerMinute} kcal/min
+                            {Math.round((selectedExercise.metabolicEquivalent * userWeight) / 60 * 10) / 10} kcal/min
                           </p>
                         </div>
                       </div>

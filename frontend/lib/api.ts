@@ -164,6 +164,30 @@ export async function getSummaryRange(
   }
 }
 
+export async function getStreak(): Promise<number> {
+  try {
+    const response = await authFetch("/dailySummary/streak")
+    if (response.ok) {
+      return await response.json()
+    }
+    return 0
+  } catch {
+    return 0
+  }
+}
+
+export async function getAverageDailyCalories(days: number = 7): Promise<number> {
+  try {
+    const response = await authFetch(`/dailySummary/averageCalories?days=${days}`)
+    if (response.ok) {
+      return await response.json()
+    }
+    return 0
+  } catch {
+    return 0
+  }
+}
+
 // Meals API
 export async function getMealsByDate(date: string): Promise<Meal[]> {
   try {
@@ -369,9 +393,10 @@ export async function addWeight(weight: number, measurementDate: string): Promis
 // ==================== EXERCISE TYPES ====================
 
 export interface ExerciseInfo {
-  id?: number
+  id: number
   name: string
-  caloriesPerMinute: number
+  metabolicEquivalent: number
+  caloriesPerMinute?: number
 }
 
 export interface UserExercise {
@@ -397,7 +422,14 @@ export async function searchExerciseInfo(name: string): Promise<ExerciseInfo[]> 
   try {
     const response = await authFetch(`/exerciseInfo/find/${encodeURIComponent(name)}`)
     if (response.ok) {
-      return await response.json()
+      const data = await response.json()
+      // Map backend fields (exerciseId, metabolicEquivalent) to frontend fields
+      return (data || []).map((item: any) => ({
+        id: item.exerciseId,
+        name: item.name,
+        metabolicEquivalent: item.metabolicEquivalent,
+        // We will calculate caloriesPerMinute in the component where we have user weight
+      }))
     }
     return []
   } catch (error) {

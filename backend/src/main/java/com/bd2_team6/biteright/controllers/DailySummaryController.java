@@ -54,4 +54,30 @@ public class DailySummaryController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/streak")
+    public ResponseEntity<?> getStreak(Authentication authentication) {
+        try {
+            String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
+            int streak = dailySummaryService.calculateStreak(username);
+            return ResponseEntity.ok(streak);
+        } catch (IllegalArgumentException e) {
+            logger.error("Error calculating streak.\n" + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/averageCalories")
+    public ResponseEntity<?> getAverageCalories(
+            Authentication authentication,
+            @RequestParam(defaultValue = "7") int days) {
+        try {
+            String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
+            double avgCalories = dailySummaryService.calculateAverageDailyCalories(username, days);
+            return ResponseEntity.ok(avgCalories);
+        } catch (IllegalArgumentException e) {
+            logger.error("Error calculating average calories.\n" + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
