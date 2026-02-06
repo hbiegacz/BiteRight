@@ -47,6 +47,7 @@ public class RecipeService {
         Recipe recipe = new Recipe();
         recipe.setName(request.getName());
         recipe.setDescription(request.getDescription());
+        recipe.setImageUrl(request.getImageUrl());
 
         for (RecipeContentDTO dto : request.getContents()) {
             Ingredient ingredient = ingredientRepository.findById(dto.getIngredientId())
@@ -69,6 +70,7 @@ public class RecipeService {
 
         recipe.setName(request.getName());
         recipe.setDescription(request.getDescription());
+        recipe.setImageUrl(request.getImageUrl());
 
         recipe.getRecipeContents().clear();
 

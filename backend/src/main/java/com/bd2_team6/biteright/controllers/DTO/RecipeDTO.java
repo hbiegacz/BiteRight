@@ -16,12 +16,14 @@ public class RecipeDTO {
     private Long recipeId;
     private String name;
     private String description;
+    private String imageUrl;
     private Set<RecipeContentDTO> contents;
 
     public RecipeDTO(Recipe recipe) {
         this.recipeId = recipe.getRecipeId();
         this.name = recipe.getName();
         this.description = recipe.getDescription();
+        this.imageUrl = recipe.getImageUrl();
         this.contents = recipe.getRecipeContents().stream()
                 .map(RecipeContentDTO::new)
                 .collect(Collectors.toSet());

@@ -26,11 +26,20 @@ public class Recipe {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     private Set<RecipeContent> recipeContents = new HashSet<>();
 
     public Recipe(String name, String description) {
         this.name = name;
         this.description = description;
+    }
+
+    public Recipe(String name, String description, String imageUrl) {
+        this.name = name;
+        this.description = description;
+        this.imageUrl = imageUrl;
     }
 }
