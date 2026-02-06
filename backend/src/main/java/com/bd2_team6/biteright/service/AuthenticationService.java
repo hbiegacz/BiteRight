@@ -18,13 +18,13 @@ import org.springframework.stereotype.Service;
 import com.bd2_team6.biteright.entities.user.User;
 import com.bd2_team6.biteright.entities.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 @Service
 @RequiredArgsConstructor
@@ -86,7 +86,7 @@ public class AuthenticationService {
 
         // Send verification email
         String code = emailService.generateVeryficationCode();
-        LocalDateTime expirationDate = LocalDateTime.now().plusMinutes(60); 
+        LocalDateTime expirationDate = LocalDateTime.now().plusMinutes(60);
         VerificationCode newCode = new VerificationCode(code, expirationDate, newUser);
         verificationCodeRepository.save(newCode);
 
@@ -256,12 +256,12 @@ public class AuthenticationService {
 
         return new AvailabilityResponse(usernameAvailable, emailAvailable, message);
     }
-    
+
     public void loginUser(String email, String password) throws Exception {
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isEmpty()) {
             logger.error("User with email " + email + " not found.");
-            throw new Exception("User with email "+ email + " not found.");
+            throw new Exception("User with email " + email + " not found.");
         }
 
         User user = userOpt.get();
@@ -311,11 +311,13 @@ public class AuthenticationService {
 
     public String getAllUsers() {
         List<User> users = userRepository.findAll();
-        if (users.isEmpty()) return "No users found.";
+        if (users.isEmpty())
+            return "No users found.";
         else {
             String usersList = "";
             for (User user : users) {
-                usersList += user.getUsername() + " " + user.getEmail() + " " + user.getIsVerified() + " " + user.getVerificationCode().getCode()+"\n";
+                usersList += user.getUsername() + " " + user.getEmail() + " " + user.getIsVerified() + " "
+                        + user.getVerificationCode().getCode() + "\n";
             }
             return usersList;
         }
@@ -323,28 +325,29 @@ public class AuthenticationService {
 
     public void verifyUser(String email, String recivedVerificationCode) {
         Optional<User> userOpt = userRepository.findByEmail(email);
-        if (userOpt.isEmpty() || !userOpt.isPresent()) 
+        if (userOpt.isEmpty() || !userOpt.isPresent())
             throw new RuntimeException("User with email " + email + " not found.");
-        
+
         User user = userOpt.get();
         if (user.getIsVerified())
             throw new RuntimeException("User with email " + email + " is already verified.");
         Optional<VerificationCode> codeOpt = verificationCodeRepository.findByUser(user);
         if (codeOpt.isEmpty())
-            throw new RuntimeException("Verification code for user with email "+ email + " not found.");
+            throw new RuntimeException("Verification code for user with email " + email + " not found.");
 
         VerificationCode correctVerificationCode = codeOpt.get();
-        if (!correctVerificationCode.getCode().equals(recivedVerificationCode)) 
+        if (!correctVerificationCode.getCode().equals(recivedVerificationCode))
             throw new RuntimeException("Invalid verification code for user with email " + email + ".");
-        
+
         if (correctVerificationCode.isExpired()) {
             correctVerificationCode.setCode(emailService.generateVeryficationCode());
             correctVerificationCode.setExpirationDate(LocalDateTime.now().plusMinutes(60));
             verificationCodeRepository.save(correctVerificationCode);
             emailService.sendVerificationEmail(user.getUsername(), email, correctVerificationCode.getCode());
-            throw new RuntimeException("Verification code for user with email " + email + " has expired. We have sent you another verification email.");
+            throw new RuntimeException("Verification code for user with email " + email
+                    + " has expired. We have sent you another verification email.");
         }
-        
+
         user.setIsVerified(true);
         userRepository.save(user);
         logger.info("User with email " + email + " verified successfully.");
@@ -352,16 +355,16 @@ public class AuthenticationService {
 
     public void changeUsername(String email, String newUsername) throws Exception {
         Optional<User> userOpt = userRepository.findByEmail(email);
-        if (userOpt.isEmpty() || !userOpt.isPresent()) 
+        if (userOpt.isEmpty() || !userOpt.isPresent())
             throw new RuntimeException("User with email " + email + " not found.");
         User user = userOpt.get();
         user.setUsername(newUsername);
         userRepository.save(user);
     }
-    
+
     public void changeEmail(String email, String newEmail) throws Exception {
         Optional<User> userOpt = userRepository.findByEmail(email);
-        if (userOpt.isEmpty() || !userOpt.isPresent()) 
+        if (userOpt.isEmpty() || !userOpt.isPresent())
             throw new RuntimeException("User with email " + email + " not found.");
         User user = userOpt.get();
         validateEmail(newEmail);
@@ -370,14 +373,15 @@ public class AuthenticationService {
         logger.info("Email for user with email " + email + " changed to " + newEmail + ".");
     }
 
-    public void changePassword(String email, String oldPassword,  String newPassword) throws Exception {
+    public void changePassword(String email, String oldPassword, String newPassword) throws Exception {
         Optional<User> userOpt = userRepository.findByEmail(email);
-        if (userOpt.isEmpty() || !userOpt.isPresent()) 
+        if (userOpt.isEmpty() || !userOpt.isPresent())
             throw new RuntimeException("User with email " + email + " not found.");
-        
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, oldPassword)); 
-        
-        if (auth == null || !auth.isAuthenticated()) 
+
+        Authentication auth = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(email, oldPassword));
+
+        if (auth == null || !auth.isAuthenticated())
             throw new RuntimeException("Invalid password for user with email " + email + ".");
 
         User user = userOpt.get();
@@ -390,7 +394,7 @@ public class AuthenticationService {
     public void manageForgottenPassword(String email) throws RuntimeException {
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (!userOpt.isPresent())
-            throw new RuntimeException("User with email " + email +" was not found.");
+            throw new RuntimeException("User with email " + email + " was not found.");
         User user = userOpt.get();
         emailService.sendForgotPasswordEmail(user.getUsername(), email, user.getForgottenPasswordCode());
     }
@@ -398,7 +402,7 @@ public class AuthenticationService {
     public void verifyForgottenPasswordCode(String email, String ForgottenPasswordCode) throws RuntimeException {
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (!userOpt.isPresent())
-            throw new RuntimeException("User with email " + email +" was not found.");
+            throw new RuntimeException("User with email " + email + " was not found.");
         User user = userOpt.get();
 
         if (!ForgottenPasswordCode.equals(user.getForgottenPasswordCode())) {
@@ -410,7 +414,7 @@ public class AuthenticationService {
     public void resetForgottenPassword(String email, String newPassword) {
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (!userOpt.isPresent())
-            throw new RuntimeException("User with email " + email +" was not found.");
+            throw new RuntimeException("User with email " + email + " was not found.");
         User user = userOpt.get();
         user.setPasswordHash(passwordEncoder.encode(newPassword));
         user.regeneratePasswordCode();
