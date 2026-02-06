@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import com.bd2_team6.biteright.entities.user.User;
 import com.bd2_team6.biteright.entities.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
