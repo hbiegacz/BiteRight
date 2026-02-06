@@ -40,6 +40,8 @@ public class AuthenticationService {
     private final EmailSendingService emailService;
     private final DailyLimitsService dailyLimitsService;
 
+    @Value("${verification.code.expiration.minutes:60}")
+    private int verificationCodeExpirationMinutes;
 
     public void registerNewUser(RegistrationRequest request) throws Exception {
         // Validate basic registration fields
@@ -256,23 +258,47 @@ public class AuthenticationService {
     }
     
     public void loginUser(String email, String password) throws Exception {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
             logger.error("User with email " + email + " not found.");
             throw new Exception("User with email "+ email + " not found.");
         }
 
-        if (!user.get().getIsVerified()) {
-            logger.error("User with email " + email
-                    + " is not verified. Please check your email for the verification link.");
-            throw new Exception("User with email " + email + " is not verified. Please check your email for the verification link.");
-            // TODO: RESEND VERIFICATION EMAIL
+        User user = userOpt.get();
+
+        // Moving authentication check BEFORE verification check
+        Authentication auth = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(email, password));
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new Exception("Invalid password.");
         }
 
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password)); 
-        if (auth == null || !auth.isAuthenticated()) throw new Exception("Invalid password.");
-        else
-            logger.info("User authenticated successfully.");
+        if (!user.getIsVerified()) {
+            logger.info("User with email " + email + " is not verified. Resending verification email.");
+
+            // Refresh verification code
+            Optional<VerificationCode> codeOpt = verificationCodeRepository.findByUser(user);
+            VerificationCode verificationCode;
+            String newCodeValue = emailService.generateVeryficationCode();
+            LocalDateTime expirationDate = LocalDateTime.now().plusMinutes(verificationCodeExpirationMinutes);
+
+            if (codeOpt.isPresent()) {
+                verificationCode = codeOpt.get();
+                verificationCode.setCode(newCodeValue);
+                verificationCode.setExpirationDate(expirationDate);
+            } else {
+                verificationCode = new VerificationCode(newCodeValue, expirationDate, user);
+            }
+            verificationCodeRepository.save(verificationCode);
+
+            // Resend email
+            emailService.sendVerificationEmail(user.getUsername(), user.getEmail(), newCodeValue);
+
+            throw new Exception(
+                    "User with email " + email + " is not verified. A new verification email has been sent.");
+        }
+
+        logger.info("User authenticated successfully.");
     }
 
     public void validateEmail(String email) throws Exception {
