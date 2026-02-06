@@ -300,13 +300,13 @@ export default function ExercisesPage() {
                   </div>
 
                   {/* Search Results */}
-                  {(searchResults.length > 0 || isSearching) && !selectedExercise && (
+                  {(searchResults.length > 0 || isSearching || (searchQuery.length >= 2 && !isSearching && searchResults.length === 0)) && !selectedExercise && (
                     <div className="rounded-lg border border-border bg-card max-h-48 overflow-y-auto">
                       {isSearching ? (
                         <div className="flex items-center justify-center p-4">
                           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                         </div>
-                      ) : (
+                      ) : searchResults.length > 0 ? (
                         searchResults.map((exercise) => (
                           <button
                             key={exercise.id}
@@ -329,6 +329,10 @@ export default function ExercisesPage() {
                             </span>
                           </button>
                         ))
+                        ) : (
+                          <div className="p-8 text-center">
+                            <p className="text-sm text-muted-foreground">No exercises found.</p>
+                          </div>
                       )}
                     </div>
                   )}

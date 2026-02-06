@@ -44,6 +44,7 @@ import {
   BookOpen,
   History,
   ArrowRight,
+  Loader2,
 } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
@@ -301,26 +302,36 @@ export default function MealsPage() {
                     </div>
 
                     {/* Search Results */}
-                    {searchResults.length > 0 && (
+                    {(searchResults.length > 0 || searching || (searchQuery.trim() !== "" && !searching && searchResults.length === 0)) && (
                       <div className="max-h-40 overflow-y-auto rounded-lg border border-border">
-                        {searchResults.map((ingredient) => (
-                          <button
-                            key={ingredient.id}
-                            type="button"
-                            onClick={() => addIngredient(ingredient)}
-                            className="flex w-full items-center justify-between p-3 text-left hover:bg-muted"
-                          >
-                            <div>
-                              <p className="font-medium text-foreground">{ingredient.name}</p>
-                              <p className="text-xs text-muted-foreground">
-                                {ingredient.brand} - {ingredient.portionSize}g
-                              </p>
-                            </div>
-                            <span className="text-sm text-muted-foreground">
-                              {ingredient.calories} kcal
-                            </span>
-                          </button>
-                        ))}
+                        {searching ? (
+                          <div className="flex items-center justify-center p-4">
+                            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                          </div>
+                        ) : searchResults.length > 0 ? (
+                          searchResults.map((ingredient) => (
+                            <button
+                              key={ingredient.id}
+                              type="button"
+                              onClick={() => addIngredient(ingredient)}
+                              className="flex w-full items-center justify-between p-3 text-left hover:bg-muted"
+                            >
+                              <div>
+                                <p className="font-medium text-foreground">{ingredient.name}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {ingredient.brand} - {ingredient.portionSize}g
+                                </p>
+                              </div>
+                              <span className="text-sm text-muted-foreground">
+                                {ingredient.calories} kcal
+                              </span>
+                            </button>
+                          ))
+                        ) : (
+                          <div className="p-4 text-center">
+                            <p className="text-sm text-muted-foreground">No ingredients found.</p>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

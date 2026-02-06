@@ -209,22 +209,32 @@ export default function RecipesPage() {
                   </Button>
                 </div>
 
-                {ingredientResults.length > 0 && (
+                {(ingredientResults.length > 0 || isSearchingIngredients || (ingredientSearch.trim() !== "" && !isSearchingIngredients && ingredientResults.length === 0)) && (
                   <div className="max-h-40 overflow-y-auto rounded-lg border border-border">
-                    {ingredientResults.map((ing) => (
-                      <button
-                        key={ing.id}
-                        type="button"
-                        onClick={() => addIngredient(ing)}
-                        className="flex w-full items-center justify-between p-3 text-left hover:bg-muted"
-                      >
-                        <div>
-                          <p className="font-medium text-foreground">{ing.name}</p>
-                          <p className="text-xs text-muted-foreground">{ing.brand} • {ing.portionSize}g</p>
-                        </div>
-                        <span className="text-sm text-muted-foreground">{ing.calories} kcal</span>
-                      </button>
-                    ))}
+                    {isSearchingIngredients ? (
+                      <div className="flex items-center justify-center p-4">
+                        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                      </div>
+                    ) : ingredientResults.length > 0 ? (
+                      ingredientResults.map((ing) => (
+                        <button
+                          key={ing.id}
+                          type="button"
+                          onClick={() => addIngredient(ing)}
+                          className="flex w-full items-center justify-between p-3 text-left hover:bg-muted"
+                        >
+                          <div>
+                            <p className="font-medium text-foreground">{ing.name}</p>
+                            <p className="text-xs text-muted-foreground">{ing.brand} • {ing.portionSize}g</p>
+                          </div>
+                          <span className="text-sm text-muted-foreground">{ing.calories} kcal</span>
+                        </button>
+                      ))
+                    ) : (
+                      <div className="p-4 text-center">
+                        <p className="text-sm text-muted-foreground">No ingredients found.</p>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -398,7 +408,6 @@ export default function RecipesPage() {
                       <div key={i} className="flex justify-between items-center p-4 rounded-xl border border-border/60 bg-background/50 transition-colors hover:bg-muted/30">
                         <div className="space-y-0.5">
                           <p className="font-semibold text-sm">{c.ingredientName}</p>
-                          <p className="text-xs text-muted-foreground font-medium">{c.ingredientBrand}</p>
                         </div>
                         <Badge variant="secondary" className="font-bold px-3 py-1 text-xs">
                           {c.ingredientAmount}g
