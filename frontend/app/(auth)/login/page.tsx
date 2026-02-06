@@ -67,11 +67,11 @@ function LoginForm() {
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="identifier">Email or Username</Label>
           <Input
-            id="email"
-            type="email"
-            placeholder="you@example.com"
+            id="identifier"
+            type="text"
+            placeholder="you@example.com or username"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required

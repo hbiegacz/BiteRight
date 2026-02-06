@@ -257,24 +257,34 @@ public class AuthenticationService {
         return new AvailabilityResponse(usernameAvailable, emailAvailable, message);
     }
 
-    public void loginUser(String email, String password) throws Exception {
-        Optional<User> userOpt = userRepository.findByEmail(email);
+    public String loginUser(String identifier, String password) throws Exception {
+        Optional<User> userOpt;
+        if (isEmailIdentifier(identifier)) {
+            userOpt = userRepository.findByEmail(identifier);
+            if (userOpt.isEmpty()) {
+                userOpt = userRepository.findByUsername(identifier);
+            }
+        } else {
+            userOpt = userRepository.findByUsername(identifier);
+        }
+
         if (userOpt.isEmpty()) {
-            logger.error("User with email " + email + " not found.");
-            throw new Exception("User with email " + email + " not found.");
+            logger.error("User with identifier " + identifier + " not found.");
+            throw new Exception("User with identifier " + identifier + " not found.");
         }
 
         User user = userOpt.get();
+        String actualEmail = user.getEmail();
 
         // Moving authentication check BEFORE verification check
         Authentication auth = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(email, password));
+                .authenticate(new UsernamePasswordAuthenticationToken(actualEmail, password));
         if (auth == null || !auth.isAuthenticated()) {
             throw new Exception("Invalid password.");
         }
 
         if (!user.getIsVerified()) {
-            logger.info("User with email " + email + " is not verified. Resending verification email.");
+            logger.info("User with identifier " + identifier + " is not verified. Resending verification email.");
 
             // Refresh verification code
             Optional<VerificationCode> codeOpt = verificationCodeRepository.findByUser(user);
@@ -295,18 +305,23 @@ public class AuthenticationService {
             emailService.sendVerificationEmail(user.getUsername(), user.getEmail(), newCodeValue);
 
             throw new Exception(
-                    "User with email " + email + " is not verified. A new verification email has been sent.");
+                    "User with identifier " + identifier + " is not verified. A new verification email has been sent.");
         }
 
         logger.info("User authenticated successfully.");
+        return actualEmail;
     }
 
     public void validateEmail(String email) throws Exception {
-        String correctRegex = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
-        if (email == null || !email.matches(correctRegex)) {
+        if (!isEmailIdentifier(email)) {
             logger.error("Invalid email");
             throw new Exception("Invalid email");
         }
+    }
+
+    private boolean isEmailIdentifier(String identifier) {
+        String correctRegex = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+        return identifier != null && identifier.matches(correctRegex);
     }
 
     public String getAllUsers() {

@@ -19,14 +19,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
-    @Override 
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        // We use email instead of username for authentication, 
-        // so this implementation is not the best solution, but it is a temporary quick fix
-        Optional<User> userOpt = userRepository.findByEmail(email);
+    @Override
+    public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
+        Optional<User> userOpt = userRepository.findByEmail(identifier);
+        if (userOpt.isEmpty()) {
+            userOpt = userRepository.findByUsername(identifier);
+        }
+
         if (userOpt.isEmpty())
-            throw new UsernameNotFoundException("User with email: " + email + " not found.");
-        
+            throw new UsernameNotFoundException("User with identifier: " + identifier + " not found.");
+
         return new CustomUserDetails(userOpt.get());
     }
 
@@ -34,8 +36,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isEmpty())
             throw new UsernameNotFoundException("User with email: " + email + " not found.");
-        
+
         return new CustomUserDetails(userOpt.get());
     }
-    
+
 }
