@@ -13,6 +13,7 @@ import {
 import { TrendingUp, TrendingDown, Scale, Flame, Droplets, Target, Loader2 } from "lucide-react"
 import { getToken } from "@/lib/auth"
 import { format, subDays, isSameDay, parseISO, startOfDay } from "date-fns"
+import { getDailyLimits, type DailyLimits } from "@/lib/api"
 
 // Types matching backend response
 interface UserInfo {
@@ -66,9 +67,10 @@ async function myAuthFetch(endpoint: string) { // TODO: czym to się różni od 
 }
 
 export default function ProgressPage() {
-  const [timeRange, setTimeRange] = useState("week") 
+  const [timeRange, setTimeRange] = useState("week")
   const [data, setData] = useState<DayData[]>([])
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
+  const [limits, setLimits] = useState<DailyLimits | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -77,8 +79,12 @@ export default function ProgressPage() {
       try {
         setLoading(true)
 
-        const userInfoData = await myAuthFetch("/userInfo/findUserInfo")
+        const [userInfoData, userLimits] = await Promise.all([
+          myAuthFetch("/userInfo/findUserInfo"),
+          getDailyLimits()
+        ])
         setUserInfo(userInfoData)
+        setLimits(userLimits)
 
         const weightHistoryRes = await myAuthFetch("/weightHistory/findWeightHistoriesForUser?size=100&sortDir=desc&sortBy=measurementDate")
         const weightHistory: WeightHistory[] = weightHistoryRes.content || []
@@ -144,7 +150,7 @@ export default function ProgressPage() {
     }
 
     fetchData()
-  }, [timeRange]) 
+  }, [timeRange])
 
   const avgCalories = data.length > 0
     ? Math.round(data.reduce((sum, d) => sum + d.totalCalories, 0) / data.length)
@@ -160,8 +166,18 @@ export default function ProgressPage() {
 
   if (loading) {
     return (
-      <div className="flex h-[50vh] w-full items-center justify-center">
+      <div className="flex h-[50vh] w-full flex-col items-center justify-center gap-4">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-muted-foreground animate-pulse">Loading your progress...</p>
+      </div>
+    )
+  }
+
+  if (!limits) {
+    return (
+      <div className="flex h-[50vh] w-full flex-col items-center justify-center gap-4">
+        <p className="text-destructive font-semibold text-lg">Failed to load daily limits</p>
+        <Button onClick={() => window.location.reload()}>Retry</Button>
       </div>
     )
   }
@@ -274,7 +290,7 @@ export default function ProgressPage() {
             <div className="space-y-3">
               {data.map((day) => {
                 // Hardcoded goal or fetch from DailyLimits if possible. Defaulting to 2000 for vis.
-                const percentage = Math.min((day.totalCalories / 2500) * 100, 100)
+                const percentage = Math.min((day.totalCalories / limits.calorieLimit) * 100, 100)
                 return (
                   <div key={day.day} className="flex items-center gap-3">
                     <span className="w-8 text-sm font-medium text-muted-foreground">
@@ -295,8 +311,7 @@ export default function ProgressPage() {
             </div>
             <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
               <span>0 kcal</span>
-              {/* <span>Goal: 2000 kcal</span> */}
-              <span>2500 kcal</span>
+              <span>{limits.calorieLimit} kcal</span>
             </div>
           </CardContent>
         </Card>
@@ -394,7 +409,7 @@ export default function ProgressPage() {
               <tbody>
                 {data.map((day, index) => {
                   // Todo: Fetch actual limit from DailyLimits or UserInfo
-                  const targetCalories = 2000
+                  const targetCalories = limits.calorieLimit
                   const onTarget = day.totalCalories >= targetCalories - 200 && day.totalCalories <= targetCalories + 200
                   const prevWeight = index > 0 ? data[index - 1].weight : day.weight
                   const weightDiff = day.weight - prevWeight
@@ -419,11 +434,10 @@ export default function ProgressPage() {
                       </td>
                       <td className="py-3">
                         <span
-                          className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
-                            onTarget
+                          className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${onTarget
                               ? "bg-secondary/20 text-secondary"
                               : "bg-accent/20 text-accent"
-                          }`}
+                            }`}
                         >
                           {onTarget ? "On Target" : day.totalCalories < targetCalories - 200 ? "Under" : "Over"}
                         </span>
