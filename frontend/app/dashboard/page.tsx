@@ -18,7 +18,6 @@ import {
   getLastWeight,
   addWaterIntake,
   searchIngredients,
-  getStreak,
   getAverageDailyCalories,
   getUserInfo,
   type DailyLimits,
@@ -45,7 +44,6 @@ export default function DashboardPage() {
   const [waterIntakes, setWaterIntakes] = useState<WaterIntake[]>([])
   const [ingredients, setIngredients] = useState<Map<number, Ingredient>>(new Map())
   const [currentWeight, setCurrentWeight] = useState<number | undefined>()
-  const [streak, setStreak] = useState<number>(0)
   const [avgCalories, setAvgCalories] = useState<number>(0)
   const [bmi, setBmi] = useState<number | undefined>()
   const [loading, setLoading] = useState(true)
@@ -126,10 +124,6 @@ export default function DashboardPage() {
       if (lastWeight) {
         setCurrentWeight(lastWeight.weight)
       }
-
-      // Load streak and average calories (only once, not date-dependent)
-      const userStreak = await getStreak()
-      setStreak(userStreak)
 
       const userAvgCalories = await getAverageDailyCalories(7)
       setAvgCalories(userAvgCalories)
@@ -230,7 +224,6 @@ export default function DashboardPage() {
       <QuickStats
         currentWeight={currentWeight}
         calorieGoal={limits.calorieLimit}
-        streak={streak}
         weeklyAvgCalories={avgCalories}
         bmi={bmi}
       />

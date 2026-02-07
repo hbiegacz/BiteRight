@@ -57,13 +57,6 @@ export function QuickStats({
         <p className="mt-1 text-xs text-muted-foreground">BMI</p>
       </div>
 
-      <div className="rounded-xl border border-border bg-card p-4">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/20">
-          <Flame className="h-5 w-5 text-accent" />
-        </div>
-        <p className="mt-3 text-2xl font-bold text-foreground">{streak}</p>
-        <p className="mt-1 text-xs text-muted-foreground">Day streak</p>
-      </div>
 
       <div className="rounded-xl border border-border bg-card p-4">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary/20">
