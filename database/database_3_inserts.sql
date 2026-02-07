@@ -430,7 +430,10 @@ INSERT INTO exercise_info (metabolic_equivalent, name) VALUES
 	(5.5, 'Ice skating'), (5.7, 'Fast cycling'), (5.8, 'Sexual activity, aged 22'), (6.0, 'Aerobic dancing, medium effort'), (6.0, 'Aerobics'),
 	(6.9, 'Mountain walking without load'), (7.0, 'Fast swimming'), (7.4, 'Sun salutation (vigorous with transition jumps)'), (8.0, 'Basketball game'), (8.0, 'Brisk walking (8 km/h)'),
 	(8.0, 'Swimming moderately to hard'), (8.8, 'Jogging (9.0 km/h)'), (9.8, 'Football'), (10.3, 'Football (from English list)'),
-	(10.5, 'Rope jumping (84/min)'), (11.0, 'Rope jumping (100/min)'), (11.2, 'Jogging (10.9 km/h)');
+	(10.5, 'Rope jumping (84/min)'), (11.0, 'Rope jumping (100/min)'), (11.2, 'Jogging (10.9 km/h)'), (7.0, 'Rowing machine moderate'), 
+    (8.5, 'Rowing machine vigorous'), (9.0, 'Running (9.7 km/h or 6 mph)'), (10.0, 'Running (10.8 km/h or 6.7 mph)'), (11.5, 'Running (11.3 km/h or 7 mph)'), 
+    (12.5, 'Running (12.9 km/h or 8 mph)'), (6.0, 'Handball competitive'), (7.5, 'Squash playing'), (8.0, 'Table tennis competitive'), (10.0, 'Racquetball competitive'), 
+    (12.0, 'Boxing sparring'), (7.0, 'Water polo competitive'), (9.0, 'Surfing recreational'), (8.0, 'Rock climbing moderate'), (10.0, 'Rock climbing vigorous');
 
 
 INSERT INTO user_exercise (user_id, exercise_id, activity_date, duration) VALUES
