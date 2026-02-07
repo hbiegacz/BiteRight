@@ -45,9 +45,21 @@ import {
   History,
   ArrowRight,
   Loader2,
+  Info,
 } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 const mealTypes = [
   { id: 1, name: "Breakfast", icon: Coffee },
@@ -68,6 +80,8 @@ export default function MealsPage() {
   const [recentMeals, setRecentMeals] = useState<Meal[]>([])
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [mealToDelete, setMealToDelete] = useState<number | null>(null)
 
   // New meal form state
   const [mealName, setMealName] = useState("")
@@ -187,11 +201,24 @@ export default function MealsPage() {
     setCreating(false)
   }
 
-  const handleDeleteMeal = async (id: number) => {
-    const success = await deleteMeal(id)
+  const handleDeleteMeal = async () => {
+    if (mealToDelete === null) return
+    const success = await deleteMeal(mealToDelete)
     if (success) {
-      setMeals((prev) => prev.filter((m) => m.id !== id))
+      setMeals((prev) => prev.filter((m) => m.id !== mealToDelete))
     }
+    setDeleteDialogOpen(false)
+    setMealToDelete(null)
+  }
+
+  const confirmDeleteMeal = (id: number) => {
+    setMealToDelete(id)
+    setDeleteDialogOpen(true)
+  }
+
+  const handleAddMealToType = (typeId: number) => {
+    setMealTypeId(typeId)
+    setDialogOpen(true)
   }
 
   const resetForm = () => {
@@ -206,7 +233,16 @@ export default function MealsPage() {
   const nutrition = calculateMealNutrition()
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="mx-auto max-w-4xl space-y-6 pb-12">
+      {/* Top Warning Alert */}
+      <Alert className="border-primary/20 bg-primary/5">
+        <Info className="h-4 w-4 text-primary" />
+        <AlertTitle className="text-primary">Important Note</AlertTitle>
+        <AlertDescription className="text-primary/80">
+          Deleting a meal here will permanently remove it from the database and your nutrition history.
+        </AlertDescription>
+      </Alert>
+
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -450,24 +486,79 @@ export default function MealsPage() {
           <div className="flex items-center justify-center py-12">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
           </div>
-        ) : meals.length === 0 ? (
-            <div className="space-y-8">
-              <div className="rounded-2xl border border-border bg-card p-12 text-center">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-                  <Utensils className="h-8 w-8 text-muted-foreground" />
-                </div>
-                <h3 className="mt-4 text-lg font-semibold text-foreground">No meals logged for this day</h3>
-                <p className="mt-1 text-muted-foreground">
-                  Start tracking your nutrition by adding your first meal
-                </p>
-                <Button className="mt-6" onClick={() => setDialogOpen(true)}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Your First Meal
-                </Button>
+        ) : (
+          <div className="space-y-6">
+            <div className="space-y-4">
+              {mealTypes.map((type) => {
+                const typeMeals = meals.filter(
+                  (m) =>
+                    m.mealTypeId === type.id || m.mealTypeName === type.name
+                )
+                const Icon = type.icon
+
+                return (
+                  <div key={type.id} className="rounded-xl border border-border bg-card overflow-hidden">
+                    <div className="flex items-center justify-between border-b border-border bg-muted/30 px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary/20">
+                          <Icon className="h-4 w-4 text-secondary" />
+                        </div>
+                        <h3 className="font-semibold text-foreground">{type.name}</h3>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleAddMealToType(type.id)}
+                        className="h-8 gap-1.5 text-xs font-medium"
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                        Add {type.name}
+                      </Button>
+                    </div>
+                    <div className="divide-y divide-border">
+                      {typeMeals.length > 0 ? (
+                        typeMeals.map((meal) => (
+                          <div key={meal.id} className="flex items-center justify-between p-4">
+                            <div>
+                              <p className="font-medium text-foreground">{meal.name}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {meal.contents.length} item{meal.contents.length !== 1 ? "s" : ""}
+                                {meal.description && ` • ${meal.description}`}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                                onClick={() => confirmDeleteMeal(meal.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="flex flex-col items-center justify-center py-8 text-center">
+                          <p className="text-sm text-muted-foreground">Waiting for you to add a meal here</p>
+                          <Button
+                            variant="link"
+                            size="sm"
+                            onClick={() => handleAddMealToType(type.id)}
+                            className="mt-1 h-auto p-0 text-xs"
+                          >
+                            Add your first {type.name.toLowerCase()}
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
               </div>
 
-              {/* Empty State Tips / Recent Meals */}
-              <div className="grid gap-6 md:grid-cols-2">
+              {/* Always show History and Inspiration at the bottom */}
+              <div className="grid gap-6 md:grid-cols-2 pt-4">
                 {/* Recent Meals Section */}
                 <div className="rounded-xl border border-border bg-card p-6">
                   <div className="mb-4 flex items-center justify-between">
@@ -516,56 +607,31 @@ export default function MealsPage() {
                   </Button>
                 </div>
               </div>
-            </div>
-        ) : (
-          <div className="space-y-3">
-            {mealTypes.map((type) => {
-              // Filter by mealTypeId if available, fallback to name
-              const typeMeals = meals.filter(
-                (m) =>
-                  m.mealTypeId === type.id || m.mealTypeName === type.name
-              )
-              if (typeMeals.length === 0) return null
-
-              const Icon = type.icon
-
-              return (
-                <div key={type.id} className="rounded-xl border border-border bg-card overflow-hidden">
-                  <div className="flex items-center gap-3 border-b border-border bg-muted/30 px-4 py-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary/20">
-                      <Icon className="h-4 w-4 text-secondary" />
-                    </div>
-                    <h3 className="font-semibold text-foreground">{type.name}</h3>
-                  </div>
-                  <div className="divide-y divide-border">
-                    {typeMeals.map((meal) => (
-                      <div key={meal.id} className="flex items-center justify-between p-4">
-                        <div>
-                          <p className="font-medium text-foreground">{meal.name}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {meal.contents.length} item{meal.contents.length !== 1 ? "s" : ""}
-                            {meal.description && ` • ${meal.description}`}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                            onClick={() => handleDeleteMeal(meal.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )
-            })}
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your meal
+              and remove the data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setMealToDelete(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={handleDeleteMeal}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
