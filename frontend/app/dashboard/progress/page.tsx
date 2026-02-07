@@ -54,17 +54,7 @@ interface DayData extends DailySummary {
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080").replace(/\/$/, "")
 
-async function myAuthFetch(endpoint: string) { // TODO: czym to się różni od authFetch??
-  const token = getToken()
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  }
-  if (token) headers["Authorization"] = `Bearer ${token}`
 
-  const res = await fetch(`${API_BASE_URL}${endpoint}`, { headers })
-  if (!res.ok) throw new Error("Failed to fetch")
-  return res.json()
-}
 
 export default function ProgressPage() {
   const [timeRange, setTimeRange] = useState("week")
