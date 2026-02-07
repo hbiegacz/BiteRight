@@ -32,8 +32,6 @@ import {
   getDailyLimits,
   updateDailyLimits,
   createDailyLimits,
-  addWeight,
-  getLastWeight,
   getCurrentUser,
   getUserInfo,
   updateUserInfo,
@@ -46,6 +44,7 @@ import {
   type UserInfoDTO,
   type UserGoalDTO,
   type UserPreferencesDTO,
+  getUserWeight,
 } from "@/lib/api"
 import { changeUsername, changeEmail, changePassword, removeToken } from "@/lib/auth"
 import {
@@ -130,7 +129,7 @@ export default function SettingsPage() {
       setLoading(true)
       const [limits, lastWeight, userData, userInfoData, goalData, prefsData] = await Promise.all([
         getDailyLimits(),
-        getLastWeight(),
+        getUserWeight(),
         getCurrentUser(),
         getUserInfo(),
         getUserGoal(),

@@ -15,11 +15,12 @@ import {
   getDailyLimits,
   getMealsByDate,
   getWaterIntakeByDate,
-  getLastWeight,
+  getUserWeight,
   addWaterIntake,
   searchIngredients,
   getAverageDailyCalories,
   getUserInfo,
+  getWeightHistoryForUser,
   type DailyLimits,
   type Meal,
   type WaterIntake,
@@ -36,6 +37,7 @@ export default function DashboardPage() {
   const [waterIntakes, setWaterIntakes] = useState<WaterIntake[]>([])
   const [ingredients, setIngredients] = useState<Map<number, Ingredient>>(new Map())
   const [currentWeight, setCurrentWeight] = useState<number | undefined>()
+  const [weightChange, setWeightChange] = useState<number>(0)
   const [avgCalories, setAvgCalories] = useState<number>(0)
   const [bmi, setBmi] = useState<number | undefined>()
   const [loading, setLoading] = useState(true)
@@ -113,9 +115,9 @@ export default function DashboardPage() {
       setWaterIntakes(dayWater)
 
       // Load latest weight
-      const lastWeight = await getLastWeight()
-      if (lastWeight) {
-        setCurrentWeight(lastWeight.weight)
+      const response = await getUserWeight()
+      if (response) {
+        setCurrentWeight(response)
       }
 
       const userAvgCalories = await getAverageDailyCalories(7)
