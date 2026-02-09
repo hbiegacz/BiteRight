@@ -1,6 +1,7 @@
 package com.bd2_team6.biteright.controllers;
 
 import com.bd2_team6.biteright.controllers.DTO.RecipeDTO;
+import com.bd2_team6.biteright.controllers.DTO.RecipeMacrosDTO;
 import com.bd2_team6.biteright.controllers.requests.create_requests.RecipeCreateRequest;
 import com.bd2_team6.biteright.controllers.requests.update_requests.RecipeUpdateRequest;
 import com.bd2_team6.biteright.entities.recipe.Recipe;
@@ -62,6 +63,20 @@ public class RecipeController {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             logger.error("Error finding recipe by id." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/getMacros/{id}")
+    public ResponseEntity<?> getRecipeMacros(@PathVariable("id") Long recipeId) {
+        try {
+            RecipeMacrosDTO macrosDTO = recipeService.calculateMacros(recipeId);
+            return ResponseEntity.ok(macrosDTO);
+        } catch (IllegalArgumentException e) {
+            logger.error("Error calculating recipe macros." + e.getMessage());
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            logger.error("Error calculating recipe macros." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

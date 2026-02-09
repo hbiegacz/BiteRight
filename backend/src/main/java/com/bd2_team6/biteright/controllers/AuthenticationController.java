@@ -62,8 +62,8 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequestBody)  {
         try {
-            authService.loginUser(loginRequestBody.getEmail(), loginRequestBody.getPassword());
-            String token = jwtService.generateToken(loginRequestBody.getEmail());
+            String email = authService.loginUser(loginRequestBody.getEmail(), loginRequestBody.getPassword());
+            String token = jwtService.generateToken(email);
             return ResponseEntity.status(HttpStatus.OK).body(token);
         }
         catch (Exception e) {

@@ -13,11 +13,14 @@ public class UserGoalService {
 
     private final UserRepository userRepository;
     private final UserGoalRepository userGoalRepository;
+    private final DailyLimitsService dailyLimitsService;
 
     @Autowired
-    public UserGoalService(UserRepository userRepository, UserGoalRepository userGoalRepository) {
+    public UserGoalService(UserRepository userRepository, UserGoalRepository userGoalRepository,
+            DailyLimitsService dailyLimitsService) {
         this.userRepository = userRepository;
         this.userGoalRepository = userGoalRepository;
+        this.dailyLimitsService = dailyLimitsService;
     }
 
     public UserGoal findUserGoalByUsername(String username) {
@@ -35,6 +38,8 @@ public class UserGoalService {
         userGoal.setGoalWeight(request.getGoalWeight());
         userGoal.setDeadline(request.getGoalDate());
         userGoalRepository.save(userGoal);
+
+        dailyLimitsService.recalculateDailyLimits(user);
 
         return userGoal;
     }

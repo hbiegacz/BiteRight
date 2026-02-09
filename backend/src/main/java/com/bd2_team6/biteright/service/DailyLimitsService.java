@@ -32,7 +32,7 @@ public class DailyLimitsService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         DailyLimits newDailyLimits = new DailyLimits();
         newDailyLimits.setCalorieLimit(request.getCalorieLimit());
-        newDailyLimits.setProteinLimit(request.getCalorieLimit());
+        newDailyLimits.setProteinLimit(request.getProteinLimit());
         newDailyLimits.setFatLimit(request.getFatLimit());
         newDailyLimits.setCarbLimit(request.getCarbLimit());
         newDailyLimits.setWaterGoal(request.getWaterGoal());
@@ -47,7 +47,7 @@ public class DailyLimitsService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         DailyLimits dailyLimits = user.getDailyLimits();
         dailyLimits.setCalorieLimit(request.getCalorieLimit());
-        dailyLimits.setProteinLimit(request.getCalorieLimit());
+        dailyLimits.setProteinLimit(request.getProteinLimit());
         dailyLimits.setFatLimit(request.getFatLimit());
         dailyLimits.setCarbLimit(request.getCarbLimit());
         dailyLimits.setWaterGoal(request.getWaterGoal());
@@ -63,5 +63,69 @@ public class DailyLimitsService {
             Integer carbLimit, Integer fatLimit, Integer waterGoal) {
         DailyLimits newDailyLimits = new DailyLimits(user, calorieLimit, proteinLimit, fatLimit, carbLimit, waterGoal);
         return dailyLimitsRepository.save(newDailyLimits);
+    }
+
+    public void recalculateDailyLimits(User user) {
+        if (user.getUserInfo() == null || user.getUserInfo().getUserGoal() == null) {
+            return;
+        }
+
+        com.bd2_team6.biteright.entities.user_info.UserInfo info = user.getUserInfo();
+        com.bd2_team6.biteright.entities.user_goal.UserGoal goal = info.getUserGoal();
+
+        float weight = info.getWeight() != null ? info.getWeight() : 70f;
+        int height = info.getHeight() != null ? info.getHeight() : 170;
+        int age = info.getAge() != null ? info.getAge() : 25;
+        String lifestyle = info.getLifestyle() != null ? info.getLifestyle().toLowerCase() : "moderate";
+        String goalType = goal.getGoalType() != null ? goal.getGoalType().toLowerCase() : "maintain";
+
+        // BMR (Mifflin-St Jeor) - using an average constant for gender-neutrality
+        double bmr = (10 * weight) + (6.25 * height) - (5 * age) - 78;
+
+        // Activity factor
+        double activityFactor = switch (lifestyle) {
+            case "sedentary" -> 1.2;
+            case "light" -> 1.375;
+            case "moderate" -> 1.55;
+            case "active" -> 1.725;
+            case "athlete" -> 1.9;
+            default -> 1.55;
+        };
+
+        double tdee = bmr * activityFactor;
+
+        // Goal adjustment
+        int calories;
+        if (goalType.contains("lose")) {
+            calories = (int) (tdee - 500);
+        } else if (goalType.contains("gain")) {
+            calories = (int) (tdee + 500);
+        } else {
+            calories = (int) tdee;
+        }
+
+        // Ensure minimum calories
+        calories = Math.max(calories, 1200);
+
+        // Macros
+        int protein = (int) (weight * 1.8); // 1.8g per kg
+        int fat = (int) ((calories * 0.25) / 9); // 25% of calories from fat
+        int carbs = (int) ((calories - (protein * 4) - (fat * 9)) / 4); // Remaining calories from carbs
+
+        int waterGoal = (int) (weight * 35); // 35ml per kg
+
+        DailyLimits limits = user.getDailyLimits();
+        if (limits == null) {
+            limits = new DailyLimits();
+            limits.setUser(user);
+        }
+
+        limits.setCalorieLimit(calories);
+        limits.setProteinLimit(protein);
+        limits.setFatLimit(fat);
+        limits.setCarbLimit(carbs);
+        limits.setWaterGoal(waterGoal);
+
+        dailyLimitsRepository.save(limits);
     }
 }

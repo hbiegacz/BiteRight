@@ -18,6 +18,8 @@ import {
   getLastWeight,
   addWaterIntake,
   searchIngredients,
+  getAverageDailyCalories,
+  getUserInfo,
   type DailyLimits,
   type Meal,
   type WaterIntake,
@@ -26,22 +28,16 @@ import {
 import { CalendarIcon, Plus, ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-// Default limits if user hasn't set any
-const DEFAULT_LIMITS: DailyLimits = {
-  calorieLimit: 2000,
-  proteinLimit: 150,
-  fatLimit: 65,
-  carbLimit: 250,
-  waterGoal: 2500,
-}
 
 export default function DashboardPage() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
-  const [limits, setLimits] = useState<DailyLimits>(DEFAULT_LIMITS)
+  const [limits, setLimits] = useState<DailyLimits | null>(null)
   const [meals, setMeals] = useState<Meal[]>([])
   const [waterIntakes, setWaterIntakes] = useState<WaterIntake[]>([])
   const [ingredients, setIngredients] = useState<Map<number, Ingredient>>(new Map())
   const [currentWeight, setCurrentWeight] = useState<number | undefined>()
+  const [avgCalories, setAvgCalories] = useState<number>(0)
+  const [bmi, setBmi] = useState<number | undefined>()
   const [loading, setLoading] = useState(true)
 
   const dateString = format(selectedDate, "yyyy-MM-dd")
@@ -77,10 +73,11 @@ export default function DashboardPage() {
     async function loadData() {
       setLoading(true)
 
-      // Load limits
-      const userLimits = await getDailyLimits()
-      if (userLimits) {
+      try {
+        const userLimits = await getDailyLimits()
         setLimits(userLimits)
+      } catch (error) {
+        console.error("Error loading daily limits:", error)
       }
 
       // Load meals for selected date
@@ -119,6 +116,15 @@ export default function DashboardPage() {
       const lastWeight = await getLastWeight()
       if (lastWeight) {
         setCurrentWeight(lastWeight.weight)
+      }
+
+      const userAvgCalories = await getAverageDailyCalories(7)
+      setAvgCalories(userAvgCalories)
+
+      // Load BMI from user info
+      const userInfo = await getUserInfo()
+      if (userInfo) {
+        setBmi(userInfo.bmi)
       }
 
       setLoading(false)
@@ -163,6 +169,25 @@ export default function DashboardPage() {
   }
 
   const isToday = format(selectedDate, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd")
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[50vh] flex-col items-center justify-center space-y-4">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        <p className="text-muted-foreground animate-pulse">Loading your dashboard...</p>
+      </div>
+    )
+  }
+
+  if (!limits) {
+    return (
+      <div className="flex min-h-[50vh] flex-col items-center justify-center space-y-4">
+        <p className="text-destructive font-semibold text-lg">Failed to load daily limits</p>
+        <p className="text-muted-foreground">Please make sure your profile is complete.</p>
+        <Button onClick={() => window.location.reload()}>Retry</Button>
+      </div>
+    )
+  }
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -211,6 +236,8 @@ export default function DashboardPage() {
       <QuickStats
         currentWeight={currentWeight}
         calorieGoal={limits.calorieLimit}
+        weeklyAvgCalories={avgCalories}
+        bmi={bmi}
       />
 
       {/* Main content grid */}

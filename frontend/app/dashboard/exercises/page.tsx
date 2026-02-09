@@ -45,6 +45,7 @@ import {
   createUserExercise,
   updateUserExercise,
   deleteUserExercise,
+  getUserInfo,
 } from "@/lib/api"
 
 export default function ExercisesPage() {
@@ -63,41 +64,69 @@ export default function ExercisesPage() {
   const [selectedExercise, setSelectedExercise] = useState<ExerciseInfo | null>(null)
   const [duration, setDuration] = useState(30)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [userWeight, setUserWeight] = useState<number>(70) // Default weight
 
   const dateString = format(selectedDate, "yyyy-MM-dd")
   const isToday = dateString === format(new Date(), "yyyy-MM-dd")
 
-  const totalCaloriesBurned = exercises.reduce((sum, e) => sum + e.caloriesBurnt, 0)
-  const totalDuration = exercises.reduce((sum, e) => sum + e.duration, 0)
+  const totalCaloriesBurned = Array.isArray(exercises) ? exercises.reduce((sum, e) => sum + (e.caloriesBurnt || 0), 0) : 0
+  const totalDuration = Array.isArray(exercises) ? exercises.reduce((sum, e) => sum + (e.duration || 0), 0) : 0
 
   // Fetch exercises for selected date
   const fetchExercises = useCallback(async () => {
     setIsLoading(true)
-    const data = await getExercisesByDate(dateString)
-    setExercises(data?.content || [])
-    setIsLoading(false)
+    console.log(`[ExercisesPage] Fetching exercises for date: ${dateString}`)
+    try {
+      const data = await getExercisesByDate(dateString)
+      const content = data?.content || []
+      console.log(`[ExercisesPage] Received ${content.length} exercises`)
+      setExercises(content)
+    } catch (error) {
+      console.error("[ExercisesPage] Error fetching exercises:", error)
+      setExercises([])
+    } finally {
+      setIsLoading(false)
+    }
   }, [dateString])
 
   useEffect(() => {
     fetchExercises()
   }, [fetchExercises])
 
-  // Search for exercise types
-  useEffect(() => {
-    const searchExercises = async () => {
-      if (searchQuery.length < 2) {
-        setSearchResults([])
-        return
-      }
-      setIsSearching(true)
-      const results = await searchExerciseInfo(searchQuery)
-      setSearchResults(results)
-      setIsSearching(false)
+  const handleSearch = async () => {
+    if (searchQuery.length < 2) {
+      setSearchResults([])
+      return
     }
 
-    const debounce = setTimeout(searchExercises, 300)
-    return () => clearTimeout(debounce)
-  }, [searchQuery])
+    setIsSearching(true)
+    console.log(`[ExercisesPage] Searching for: ${searchQuery}`)
+    try {
+      const results = await searchExerciseInfo(searchQuery)
+      console.log(`[ExercisesPage] Search results: ${results.length}`)
+      setSearchResults(results)
+    } catch (error) {
+      console.error("[ExercisesPage] Search error:", error)
+      setSearchResults([])
+    } finally {
+      setIsSearching(false)
+    }
+  }
+
+  useEffect(() => {
+    const fetchUserWeight = async () => {
+      try {
+        const info = await getUserInfo()
+        if (info?.weight) {
+          console.log(`[ExercisesPage] User weight loaded: ${info.weight}`)
+          setUserWeight(info.weight)
+        }
+      } catch (error) {
+        console.error("[ExercisesPage] Error loading user weight:", error)
+      }
+    }
+    fetchUserWeight()
+  }, [])
 
   const resetForm = () => {
     setSearchQuery("")
@@ -109,14 +138,16 @@ export default function ExercisesPage() {
 
   const handleOpenDialog = (exercise?: UserExercise) => {
     if (exercise) {
+      console.log(`[ExercisesPage] Editing exercise:`, exercise)
       setEditingExercise(exercise)
       setSelectedExercise({
         id: exercise.exerciseInfoId,
         name: exercise.activityName,
-        caloriesPerMinute: exercise.caloriesBurnt / exercise.duration,
+        metabolicEquivalent: (exercise.caloriesBurnt * 60) / (userWeight * exercise.duration),
       })
       setDuration(exercise.duration)
     } else {
+      console.log(`[ExercisesPage] Opening add exercise dialog`)
       resetForm()
     }
     setDialogOpen(true)
@@ -138,21 +169,39 @@ export default function ExercisesPage() {
       duration,
     }
 
+    console.log(`[ExercisesPage] Submitting exercise:`, exerciseData)
+
     let success: boolean
-    if (editingExercise) {
-      const result = await updateUserExercise(editingExercise.id, exerciseData)
-      success = !!result
-    } else {
-      const result = await createUserExercise(exerciseData)
-      success = !!result
-    }
+    try {
+      if (editingExercise) {
+        const result = await updateUserExercise(editingExercise.id, exerciseData)
+        if (result) {
+          console.log(`[ExercisesPage] Update success:`, result)
+          success = true
+        } else {
+          console.error(`[ExercisesPage] Update failed - no result`)
+          success = false
+        }
+      } else {
+        const result = await createUserExercise(exerciseData)
+        if (result) {
+          console.log(`[ExercisesPage] Creation success:`, result)
+          success = true
+        } else {
+          console.error(`[ExercisesPage] Creation failed - no result`)
+          success = false
+        }
+      }
 
-    if (success) {
-      await fetchExercises()
-      handleCloseDialog()
+      if (success) {
+        await fetchExercises()
+        handleCloseDialog()
+      }
+    } catch (error) {
+      console.error("[ExercisesPage] Submission error:", error)
+    } finally {
+      setIsSubmitting(false)
     }
-
-    setIsSubmitting(false)
   }
 
   const handleDeleteClick = (exercise: UserExercise) => {
@@ -163,17 +212,25 @@ export default function ExercisesPage() {
   const handleConfirmDelete = async () => {
     if (!exerciseToDelete) return
 
-    const success = await deleteUserExercise(exerciseToDelete.id)
-    if (success) {
-      await fetchExercises()
+    console.log(`[ExercisesPage] Deleting exercise: ${exerciseToDelete.id}`)
+    try {
+      const success = await deleteUserExercise(exerciseToDelete.id)
+      if (success) {
+        console.log(`[ExercisesPage] Deletion success`)
+        await fetchExercises()
+      } else {
+        console.error(`[ExercisesPage] Deletion failed`)
+      }
+    } catch (error) {
+      console.error("[ExercisesPage] Deletion error:", error)
+    } finally {
+      setDeleteDialogOpen(false)
+      setExerciseToDelete(null)
     }
-
-    setDeleteDialogOpen(false)
-    setExerciseToDelete(null)
   }
 
   const estimatedCalories = selectedExercise
-    ? Math.round(duration * selectedExercise.caloriesPerMinute)
+    ? Math.round((duration / 60) * selectedExercise.metabolicEquivalent * userWeight)
     : 0
 
   return (
@@ -221,24 +278,35 @@ export default function ExercisesPage() {
                 {/* Exercise Search */}
                 <div className="space-y-2">
                   <Label>Search Exercise Type</Label>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      placeholder="Search exercises (e.g., Running, Cycling)..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10"
-                    />
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        placeholder="Search exercises (e.g., Running, Cycling)..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                        className="pl-10"
+                      />
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={handleSearch}
+                      disabled={isSearching}
+                    >
+                      <Search className="h-4 w-4" />
+                    </Button>
                   </div>
 
                   {/* Search Results */}
-                  {(searchResults.length > 0 || isSearching) && !selectedExercise && (
+                  {(searchResults.length > 0 || isSearching || (searchQuery.length >= 2 && !isSearching && searchResults.length === 0)) && !selectedExercise && (
                     <div className="rounded-lg border border-border bg-card max-h-48 overflow-y-auto">
                       {isSearching ? (
                         <div className="flex items-center justify-center p-4">
                           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                         </div>
-                      ) : (
+                      ) : searchResults.length > 0 ? (
                         searchResults.map((exercise) => (
                           <button
                             key={exercise.id}
@@ -257,10 +325,14 @@ export default function ExercisesPage() {
                               <span className="font-medium text-foreground">{exercise.name}</span>
                             </div>
                             <span className="text-sm text-muted-foreground">
-                              {exercise.caloriesPerMinute} kcal/min
+                              {Math.round((exercise.metabolicEquivalent * userWeight) / 60 * 10) / 10} kcal/min
                             </span>
                           </button>
                         ))
+                        ) : (
+                          <div className="p-8 text-center">
+                            <p className="text-sm text-muted-foreground">No exercises found.</p>
+                          </div>
                       )}
                     </div>
                   )}
@@ -277,7 +349,7 @@ export default function ExercisesPage() {
                         <div>
                           <p className="font-medium text-foreground">{selectedExercise.name}</p>
                           <p className="text-sm text-muted-foreground">
-                            {selectedExercise.caloriesPerMinute} kcal/min
+                            {Math.round((selectedExercise.metabolicEquivalent * userWeight) / 60 * 10) / 10} kcal/min
                           </p>
                         </div>
                       </div>

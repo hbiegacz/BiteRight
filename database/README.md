@@ -96,7 +96,8 @@ Stores recipe information including unique ID, name, and description.
 Attributes:
 >        recipe_id                integer unsigned not null auto_increment primary key,
 >        name                     varchar(64) not null, -- UNIQUE
->        description              varchar(255)
+>        description              varchar(255),
+>        image_url                varchar(255)
 ### 📜 recipe_content  
 Links recipes with ingredients, specifying the amount of each ingredient used in a recipe.
 Attributes:

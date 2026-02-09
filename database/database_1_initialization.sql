@@ -101,7 +101,8 @@ alter table meal_type add constraint unique_meal_type_name unique ( name );
 create table recipe (
         recipe_id                   integer unsigned not null auto_increment primary key,
         name                        varchar(64) not null, -- UNIQUE
-        description                 varchar(255)
+        description                 varchar(255),
+        image_url                   varchar(511)
 );
 
 alter table recipe add constraint recipe_name_un unique ( name );

@@ -37,6 +37,7 @@ import {
   getCurrentUser,
   getUserInfo,
   updateUserInfo,
+  updateWeight,
   getUserGoal,
   updateUserGoal,
   getUserPreferences,
@@ -65,6 +66,7 @@ import {
   EyeOff,
   LogOut,
   CalendarIcon,
+  Info,
 } from "lucide-react"
 
 export default function SettingsPage() {
@@ -182,6 +184,18 @@ export default function SettingsPage() {
     loadSettings()
   }, [])
 
+  const refreshLimits = async () => {
+    const limits = await getDailyLimits()
+    if (limits) {
+      setLimitsExist(true)
+      setCalorieLimit(limits.calorieLimit)
+      setProteinLimit(limits.proteinLimit)
+      setCarbLimit(limits.carbLimit)
+      setFatLimit(limits.fatLimit)
+      setWaterGoal(limits.waterGoal)
+    }
+  }
+
   const handleSaveLimits = async () => {
     setSaving(true)
     setMessage(null)
@@ -210,7 +224,7 @@ export default function SettingsPage() {
     setSaving(true)
     setMessage(null)
 
-    const bmi = currentWeight && height 
+    const bmi = currentWeight && height
       ? Number((Number(currentWeight) / Math.pow(Number(height) / 100, 2)).toFixed(1))
       : userInfo?.bmi || 0
 
@@ -218,15 +232,16 @@ export default function SettingsPage() {
       name,
       surname,
       age: Number(age),
-      weight: currentWeight || userInfo?.weight || 0,
+      weight: Number(currentWeight),
       height: Number(height),
       lifestyle,
-      bmi,
+      bmi: userInfo?.bmi || 0,
     })
 
     if (result) {
       setUserInfo(result)
-      setMessage({ type: "success", text: "Profile updated successfully!" })
+      await refreshLimits()
+      setMessage({ type: "success", text: "Profile updated successfully! Daily limits have been recalculated." })
     } else {
       setMessage({ type: "error", text: "Failed to update profile." })
     }
@@ -246,7 +261,8 @@ export default function SettingsPage() {
 
     if (result) {
       setUserGoal(result)
-      setMessage({ type: "success", text: "Goal updated successfully!" })
+      await refreshLimits()
+      setMessage({ type: "success", text: "Goal updated successfully! Daily limits have been recalculated." })
     } else {
       setMessage({ type: "error", text: "Failed to update goal." })
     }
@@ -279,15 +295,24 @@ export default function SettingsPage() {
     if (!newWeight) return
 
     setSaving(true)
-    const today = new Date().toISOString().split("T")[0]
-    const result = await addWeight(Number(newWeight), today)
+    setMessage(null)
+
+    const weightNum = Number(newWeight)
+    const result = await updateWeight(weightNum)
 
     if (result) {
-      setCurrentWeight(result.weight)
+      setCurrentWeight(weightNum)
       setNewWeight("")
-      setMessage({ type: "success", text: "Weight logged successfully!" })
+      await refreshLimits()
+      setMessage({ type: "success", text: "Weight updated successfully! Daily limits have been recalculated." })
+
+      // Refresh user info to get updated BMI
+      const updatedInfo = await getUserInfo()
+      if (updatedInfo) {
+        setUserInfo(updatedInfo)
+      }
     } else {
-      setMessage({ type: "error", text: "Failed to log weight." })
+      setMessage({ type: "error", text: "Failed to update weight." })
     }
 
     setSaving(false)
@@ -403,11 +428,10 @@ export default function SettingsPage() {
       {/* Message */}
       {message && (
         <div
-          className={`flex items-center gap-2 rounded-lg p-4 ${
-            message.type === "success"
-              ? "bg-secondary/20 text-secondary"
-              : "bg-destructive/20 text-destructive"
-          }`}
+          className={`flex items-center gap-2 rounded-lg p-4 ${message.type === "success"
+            ? "bg-secondary/20 text-secondary"
+            : "bg-destructive/20 text-destructive"
+            }`}
         >
           {message.type === "success" ? (
             <Check className="h-4 w-4" />
@@ -727,6 +751,10 @@ export default function SettingsPage() {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="flex items-start gap-2 rounded-lg bg-primary/5 p-3 text-sm text-primary">
+            <Info className="mt-0.5 h-4 w-4 shrink-0" />
+            <p>Updating your current weight will automatically adjust your daily calorie and macro limits to keep them accurate.</p>
+          </div>
           {currentWeight && (
             <div className="rounded-lg bg-muted/50 p-4">
               <p className="text-sm text-muted-foreground">Current Weight</p>
@@ -779,6 +807,10 @@ export default function SettingsPage() {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="flex items-start gap-2 rounded-lg bg-primary/5 p-3 text-sm text-primary">
+            <Info className="mt-0.5 h-4 w-4 shrink-0" />
+            <p>Changing your goal type (e.g., from Maintain to Lose Weight) will adjust your daily calorie limits accordingly.</p>
+          </div>
           <div className="space-y-2">
             <Label htmlFor="goalType">Goal Type</Label>
             <Select value={goalType} onValueChange={setGoalType}>
@@ -1063,6 +1095,6 @@ export default function SettingsPage() {
           </Dialog>
         </CardContent>
       </Card>
-    </div>
+    </div >
   )
 }

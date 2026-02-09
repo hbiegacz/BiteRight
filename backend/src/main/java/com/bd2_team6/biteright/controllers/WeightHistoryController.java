@@ -30,7 +30,7 @@ public class WeightHistoryController {
     private final UserRepository userRepository;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createWaterIntake(Authentication authentication,
+    public ResponseEntity<?> createWeightHistory(Authentication authentication,
                                                @RequestBody WeightHistoryCreateRequest request) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);

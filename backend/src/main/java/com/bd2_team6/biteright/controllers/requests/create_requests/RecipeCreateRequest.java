@@ -14,5 +14,6 @@ import lombok.NoArgsConstructor;
 public class RecipeCreateRequest {
     private String name;
     private String description;
+    private String imageUrl;
     private Set<RecipeContentDTO> contents;
 }

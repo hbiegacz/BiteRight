@@ -49,6 +49,7 @@ export interface DailySummary {
   totalFat: number
   totalCarbs: number
   totalWater: number
+  caloriesBurnt: number
 }
 
 export interface MealContent {
@@ -99,7 +100,8 @@ export async function getDailyLimits(): Promise<DailyLimits | null> {
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error getting daily limits:", e)
     return null
   }
 }
@@ -114,7 +116,8 @@ export async function createDailyLimits(limits: DailyLimits): Promise<DailyLimit
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error creating daily limits:", e)
     return null
   }
 }
@@ -129,7 +132,8 @@ export async function updateDailyLimits(limits: DailyLimits): Promise<DailyLimit
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error updating daily limits:", e)
     return null
   }
 }
@@ -139,10 +143,20 @@ export async function getDailySummary(date: string): Promise<DailySummary | null
   try {
     const response = await authFetch(`/dailySummary/find?date=${date}`)
     if (response.ok) {
-      return await response.json()
+      const data = await response.json()
+      if (!data) return null
+      return {
+        totalCalories: data.calories || 0,
+        totalProtein: data.protein || 0,
+        totalFat: data.fat || 0,
+        totalCarbs: data.carbs || 0,
+        totalWater: data.waterDrank || 0,
+        caloriesBurnt: data.caloriesBurnt || 0,
+      }
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error getting daily summary:", e)
     return null
   }
 }
@@ -156,11 +170,46 @@ export async function getSummaryRange(
       `/dailySummary/find?startDate=${startDate}&endDate=${endDate}`
     )
     if (response.ok) {
-      return await response.json()
+      const summaries = await response.json()
+      return (summaries || []).map((data: any) => ({
+        totalCalories: data.calories || 0,
+        totalProtein: data.protein || 0,
+        totalFat: data.fat || 0,
+        totalCarbs: data.carbs || 0,
+        totalWater: data.waterDrank || 0,
+        caloriesBurnt: data.caloriesBurnt || 0,
+      }))
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error getting summary range:", e)
     return null
+  }
+}
+
+export async function getStreak(): Promise<number> {
+  try {
+    const response = await authFetch("/dailySummary/streak")
+    if (response.ok) {
+      return await response.json()
+    }
+    return 0
+  } catch (e) {
+    console.error("Error getting streak:", e)
+    return 0
+  }
+}
+
+export async function getAverageDailyCalories(days: number = 7): Promise<number> {
+  try {
+    const response = await authFetch(`/dailySummary/averageCalories?days=${days}`)
+    if (response.ok) {
+      return await response.json()
+    }
+    return 0
+  } catch (e) {
+    console.error("Error getting average daily calories:", e)
+    return 0
   }
 }
 
@@ -172,7 +221,8 @@ export async function getMealsByDate(date: string): Promise<Meal[]> {
       return await response.json()
     }
     return []
-  } catch {
+  } catch (e) {
+    console.error("Error getting meals by date:", e)
     return []
   }
 }
@@ -184,7 +234,8 @@ export async function getAllUserMeals(): Promise<Meal[]> {
       return await response.json()
     }
     return []
-  } catch {
+  } catch (e) {
+    console.error("Error getting all user meals:", e)
     return []
   }
 }
@@ -196,7 +247,8 @@ export async function getMealById(id: number): Promise<Meal | null> {
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error getting meal by id:", e)
     return null
   }
 }
@@ -217,7 +269,8 @@ export async function createMeal(meal: {
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error creating meal:", e)
     return null
   }
 }
@@ -241,7 +294,8 @@ export async function updateMeal(
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error updating meal:", e)
     return null
   }
 }
@@ -250,7 +304,8 @@ export async function deleteMeal(id: number): Promise<boolean> {
   try {
     const response = await authFetch(`/meal/delete/${id}`, { method: "DELETE" })
     return response.ok
-  } catch {
+  } catch (e) {
+    console.error("Error deleting meal:", e)
     return false
   }
 }
@@ -263,7 +318,8 @@ export async function searchIngredients(name: string): Promise<Ingredient[]> {
       return await response.json()
     }
     return []
-  } catch {
+  } catch (e) {
+    console.error("Error searching ingredients:", e)
     return []
   }
 }
@@ -278,7 +334,8 @@ export async function createIngredient(ingredient: Omit<Ingredient, "id">): Prom
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error creating ingredient:", e)
     return null
   }
 }
@@ -304,7 +361,8 @@ export async function getLastWaterIntake(): Promise<WaterIntake | null> {
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error getting last water intake:", e)
     return null
   }
 }
@@ -334,7 +392,8 @@ export async function getWeightHistoryByDate(date: string): Promise<WeightHistor
       return data.content || []
     }
     return []
-  } catch {
+  } catch (e) {
+    console.error("Error getting weight history by date:", e)
     return []
   }
 }
@@ -346,7 +405,8 @@ export async function getLastWeight(): Promise<WeightHistory | null> {
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error getting last weight:", e)
     return null
   }
 }
@@ -361,7 +421,8 @@ export async function addWeight(weight: number, measurementDate: string): Promis
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error adding weight:", e)
     return null
   }
 }
@@ -369,9 +430,10 @@ export async function addWeight(weight: number, measurementDate: string): Promis
 // ==================== EXERCISE TYPES ====================
 
 export interface ExerciseInfo {
-  id?: number
+  id: number
   name: string
-  caloriesPerMinute: number
+  metabolicEquivalent: number
+  caloriesPerMinute?: number
 }
 
 export interface UserExercise {
@@ -397,7 +459,12 @@ export async function searchExerciseInfo(name: string): Promise<ExerciseInfo[]> 
   try {
     const response = await authFetch(`/exerciseInfo/find/${encodeURIComponent(name)}`)
     if (response.ok) {
-      return await response.json()
+      const data = await response.json()
+      return (data || []).map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        metabolicEquivalent: item.metabolicEquivalent,
+      }))
     }
     return []
   } catch (error) {
@@ -458,7 +525,8 @@ export async function getUserExercises(page = 0, size = 10): Promise<PagedRespon
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error getting user exercises:", e)
     return null
   }
 }
@@ -470,7 +538,8 @@ export async function getExercisesByDate(date: string): Promise<PagedResponse<Us
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error getting exercises by date:", e)
     return null
   }
 }
@@ -482,7 +551,8 @@ export async function getExerciseById(id: number): Promise<UserExercise | null> 
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error getting exercise by id:", e)
     return null
   }
 }
@@ -494,7 +564,8 @@ export async function getLastExercise(): Promise<UserExercise | null> {
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error getting last exercise:", e)
     return null
   }
 }
@@ -513,7 +584,8 @@ export async function createUserExercise(exercise: {
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error creating user exercise:", e)
     return null
   }
 }
@@ -535,7 +607,8 @@ export async function updateUserExercise(
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error updating user exercise:", e)
     return null
   }
 }
@@ -544,12 +617,20 @@ export async function deleteUserExercise(id: number): Promise<boolean> {
   try {
     const response = await authFetch(`/userExercise/delete/${id}`, { method: "DELETE" })
     return response.ok
-  } catch {
+  } catch (e) {
+    console.error("Error deleting user exercise:", e)
     return false
   }
 }
 
 // ==================== RECIPE TYPES ====================
+
+export interface RecipeMacrosDTO {
+  calories: number
+  protein: number
+  fat: number
+  carbs: number
+}
 
 export interface RecipeContentDTO {
   recipeContentId: number
@@ -562,6 +643,7 @@ export interface RecipeDTO {
   recipeId: number
   name: string
   description: string
+  imageUrl?: string
   contents: RecipeContentDTO[]
 }
 
@@ -605,9 +687,23 @@ export async function getRecipeById(id: number): Promise<RecipeDTO | null> {
   }
 }
 
+export async function getRecipeMacros(id: number): Promise<RecipeMacrosDTO | null> {
+  try {
+    const response = await authFetch(`/recipe/getMacros/${id}`)
+    if (response.ok) {
+      return await response.json()
+    }
+    return null
+  } catch (error) {
+    console.error("Error getting recipe macros:", error)
+    return null
+  }
+}
+
 export async function createRecipe(recipe: {
   name: string
   description: string
+  imageUrl?: string
   contents: { ingredientId: number; ingredientAmount: number }[]
 }): Promise<RecipeDTO | null> {
   try {
@@ -619,7 +715,8 @@ export async function createRecipe(recipe: {
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error creating recipe:", e)
     return null
   }
 }
@@ -629,6 +726,7 @@ export async function updateRecipe(
   recipe: {
     name: string
     description: string
+    imageUrl?: string
     contents: { ingredientId: number; ingredientAmount: number }[]
   }
 ): Promise<RecipeDTO | null> {
@@ -641,7 +739,8 @@ export async function updateRecipe(
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error updating recipe:", e)
     return null
   }
 }
@@ -650,7 +749,8 @@ export async function deleteRecipe(id: number): Promise<boolean> {
   try {
     const response = await authFetch(`/recipe/delete/${id}`, { method: "DELETE" })
     return response.ok
-  } catch {
+  } catch (e) {
+    console.error("Error deleting recipe:", e)
     return false
   }
 }
@@ -670,7 +770,8 @@ export async function addRecipeContent(content: {
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error adding recipe content:", e)
     return null
   }
 }
@@ -688,7 +789,8 @@ export async function updateRecipeContent(
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error updating recipe content:", e)
     return null
   }
 }
@@ -697,7 +799,8 @@ export async function deleteRecipeContent(id: number): Promise<boolean> {
   try {
     const response = await authFetch(`/recipeContent/delete/${id}`, { method: "DELETE" })
     return response.ok
-  } catch {
+  } catch (e) {
+    console.error("Error deleting recipe content:", e)
     return false
   }
 }
@@ -754,7 +857,8 @@ export async function getCurrentUser(): Promise<UserDTO | null> {
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error getting user:", e)
     return null
   }
 }
@@ -767,7 +871,8 @@ export async function getUserInfo(): Promise<UserInfoDTO | null> {
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error getting user info:", e)
     return null
   }
 }
@@ -782,8 +887,22 @@ export async function updateUserInfo(userInfo: Omit<UserInfoDTO, "id">): Promise
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error updating user info:", e)
     return null
+  }
+}
+
+export async function updateWeight(weight: number): Promise<boolean> {
+  try {
+    const response = await authFetch("/userInfo/updateWeight", {
+      method: "PUT",
+      body: JSON.stringify({ weight }),
+    })
+    return response.ok
+  } catch (e) {
+    console.error("Error updating weight:", e)
+    return false
   }
 }
 
@@ -795,7 +914,8 @@ export async function getUserGoal(): Promise<UserGoalDTO | null> {
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error getting user goal:", e)
     return null
   }
 }
@@ -814,7 +934,8 @@ export async function updateUserGoal(goal: {
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error updating user goal:", e)
     return null
   }
 }
@@ -827,7 +948,8 @@ export async function getUserPreferences(): Promise<UserPreferencesDTO | null> {
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error getting user preferences:", e)
     return null
   }
 }
@@ -842,7 +964,8 @@ export async function updateUserPreferences(preferences: Omit<UserPreferencesDTO
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error updating user preferences:", e)
     return null
   }
 }
@@ -855,7 +978,8 @@ export async function getUserAddresses(): Promise<Address[]> {
       return await response.json()
     }
     return []
-  } catch {
+  } catch (e) {
+    console.error("Error getting user addresses:", e)
     return []
   }
 }
@@ -870,7 +994,8 @@ export async function createAddress(address: Omit<Address, "id">): Promise<Addre
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error creating address:", e)
     return null
   }
 }
@@ -885,7 +1010,8 @@ export async function updateAddress(id: number, address: Omit<Address, "id">): P
       return await response.json()
     }
     return null
-  } catch {
+  } catch (e) {
+    console.error("Error updating address:", e)
     return null
   }
 }
@@ -894,7 +1020,8 @@ export async function deleteAddress(id: number): Promise<boolean> {
   try {
     const response = await authFetch(`/address/delete/${id}`, { method: "DELETE" })
     return response.ok
-  } catch {
+  } catch (e) {
+    console.error("Error deleting address:", e)
     return false
   }
 }

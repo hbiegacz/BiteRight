@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserExerciseUpdateRequest {
+    private Long exerciseInfoId;
     private LocalDateTime activityDate;
     private int duration;
 }

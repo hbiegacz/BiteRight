@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 public class UserInfoService {
@@ -18,12 +19,15 @@ public class UserInfoService {
     private final UserRepository userRepository;
     private final UserInfoRepository userInfoRepository;
     private final WeightHistoryRepository weightHistoryRepository;
+    private final DailyLimitsService dailyLimitsService;
 
     @Autowired
-    public UserInfoService(UserRepository userRepository, UserInfoRepository userInfoRepository, WeightHistoryRepository weightHistoryRepository) {
+    public UserInfoService(UserRepository userRepository, UserInfoRepository userInfoRepository,
+            WeightHistoryRepository weightHistoryRepository, DailyLimitsService dailyLimitsService) {
         this.userRepository = userRepository;
         this.userInfoRepository = userInfoRepository;
         this.weightHistoryRepository = weightHistoryRepository;
+        this.dailyLimitsService = dailyLimitsService;
     }
 
     public UserInfo findUserInfoByUsername(String username) {
@@ -46,15 +50,32 @@ public class UserInfoService {
         userInfo.setWeight(request.getWeight());
         userInfo.setHeight(request.getHeight());
         userInfo.setLifestyle(request.getLifestyle());
-        userInfo.setBmi(request.getBmi());
+
+        if (userInfo.getWeight() != null && userInfo.getHeight() != null && userInfo.getHeight() > 0) {
+            float heightInMeters = userInfo.getHeight() / 100.0f;
+            float bmi = userInfo.getWeight() / (heightInMeters * heightInMeters);
+            userInfo.setBmi((float) (Math.round(bmi * 10.0) / 10.0));
+        } else {
+            userInfo.setBmi(request.getBmi());
+        }
 
         userInfoRepository.save(userInfo);
 
-        if (!oldWeight.equals(request.getWeight())) {
+        if (!Objects.equals(oldWeight, request.getWeight())) {
             WeightHistory weightHistory = new WeightHistory(user, LocalDateTime.now(), request.getWeight());
             weightHistoryRepository.save(weightHistory);
         }
 
+        dailyLimitsService.recalculateDailyLimits(user);
+
         return userInfo;
+    }
+
+    public void updateUsersWeight(String username, Float weight) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.getUserInfo().setWeight(weight);
+        userRepository.save(user);
+        dailyLimitsService.recalculateDailyLimits(user);
     }
 }
