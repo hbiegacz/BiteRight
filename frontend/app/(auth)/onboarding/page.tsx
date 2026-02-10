@@ -54,19 +54,15 @@ export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
 
-  // Personal Info
   const [name, setName] = useState("")
   const [surname, setSurname] = useState("")
   const [age, setAge] = useState("")
 
-  // Body Stats
   const [weight, setWeight] = useState("")
   const [height, setHeight] = useState("")
 
-  // Lifestyle
   const [lifestyle, setLifestyle] = useState("moderate")
 
-  // Goals
   const [goalType, setGoalType] = useState("maintain")
   const [goalWeight, setGoalWeight] = useState("")
   const [goalDate, setGoalDate] = useState<Date | undefined>(undefined)

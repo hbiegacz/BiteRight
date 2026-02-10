@@ -44,12 +44,10 @@ public class AuthenticationService {
     private int verificationCodeExpirationMinutes;
 
     public void registerNewUser(RegistrationRequest request) throws Exception {
-        // Validate basic registration fields
         validateEmail(request.getEmail());
         validateUsername(request.getUsername());
         validatePassword(request.getPassword());
 
-        // Check if user already exists
         Optional<User> userOptByUsername = userRepository.findByUsername(request.getUsername());
         Optional<User> userOptByEmail = userRepository.findByEmail(request.getEmail());
 
@@ -59,32 +57,25 @@ public class AuthenticationService {
         if (userOptByEmail.isPresent())
             throw new Exception("Email " + request.getEmail() + " already taken.");
 
-        // Validate onboarding data if provided
         if (hasOnboardingData(request)) {
             validateOnboardingData(request);
         }
 
-        // Create user
         String hashedPassword = passwordEncoder.encode(request.getPassword());
         User newUser = new User(request.getUsername(), request.getEmail(), hashedPassword, "user");
         userRepository.save(newUser);
 
-        // Create UserGoal with provided data or defaults
         UserGoal newUserGoal = createUserGoal(request);
         userGoalRepository.save(newUserGoal);
 
-        // Create UserInfo with provided data or defaults
         UserInfo userInfo = createUserInfo(newUser, newUserGoal, request);
         userInfoRepository.save(userInfo);
 
-        // Create UserPreferences with defaults
         UserPreferences newUserPreferences = new UserPreferences(newUser, "english", true, "arial", true);
         userPreferencesRepository.save(newUserPreferences);
 
-        // Create DailyLimits with provided data or defaults
         createDailyLimits(newUser, request);
 
-        // Send verification email
         String code = emailService.generateVeryficationCode();
         LocalDateTime expirationDate = LocalDateTime.now().plusMinutes(60);
         VerificationCode newCode = new VerificationCode(code, expirationDate, newUser);
@@ -98,7 +89,6 @@ public class AuthenticationService {
     }
 
     private void validateOnboardingData(RegistrationRequest request) throws Exception {
-        // Personal info validation
         if (request.getName() != null && (request.getName().trim().isEmpty() || request.getName().length() > 50)) {
             throw new Exception("Name must be between 1 and 50 characters.");
         }
@@ -110,7 +100,6 @@ public class AuthenticationService {
             throw new Exception("Age must be between 13 and 120.");
         }
 
-        // Body stats validation
         if (request.getWeight() != null && (request.getWeight() < 20 || request.getWeight() > 500)) {
             throw new Exception("Weight must be between 20 and 500 kg.");
         }
@@ -121,7 +110,6 @@ public class AuthenticationService {
             throw new Exception("BMI must be between 10 and 100.");
         }
 
-        // Lifestyle validation
         if (request.getLifestyle() != null) {
             String lifestyle = request.getLifestyle().toLowerCase();
             if (!lifestyle.equals("sedentary") && !lifestyle.equals("light") &&
@@ -131,7 +119,6 @@ public class AuthenticationService {
             }
         }
 
-        // Goal validation
         if (request.getGoalType() != null) {
             String goalType = request.getGoalType().toLowerCase();
             if (!goalType.equals("lose") && !goalType.equals("maintain") && !goalType.equals("gain")) {
@@ -142,7 +129,6 @@ public class AuthenticationService {
             throw new Exception("Goal weight must be between 20 and 500 kg.");
         }
 
-        // Daily limits validation
         if (request.getCalorieLimit() != null
                 && (request.getCalorieLimit() < 800 || request.getCalorieLimit() > 10000)) {
             throw new Exception("Calorie limit must be between 800 and 10000.");
@@ -276,7 +262,6 @@ public class AuthenticationService {
         User user = userOpt.get();
         String actualEmail = user.getEmail();
 
-        // Moving authentication check BEFORE verification check
         Authentication auth = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(actualEmail, password));
         if (auth == null || !auth.isAuthenticated()) {
@@ -301,7 +286,6 @@ public class AuthenticationService {
             }
             verificationCodeRepository.save(verificationCode);
 
-            // Resend email
             emailService.sendVerificationEmail(user.getUsername(), user.getEmail(), newCodeValue);
 
             throw new Exception(
