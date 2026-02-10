@@ -1,4 +1,4 @@
-# BiteRight | Personal Nutrition & Activity Tracker ⚖️ 🥗🏋🏻‍♂️
+# BiteRight | Nutrition & Activity Tracker ⚖️ 🥗🏋🏻‍♂️
 [![Contributors](https://img.shields.io/github/contributors/hbiegacz/BiteRight?color=red)](https://github.com/hbiegacz/BiteRight/graphs/contributors)
 [![Commit Activity](https://img.shields.io/badge/Commits-📈%20View%20Graph-orange)](https://github.com/hbiegacz/BiteRight/graphs/commit-activity)
 [![GitHub commits](https://badgen.net/github/commits/hbiegacz/BiteRight?color=yellow)](https://github.com/hbiegacz/BiteRight/commit/)
