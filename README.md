@@ -47,21 +47,15 @@ The system relies on a relational database (MySQL) designed with 18 tables to ma
 
 ## 🚀 Run Locally
 Getting started with BiteRight is simple and straightforward. Follow these steps to get the application running on your local machine in just a few minutes.
+Make sure you have `Docker` and `Docker Compose` installed on your machine.
 
 First, download the project source code to your local machine:
-
 ```bash
-git clone https://github.com/hbiegacz/BiteRight.git
-```
-
-Move into the project folder:
-```bash
-cd BiteRight
-```
-
-Start the entire application stack with a single command:
-```bash
-docker-compose up --build
+    git clone https://github.com/hbiegacz/BiteRight.git
+    cd BiteRight
+    # Copy the example environment file and fill in the values
+    cp .env.example .env
+    docker-compose up --build
 ```
 
 Stop and clean the environment:
