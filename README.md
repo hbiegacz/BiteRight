@@ -6,6 +6,20 @@
 [![Lines of Code](https://img.shields.io/badge/Lines%20of%20Code-~250k-blue?logo=git)](https://github.com/hbiegacz/BiteRight)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 
+#### *Eat, track, ***succeed***.*
+
+BiteRight is a nutrition and activity tracking application designed for individuals looking to monitor their dietary habits and physical performance. It provides tools for logging daily food and water intake, managing nutritional goals, and tracking exercise data to support a balanced lifestyle.
+
+### Features
+- **Nutritional Tracking**: Log meals to calculate daily calorie and macronutrient (protein, carbohydrates, fats) intake
+- **Goal Management**: Set and update personal targets for calories, macronutrients, and water consumption
+- **Activity Logging**: Record physical exercises to track estimated calories burned
+- **Progress Analytics**: Monitor weight history and review performance
+
+ <!-- ## 📹 Quick Demo -->
+
+<!-- TODO: Add demo video -->
+
 ## 🛠️ Tech Stack & Architecture
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![CSS](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white) ![Next.js](https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) ![Nginx](https://img.shields.io/badge/Nginx-009639?logo=nginx&logoColor=white&style=for-the-badge) ![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white) ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) 
