@@ -1,7 +1,7 @@
 .idea
 .env
-.*
-
+.vscode
+.next
 # Compiled class file
 *.class
 

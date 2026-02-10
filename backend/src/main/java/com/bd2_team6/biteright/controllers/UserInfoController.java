@@ -32,7 +32,7 @@ public class UserInfoController {
                     userInfo.getAge(), userInfo.getWeight(), userInfo.getHeight(), userInfo.getLifestyle(), userInfo.getBmi());
             return ResponseEntity.ok(userInfoDTO);
         }
-        catch (IllegalArgumentException e) { // TODO: DO WE NEED THIS EXCEPTION?
+        catch (IllegalArgumentException e) {
             logger.error("Error finding user info." + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {

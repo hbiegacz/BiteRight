@@ -99,7 +99,7 @@ public class AddressTests {
         User user = new User("john_doe", "john@example.com", "passwordHash", "standard");
 
         Address address1 = new Address(user, "123 Test St", "Test City", "12345", "TestCountry");
-        Address address2 = new Address(user, "123 Test St", "Test City", "12345", "TestCountry"); // ten sam adres
+        Address address2 = new Address(user, "123 Test St", "Test City", "12345", "TestCountry");
 
         user.getAddresses().add(address1);
         user.getAddresses().add(address2);

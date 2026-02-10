@@ -82,7 +82,6 @@ public class DailyLimitsService {
         // BMR (Mifflin-St Jeor) - using an average constant for gender-neutrality
         double bmr = (10 * weight) + (6.25 * height) - (5 * age) - 78;
 
-        // Activity factor
         double activityFactor = switch (lifestyle) {
             case "sedentary" -> 1.2;
             case "light" -> 1.375;
@@ -107,12 +106,10 @@ public class DailyLimitsService {
         // Ensure minimum calories
         calories = Math.max(calories, 1200);
 
-        // Macros
-        int protein = (int) (weight * 1.8); // 1.8g per kg
-        int fat = (int) ((calories * 0.25) / 9); // 25% of calories from fat
-        int carbs = (int) ((calories - (protein * 4) - (fat * 9)) / 4); // Remaining calories from carbs
-
-        int waterGoal = (int) (weight * 35); // 35ml per kg
+        int protein = (int) (weight * 1.8);
+        int fat = (int) ((calories * 0.25) / 9);
+        int carbs = (int) ((calories - (protein * 4) - (fat * 9)) / 4);
+        int waterGoal = (int) (weight * 35);
 
         DailyLimits limits = user.getDailyLimits();
         if (limits == null) {
