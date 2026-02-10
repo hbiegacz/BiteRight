@@ -36,8 +36,9 @@ public class DailySummaryController {
             if (date != null) {
                 // Single date
                 LocalDate summaryDate = LocalDate.parse(date);
-                DailySummary dailySummary = dailySummaryService.findDailySummaryByUsernameAndDate(username, summaryDate);
-                return ResponseEntity.ok(dailySummary);
+                return dailySummaryService.findDailySummaryByUsernameAndDate(username, summaryDate)
+                        .map(ResponseEntity::ok)
+                        .orElse(ResponseEntity.ok(new DailySummary())); // Return empty object which maps to zeros/nulls
             } else if (startDate != null && endDate != null) {
                 // Date range
                 LocalDate start = LocalDate.parse(startDate);
@@ -46,12 +47,13 @@ public class DailySummaryController {
                 return ResponseEntity.ok(summaries);
             } else {
                 // Default to today's date
-                DailySummary dailySummary = dailySummaryService.findDailySummaryByUsernameAndDate(username, LocalDate.now());
-                return ResponseEntity.ok(dailySummary);
+                return dailySummaryService.findDailySummaryByUsernameAndDate(username, LocalDate.now())
+                        .map(ResponseEntity::ok)
+                        .orElse(ResponseEntity.ok(new DailySummary()));
             }
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             logger.error("Error finding daily summary.\n" + e.getMessage());
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().body("Error parsing dates or finding summary: " + e.getMessage());
         }
     }
 
@@ -70,13 +72,33 @@ public class DailySummaryController {
     @GetMapping("/averageCalories")
     public ResponseEntity<?> getAverageCalories(
             Authentication authentication,
-            @RequestParam(defaultValue = "7") int days) {
+            @RequestParam String startDate,
+            @RequestParam String endDate) {
         try {
             String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
-            double avgCalories = dailySummaryService.calculateAverageDailyCalories(username, days);
+            LocalDate start = LocalDate.parse(startDate);
+            LocalDate end = LocalDate.parse(endDate);
+            double avgCalories = dailySummaryService.calculateAverageDailyCalories(username, start, end);
             return ResponseEntity.ok(avgCalories);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             logger.error("Error calculating average calories.\n" + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/averageProtein")
+    public ResponseEntity<?> getAverageProtein(
+            Authentication authentication,
+            @RequestParam String startDate,
+            @RequestParam String endDate) {
+        try {
+            String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
+            LocalDate start = LocalDate.parse(startDate);
+            LocalDate end = LocalDate.parse(endDate);
+            double avgProtein = dailySummaryService.calculateAverageDailyProtein(username, start, end);
+            return ResponseEntity.ok(avgProtein);
+        } catch (Exception e) {
+            logger.error("Error calculating average protein.\n" + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

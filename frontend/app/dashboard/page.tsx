@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react"
 import Link from "next/link"
-import { format } from "date-fns"
+import { format, subDays } from "date-fns"
 import { CalorieRing } from "@/components/dashboard/calorie-ring"
 import { MacroCard } from "@/components/dashboard/macro-card"
 import { MealList } from "@/components/dashboard/meal-list"
@@ -120,8 +120,31 @@ export default function DashboardPage() {
         setCurrentWeight(response)
       }
 
-      const userAvgCalories = await getAverageDailyCalories(7)
+      const daysToFetch = 7
+      const endAverageDate = new Date()
+      const startAverageDate = subDays(endAverageDate, daysToFetch - 1)
+      const startAverageStr = format(startAverageDate, "yyyy-MM-dd")
+      const endAverageStr = format(endAverageDate, "yyyy-MM-dd")
+
+      const userAvgCalories = await getAverageDailyCalories(startAverageStr, endAverageStr)
       setAvgCalories(userAvgCalories)
+
+      // Load weight history to calculate change
+      try {
+        const historyResponse = await getWeightHistoryForUser(0, 1)
+        if (historyResponse && historyResponse.content && historyResponse.content.length > 0) {
+          const latestHistoryWeight = historyResponse.content[0].weight
+          // Compare current userInfo weight with the latest recorded history entry
+          if (currentWeight) {
+            const change = currentWeight - latestHistoryWeight
+            setWeightChange(Number(change.toFixed(1)))
+          }
+        } else {
+          setWeightChange(0)
+        }
+      } catch (error) {
+        console.error("Error loading weight history:", error)
+      }
 
       // Load BMI from user info
       const userInfo = await getUserInfo()
@@ -237,6 +260,7 @@ export default function DashboardPage() {
       {/* Quick Stats */}
       <QuickStats
         currentWeight={currentWeight}
+        weightChange={weightChange}
         calorieGoal={limits.calorieLimit}
         weeklyAvgCalories={avgCalories}
         bmi={bmi}
