@@ -22,12 +22,11 @@ public class DailySummaryService {
         this.dailySummaryRepository = dailySummaryRepository;
     }
 
-    public DailySummary findDailySummaryByUsernameAndDate(String username, LocalDate date) {
+    public java.util.Optional<DailySummary> findDailySummaryByUsernameAndDate(String username, LocalDate date) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         
-        return dailySummaryRepository.findByUserIdAndSummaryDate(user.getId(), date)
-                .orElseThrow(() -> new IllegalArgumentException("Summary not found for given date"));
+        return dailySummaryRepository.findByUserIdAndSummaryDate(user.getId(), date);
     }
 
     public List<DailySummary> findDailySummariesByUsernameBetweenDates(String username, LocalDate startDate, LocalDate endDate) {
@@ -61,12 +60,9 @@ public class DailySummaryService {
         return streak;
     }
 
-    public double calculateAverageDailyCalories(String username, int days) {
+    public double calculateAverageDailyCalories(String username, LocalDate startDate, LocalDate endDate) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        LocalDate endDate = LocalDate.now();
-        LocalDate startDate = endDate.minusDays(days - 1);
 
         List<DailySummary> summaries = dailySummaryRepository.findByUserIdAndSummaryDateBetween(
                 user.getId(), startDate, endDate);
@@ -80,5 +76,23 @@ public class DailySummaryService {
                 .sum();
 
         return totalCalories / summaries.size();
+    }
+
+    public double calculateAverageDailyProtein(String username, LocalDate startDate, LocalDate endDate) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        List<DailySummary> summaries = dailySummaryRepository.findByUserIdAndSummaryDateBetween(
+                user.getId(), startDate, endDate);
+
+        if (summaries.isEmpty()) {
+            return 0.0;
+        }
+
+        double totalProtein = summaries.stream()
+                .mapToDouble(DailySummary::getProtein)
+                .sum();
+
+        return totalProtein / summaries.size();
     }
 }

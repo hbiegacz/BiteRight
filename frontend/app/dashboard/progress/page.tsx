@@ -13,7 +13,8 @@ import {
 import { TrendingUp, TrendingDown, Scale, Flame, Droplets, Target, Loader2 } from "lucide-react"
 import { getToken } from "@/lib/auth"
 import { format, subDays, isSameDay, parseISO, startOfDay } from "date-fns"
-import { getDailyLimits, type DailyLimits } from "@/lib/api"
+import { getDailyLimits, getDailySummary, getAverageDailyCalories, getAverageDailyProtein, getUserWeight, type DailyLimits } from "@/lib/api"
+import { authFetch } from "@/lib/api"
 
 // Types matching backend response
 interface UserInfo {
@@ -54,23 +55,16 @@ interface DayData extends DailySummary {
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080").replace(/\/$/, "")
 
-async function myAuthFetch(endpoint: string) { // TODO: czym to się różni od authFetch??
-  const token = getToken()
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  }
-  if (token) headers["Authorization"] = `Bearer ${token}`
 
-  const res = await fetch(`${API_BASE_URL}${endpoint}`, { headers })
-  if (!res.ok) throw new Error("Failed to fetch")
-  return res.json()
-}
 
 export default function ProgressPage() {
   const [timeRange, setTimeRange] = useState("week")
   const [data, setData] = useState<DayData[]>([])
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   const [limits, setLimits] = useState<DailyLimits | null>(null)
+  const [avgCalories, setAvgCalories] = useState(0)
+  const [avgProtein, setAvgProtein] = useState(0)
+  const [currentWeight, setCurrentWeight] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -79,17 +73,34 @@ export default function ProgressPage() {
       try {
         setLoading(true)
 
-        const [userInfoData, userLimits] = await Promise.all([
-          myAuthFetch("/userInfo/findUserInfo"),
+        const [userInfoRes, userLimits] = await Promise.all([
+          authFetch("/userInfo/findUserInfo"),
           getDailyLimits()
         ])
+        const userInfoData = await userInfoRes.json()
         setUserInfo(userInfoData)
         setLimits(userLimits)
 
-        const weightHistoryRes = await myAuthFetch("/weightHistory/findWeightHistoriesForUser?size=100&sortDir=desc&sortBy=measurementDate")
-        const weightHistory: WeightHistory[] = weightHistoryRes.content || []
-
         const daysToFetch = 7
+        const endDate = new Date()
+        const startDate = subDays(endDate, daysToFetch - 1)
+        const startStr = format(startDate, "yyyy-MM-dd")
+        const endStr = format(endDate, "yyyy-MM-dd")
+
+        const [caloriesAvg, proteinAvg, weightVal, weightHistoryRes] = await Promise.all([
+          getAverageDailyCalories(startStr, endStr),
+          getAverageDailyProtein(startStr, endStr),
+          getUserWeight(),
+          authFetch("/weightHistory/findWeightHistoriesForUser?size=100&sortDir=desc&sortBy=measurementDate")
+        ])
+
+        setAvgCalories(caloriesAvg)
+        setAvgProtein(proteinAvg)
+        setCurrentWeight(weightVal || userInfoData.weight)
+
+        const weightHistoryData = await weightHistoryRes.json()
+        const weightHistory: WeightHistory[] = weightHistoryData.content || []
+
         const dates: Date[] = []
         for (let i = daysToFetch - 1; i >= 0; i--) {
           dates.push(subDays(new Date(), i))
@@ -98,7 +109,7 @@ export default function ProgressPage() {
         const summaryPromises = dates.map(async (date) => {
           const dateStr = format(date, "yyyy-MM-dd")
           try {
-            const summary = await myAuthFetch(`/dailySummary/find?date=${dateStr}`).catch(() => null)
+            const summary = await getDailySummary(dateStr)
 
             let weight = userInfoData.weight // Default to current
 
@@ -152,16 +163,8 @@ export default function ProgressPage() {
     fetchData()
   }, [timeRange])
 
-  const avgCalories = data.length > 0
-    ? Math.round(data.reduce((sum, d) => sum + d.totalCalories, 0) / data.length)
-    : 0
-
-  const avgProtein = data.length > 0
-    ? Math.round(data.reduce((sum, d) => sum + d.totalProtein, 0) / data.length)
-    : 0
-
   const startWeight = data.length > 0 ? data[0].weight : (userInfo?.weight || 0)
-  const endWeight = data.length > 0 ? data[data.length - 1].weight : (userInfo?.weight || 0)
+  const endWeight = currentWeight
   const weightChange = (endWeight - startWeight).toFixed(1)
 
   if (loading) {
@@ -197,7 +200,13 @@ export default function ProgressPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-foreground sm:text-3xl">Progress</h1>
-          <p className="mt-1 text-muted-foreground">Track your health journey over time</p>
+          <p className="mt-1 text-muted-foreground">
+            {data.length > 0 ? (
+              <>
+                {format(parseISO(data[0].fullDate), "MMM dd")} - {format(parseISO(data[data.length - 1].fullDate), "MMM dd, yyyy")}
+              </>
+            ) : "Track your health journey over time"}
+          </p>
         </div>
 
         <Select value={timeRange} onValueChange={setTimeRange}>

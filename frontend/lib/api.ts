@@ -3,7 +3,7 @@ import { getToken, removeToken } from "./auth"
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080").replace(/\/$/, "") // TODO: move to .env
 
 // Helper function for authenticated requests
-async function authFetch(endpoint: string, options: RequestInit = {}) {
+export async function authFetch(endpoint: string, options: RequestInit = {}) {
   const token = getToken()
   const headers: HeadersInit = {
     "Content-Type": "application/json",
@@ -200,9 +200,9 @@ export async function getStreak(): Promise<number> {
   }
 }
 
-export async function getAverageDailyCalories(days: number = 7): Promise<number> {
+export async function getAverageDailyCalories(startDate: string, endDate: string): Promise<number> {
   try {
-    const response = await authFetch(`/dailySummary/averageCalories?days=${days}`)
+    const response = await authFetch(`/dailySummary/averageCalories?startDate=${startDate}&endDate=${endDate}`)
     if (response.ok) {
       return await response.json()
     }
@@ -210,6 +210,32 @@ export async function getAverageDailyCalories(days: number = 7): Promise<number>
   } catch (e) {
     console.error("Error getting average daily calories:", e)
     return 0
+  }
+}
+
+export async function getAverageDailyProtein(startDate: string, endDate: string): Promise<number> {
+  try {
+    const response = await authFetch(`/dailySummary/averageProtein?startDate=${startDate}&endDate=${endDate}`)
+    if (response.ok) {
+      return await response.json()
+    }
+    return 0
+  } catch (e) {
+    console.error("Error getting average daily protein:", e)
+    return 0
+  }
+}
+
+export async function getUserWeight(): Promise<number | null> {
+  try {
+    const response = await authFetch("/userInfo/weight")
+    if (response.ok) {
+      return await response.json()
+    }
+    return null
+  } catch (e) {
+    console.error("Error getting user weight:", e)
+    return null
   }
 }
 
@@ -398,19 +424,6 @@ export async function getWeightHistoryByDate(date: string): Promise<WeightHistor
   }
 }
 
-export async function getLastWeight(): Promise<WeightHistory | null> {
-  try {
-    const response = await authFetch("/weightHistory/findLastWeightHistory")
-    if (response.ok) {
-      return await response.json()
-    }
-    return null
-  } catch (e) {
-    console.error("Error getting last weight:", e)
-    return null
-  }
-}
-
 export async function addWeight(weight: number, measurementDate: string): Promise<WeightHistory | null> {
   try {
     const response = await authFetch("/weightHistory/create", {
@@ -423,6 +436,32 @@ export async function addWeight(weight: number, measurementDate: string): Promis
     return null
   } catch (e) {
     console.error("Error adding weight:", e)
+    return null
+  }
+}
+
+export async function getLastWeightHistory(): Promise<WeightHistory | null> {
+  try {
+    const response = await authFetch("/weightHistory/findLastWeightHistory")
+    if (response.ok) {
+      return await response.json()
+    }
+    return null
+  } catch (e) {
+    console.error("Error getting last weight history:", e)
+    return null
+  }
+}
+
+export async function getWeightHistoryForUser(page = 0, size = 10): Promise<PagedResponse<WeightHistory> | null> {
+  try {
+    const response = await authFetch(`/weightHistory/findWeightHistoriesForUser?page=${page}&size=${size}`)
+    if (response.ok) {
+      return await response.json()
+    }
+    return null
+  } catch (e) {
+    console.error("Error getting weight history for user:", e)
     return null
   }
 }

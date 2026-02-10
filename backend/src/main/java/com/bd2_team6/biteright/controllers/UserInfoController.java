@@ -41,6 +41,18 @@ public class UserInfoController {
         }
     }
 
+    @GetMapping("/weight")
+    public ResponseEntity<?> getWeight(Authentication authentication) {
+        try {
+            String username = ControllerHelperClass.getUsernameFromAuthentication(authentication, userRepository);
+            UserInfo userInfo = userInfoService.findUserInfoByUsername(username);
+            return ResponseEntity.ok(userInfo.getWeight());
+        } catch (Exception e) {
+            logger.error("Error finding weight." + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PutMapping("/update")
     public ResponseEntity<?> updateUserInfo(Authentication authentication, @RequestBody UserInfoUpdateRequest request) {
         try {
