@@ -1,17 +1,10 @@
 
-# BiteRight!
-![Avocado](/readme_images/image.png)
-BiteRight is a comprehensive nutrition and fitness application designed to help users achieve their personal health goals through an intuitive and enjoyable experience. Whether you're looking to lose weight, build muscle, increase strength, or improve your mental well-being, BiteRight provides the tools and support needed to make your health journey both effective and sustainable. 
-
-## 🥑 Why BiteRight?
-This project serves as a comprehensive tool for managing nutrition and meal planning. 
-- 🍽️ Comprehensive Meal Tracking: Easily log meals and ingredients to monitor dietary intake.
-- 📊 Nutritional Calculations: Automatically calculate calories and nutritional values for informed choices.
-- 📈 Progress Monitoring: Visualize your health journey with detailed charts and reports.
-- 🔥 Exercise & Calorie Burn Tracking: Log your workouts and automatically calculate calories burned to balance your energy intake and expenditure.
-
-## 👥 Authors
-We are a team of dedicated students from Warsaw University of Technology (Politechnika Warszawska) who have collaborated to create the BiteRight application as part of our academic project.
+[![Contributors](https://img.shields.io/github/contributors/hbiegacz/BiteRight?color=red)](https://github.com/hbiegacz/BiteRight/graphs/contributors)
+[![Commit Activity](https://img.shields.io/badge/Commits-📈%20View%20Graph-orange)](https://github.com/hbiegacz/BiteRight/graphs/commit-activity)
+[![GitHub commits](https://badgen.net/github/commits/hbiegacz/BiteRight?color=yellow)](https://github.com/hbiegacz/BiteRight/commit/)
+[![Repo Size](https://img.shields.io/github/repo-size/hbiegacz/BiteRight?color=green)](https://github.com/hbiegacz/BiteRight)
+[![Lines of Code](https://img.shields.io/badge/Lines%20of%20Code-~250k-blue?logo=git)](https://github.com/hbiegacz/BiteRight)
+[![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 
 ### 🚀 Meet the Development Team
 **🖥️ Backend Development**
