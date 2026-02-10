@@ -16,8 +16,20 @@ BiteRight is a nutrition and activity tracking application designed for individu
 - **Activity Logging**: Record physical exercises to track estimated calories burned
 - **Progress Analytics**: Monitor weight history and review performance
 
- <!-- ## 📹 Quick Demo -->
+ ## 📹 Quick Demo
 
+<table>
+    <tr>
+        <td>
+            Modern landing page <br/>
+            <img src="readme_images/landing_page_demo.gif" alt="landing page">
+        </td>
+        <td>
+            Onboarding process <br/>
+            <img src="readme_images/onboarding_demo_compressed.gif" alt="onboarding demo">
+        </td>
+    </tr>
+</table>
 <!-- TODO: Add demo video -->
 
 ## 🛠️ Tech Stack & Architecture
